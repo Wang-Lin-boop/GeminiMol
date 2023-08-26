@@ -1,2 +1,18 @@
 # GeminiMol
-Incorporation of molecular conformational space shape similarity during training of molecular representation models and its application to virtual screening, target identification, QSAR and molecular generation
+This repository provides the official implementation of the GeminiMol model, training data, and scripts.  
+
+We also provide:   
+
+1.  Scripts for data collection and analysis.    
+2.  A benchmark script and datasets for virtual screening, target identification, and QSAR (drug-target binding affinity, cellar activity, ADME, and toxicity).   
+3.  Benchmark results of molecular fingerprints and GeminiMol models.   
+
+Please also refer to our paper for a detailed description of this method.
+
+Motivation  
+===
+
+
+
+
+
