@@ -48,18 +48,16 @@ _As a potent molecular representation model, GeminiMol finds applications in **l
 
 ## Acknowledgements
 
-_We appreciate the technical support provided by the engineers of the high-performance computing cluster of ShanghaiTech University. Lin Wang also thanks Jianxin Duan, Gaokeng Xiao, Quanwei Yu, Shiwei Li and Fenglei Li for providing technical support, inspiration and help for this work. We appreciate the developers of AutoGluon and Deep Graph Library (DGL), and we thank for the RetNet implementations provided by Jamie Stirling and Frank Odom. We also thank the developers and maintainers of MarcoModel and PhaseShape modules in the Schrödinger package. Besides, GeminiMol communicates with and/or references the following separate libraries and packages:_  
+_We appreciate the technical support provided by the engineers of the high-performance computing cluster of ShanghaiTech University. Lin Wang also thanks Jianxin Duan, Gaokeng Xiao, Quanwei Yu, Shiwei Li and Fenglei Li for providing technical support, inspiration and help for this work. We appreciate the developers of AutoGluon and Deep Graph Library (DGL), and we thank for the RetNet implementations provided by Jamie Stirling and Frank Odom. We also thank the developers and maintainers of MarcoModel and PhaseShape modules in the Schrödinger package. Besides, GeminiMol communicates with and/or references the following separate libraries and packages, we thank all their contributors and maintainers!_  
 
-*  [PyTorch]()
-*  [PyTorch]()
-*  [PyTorch]()
-*  [PyTorch]()
-*  [PyTorch]()
-*  [PyTorch]()
-*  [PyTorch]()
-
-_We thank all their contributors and maintainers!_  
-
+*  [RDKit](https://www.rdkit.org/)
+*  [PyTorch](https://pytorch.org/)
+*  [AutoGluon](https://auto.gluon.ai/stable/index.html)
+*  [DGL-Life](https://lifesci.dgl.ai/)
+*  [ODDT](https://oddt.readthedocs.io/en/latest/)
+*  [SciPy](https://scipy.org/)
+*  [scikit-learn](https://scikit-learn.org/stable/)
+*  [matplotlib](https://matplotlib.org/)
 
 ## Get in Touch
 
