@@ -1,6 +1,7 @@
-![](.image/geminimol.png)
-
 # GeminiMol
+
+![](.image/geminimol.png)  
+
 This repository provides the official implementation of the GeminiMol model, training data, and scripts.  
 
 We also provide:   
@@ -20,6 +21,8 @@ _In previous work, molecular representation models were mostly trained on the st
 _The similarity between small molecules provides the opportunity for contrastive learning, as illustrated in followed figure, the shape similarity contained more pharmacological and physical information than the 2D structure and fingerprint similarity, therefore, introducing the molecular shape similarity in contrastive learning is a promising strategy._
 
 ![similarity](.image/similarity.png)
+
+_In this study, a diverse collection of **39,290** molecules was employed for conformational searching and shape alignment to generate a comprehensive dataset of molecular conformational space similarity. Various hyperparameters were employed during the conformational search process, and a multi-task learning approach was adopted to facilitate the model in acquiring a universal representation of molecular conformational space. To assess the model's performance, the benchmark datasets comprising over millions molecules was utilized for downstream tasks._    
 
 ## Application
 
