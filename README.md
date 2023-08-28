@@ -16,7 +16,10 @@ Please also refer to our paper for a detailed description of GeminiMol.
 _The molecular representation model is an emerging artificial intelligence technology for extracting features of small molecules. It has been widely applied in drug discovery scenarios, such as virtual screening, Quantitative Structure-Activity Relationship (QSAR) analysis, and molecular optimization._   
   
 _In previous work, molecular representation models were mostly trained on the static structure of molecules, however, the small molecules in solution are highly dynamic, and their flexible conformational changes endow them with the potential to bind to drug targets. Therefore, introducing information on small molecule conformational space into molecular representation models is a promising aim. In this work, a training strategy, named GeminiMol, was proposed to **incorporate the comprehension of conformational space into the molecular representation model**._   
-    
+
+_The similarity between small molecules provides the opportunity for contrastive learning, as illustrated in followed figure, the shape similarity contained more pharmacological and physical information than the 2D structure and fingerprint similarity, therefore, introducing the molecular shape similarity in contrastive learning is a promising strategy._
+
+![similarity](.image/similarity.png)
 
 ## Application
 
