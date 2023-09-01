@@ -34,10 +34,56 @@ _To ensure the accurate evaluation of the model's performance, we have additiona
 
 ## Installation
 
+_GeminiMol is a python-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration._   
+
+> install MiniConda
+```
+    wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    sh Miniconda3-latest-Linux-x86_64.sh
+```
+> create GeminiMol env
+```
+    conda create -n GeminiMol python=3.8.16
+```
+
+### Baseline Fingerprint Methods and Benchmark Protocol
+
+_If you intend to utilize molecular fingerprint baseline methods or conduct QSAR benchmarking, it is required to install RDKit and AutoGluon in advance._     
+
+> Installing the RDkit for generating fingerprints
+
+```
+    pip install rdkit
+```
+
+> Installing the AutoGluon for performing QSAR
+
+``` 
+    pip3 install -U pip
+    pip3 install -U setuptools wheel
+    pip3 install torch==1.13.1+cu116 torchvision==0.14.1+cu116 \
+        --extra-index-url https://download.pytorch.org/whl/cu116
+    pip3 install autogluon==0.7.0
+```
+
+> Installing the statatics packages
+
+```
+    pip install oddt sklearn
+```
+
 ### GeminiMol models
 
-### Benchmark and Baseline Fingerprint Methods
+_In this repository, we provide over 30 million pairs of training, validation, and testing data used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties. To re-train the model or make predictions using the models we provide, follow the steps below to install the dependencies in advance._
 
+```
+    pip install rdkit
+    pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 \
+        --extra-index-url https://download.pytorch.org/whl/cu116
+    pip install dgl -f https://data.dgl.ai/wheels/cu116/repo.html
+    pip install dglgo -f https://data.dgl.ai/wheels-test/repo.html
+    pip install dgllife
+```
 
 ## Running GeminiMol
 
@@ -52,6 +98,7 @@ _To ensure the accurate evaluation of the model's performance, we have additiona
 
 ## Citing this work
 
+_coming in soon...._
 
 ## Acknowledgements
 
