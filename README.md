@@ -59,7 +59,7 @@ _GeminiMol is a python-based AI model. To set up the GeminiMol model, we recomme
     source ~/.bashrc
 ```
 
-### Baseline Fingerprint Methods and Benchmark Protocol
+#### Baseline Fingerprint Methods and Benchmark Protocol
 
 _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR benchmarking, it is required to install RDKit and AutoGluon in advance._     
 
@@ -85,7 +85,7 @@ _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR
     pip install oddt scikit-learn matplotlib umap-learn
 ```
 
-### GeminiMol models
+#### GeminiMol models
 
 _In this repository, we provide over 30 million pairs of training, validation, and testing data used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties. To re-train the model or make predictions using the models we provide, follow the steps below to install the dependencies in advance._
 
@@ -101,13 +101,13 @@ _In this repository, we provide over 30 million pairs of training, validation, a
 
 
 
-### Virtual Screening 
+#### Virtual Screening 
 
-### Target Identification
+#### Target Identification
 
-### QSAR
+#### QSAR
 
-### Molecular Generation
+#### Molecular Generation
 
 
 ## Citing this work
