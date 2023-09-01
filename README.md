@@ -112,7 +112,7 @@ _In this repository, we provide over 30 million pairs of training, validation, a
 
 ## Citing this work
 
-_coming in soon...._
+_Coming in soon...._
 
 ## Acknowledgements
 
