@@ -10,7 +10,7 @@ We also provide:
 2.  A benchmark script and datasets for virtual screening, target identification, and QSAR (drug-target binding affinity, cellar activity, ADME, and toxicity).   
 3.  Benchmark results of molecular fingerprints and GeminiMol models.   
 
-Please also refer to our paper for a detailed description of GeminiMol.
+_Please also refer to our paper for a detailed description of GeminiMol._
 
 ## Motivation  
 
@@ -44,6 +44,19 @@ _GeminiMol is a python-based AI model. To set up the GeminiMol model, we recomme
 > create GeminiMol env
 ```
     conda create -n GeminiMol python=3.8.16
+    conda activate GeminiMol
+```
+> download GeminiMol and configuration
+```
+    git clone https://github.com/Wang-Lin-boop/GeminiMol
+    cd GeminiMol/
+    export PATH=${PWD}:\$PATH" >> ~/.bashrc
+    export GeminiMol=${PWD}" >> ~/.bashrc
+    cd geminimol/
+    export geminimol_app=${PWD}" >> ~/.bashrc
+    cd ../model
+    export geminimol_lib=${PWD}" >> ~/.bashrc
+    source ~/.bashrc
 ```
 
 ### Baseline Fingerprint Methods and Benchmark Protocol
@@ -66,10 +79,10 @@ _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR
     pip3 install autogluon==0.7.0
 ```
 
-> Installing the statatics packages
+> Installing the statatics and plot packages
 
 ```
-    pip install oddt sklearn
+    pip install oddt scikit-learn matplotlib umap-learn
 ```
 
 ### GeminiMol models
@@ -77,15 +90,16 @@ _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR
 _In this repository, we provide over 30 million pairs of training, validation, and testing data used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties. To re-train the model or make predictions using the models we provide, follow the steps below to install the dependencies in advance._
 
 ```
-    pip install rdkit
+    pip install rdkit scipy dgllife scikit-learn
     pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 \
         --extra-index-url https://download.pytorch.org/whl/cu116
     pip install dgl -f https://data.dgl.ai/wheels/cu116/repo.html
     pip install dglgo -f https://data.dgl.ai/wheels-test/repo.html
-    pip install dgllife
 ```
 
 ## Running GeminiMol
+
+
 
 ### Virtual Screening 
 
