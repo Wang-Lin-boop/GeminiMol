@@ -36,17 +36,17 @@ _To ensure the accurate evaluation of the model's performance, we have additiona
 
 _GeminiMol is a python-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration._   
 
-> install MiniConda
+> Installing MiniConda
 ```
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
     sh Miniconda3-latest-Linux-x86_64.sh
 ```
-> create GeminiMol env
+> Creating GeminiMol env
 ```
     conda create -n GeminiMol python=3.8.16
     conda activate GeminiMol
 ```
-> download GeminiMol and configuration
+> Setting up GeminiMol and configuration
 ```
     git clone https://github.com/Wang-Lin-boop/GeminiMol
     cd GeminiMol/
