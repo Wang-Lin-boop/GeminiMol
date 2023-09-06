@@ -34,7 +34,7 @@ _To ensure the accurate evaluation of the model's performance, we have additiona
 
 ## Installation
 
-_GeminiMol is a python-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration._   
+_GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration._   
 
 > Installing MiniConda
 ```
