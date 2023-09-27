@@ -6,9 +6,9 @@ This repository provides the official implementation of the GeminiMol model, tra
 
 We also provide:   
 
-1.  Scripts for data collection and analysis.    
-2.  A benchmark script and datasets for virtual screening, target identification, and QSAR (drug-target binding affinity, cellar activity, ADME, and toxicity).   
-3.  Benchmark results of molecular fingerprints and GeminiMol models.   
+1.  scripts for data collection, partitioning and analysis.    
+2.  scripts for features analysis, visualisation and similarity calculation.   
+3.  scripts, datasets and results for benchmarking molecular fingerprints and GeminiMol models on virtual screening, target identification, and QSAR (drug-target binding affinity, cellar activity, ADME, and toxicity).    
 
 _Please also refer to our paper for a detailed description of GeminiMol._
 
