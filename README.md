@@ -2,7 +2,7 @@
 
 ![](.image/geminimol.png)  
 
-This repository provides the official implementation of the GeminiMol model, training data, and scripts.  
+This repository provides the official implementation of the GeminiMol model, training data, and utitiles.  
 
 We also provide:   
 
