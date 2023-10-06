@@ -1,0 +1,10 @@
+{
+    "DUDE": "../data/Benchmark_DUD-E/",
+    "LIT-PCBA": "../data/Benchmark_LIT-PCBA/",
+    "ADMET-C": "../data/Benchmark_QSAR/",
+    "ADMET-R": "../data/Benchmark_QSAR/",
+    "QSAR": "../data/Benchmark_QSAR/",
+    "BindingDB": "../data/Benchmark_BindingDB/",
+    "TIBD": "../data/Benchmark_BindingDB/",
+    "CELLS": "../data/Benchmark_QSAR/"
+}
