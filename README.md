@@ -97,6 +97,14 @@ _In this repository, we provide over 30 million pairs of training, validation, a
     pip install dglgo -f https://data.dgl.ai/wheels-test/repo.html
 ```
 
+#### MolDecoder models
+
+_In this repository, we provide a refined molecular dataset and training code for MolDecoder. If you want to retrain the model or perform molecule generation, please install the package below._
+
+```
+    pip install selfies
+```
+
 ## Running GeminiMol
 
 
