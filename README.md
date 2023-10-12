@@ -85,7 +85,7 @@ _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR
     pip install oddt scikit-learn matplotlib umap-learn
 ```
 
-#### GeminiMol models
+#### GeminiMol and MolDecoder models
 
 _In this repository, we provide over 30 million pairs of training, validation, and testing data used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties. To re-train the model or make predictions using the models we provide, follow the steps below to install the dependencies in advance._
 
@@ -97,9 +97,7 @@ _In this repository, we provide over 30 million pairs of training, validation, a
     pip install dglgo -f https://data.dgl.ai/wheels-test/repo.html
 ```
 
-#### MolDecoder models
-
-_In this repository, we provide a refined molecular dataset and training code for MolDecoder. If you want to retrain the model or perform molecule generation, please install the package below._
+_In this repository, we provide a refined molecular dataset and training code for MolDecoder. If you want to re-train the MolDecoder model or perform molecule generation, please install the package below._
 
 ```
     pip install selfies
