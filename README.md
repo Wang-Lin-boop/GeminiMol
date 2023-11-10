@@ -26,7 +26,7 @@ _In this study, a diverse collection of **39,290** molecules was employed for co
 
 ## Application
 
-_As a potent molecular representation model, GeminiMol finds applications in **ligand-based virtual screening, target identification, and quantitative structure-activity relationship (QSAR)** modeling of small molecular drugs. Moreover, by exploring the encoding space of GeminiMol, it enables **scaffold hopping** and facilitates the generation of innovative molecules._   
+_As a molecular representation model, GeminiMol finds applications in **ligand-based virtual screening, target identification, and quantitative structure-activity relationship (QSAR)** modeling of small molecular drugs. Moreover, by exploring the encoding space of GeminiMol, it enables **scaffold hopping** and facilitates the generation of innovative molecules._   
 
 ![benchmark](imgs/benchmark.png)
 
@@ -37,17 +37,17 @@ _To ensure the accurate evaluation of the model's performance, we have additiona
 _GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration._   
 
 > Installing MiniConda
-```
+``` shell
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
     sh Miniconda3-latest-Linux-x86_64.sh
 ```
 > Creating GeminiMol env
-```
+``` shell
     conda create -n GeminiMol python=3.8.16
     conda activate GeminiMol
 ```
 > Setting up GeminiMol and configuration
-```
+``` shell
     git clone https://github.com/Wang-Lin-boop/GeminiMol
     cd GeminiMol/
     export PATH=${PWD}:\$PATH" >> ~/.bashrc
@@ -67,13 +67,13 @@ _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR
 
 > Installing the RDkit for generating fingerprints
 
-```
+``` shell
     pip install rdkit
 ```
 
 > Installing the AutoGluon for performing QSAR
 
-``` 
+``` shell
     pip3 install -U pip
     pip3 install -U setuptools wheel
     pip3 install torch==1.13.1+cu116 torchvision==0.14.1+cu116 \
@@ -83,7 +83,7 @@ _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR
 
 > Installing the statatics and plot packages
 
-```
+``` shell
     pip install oddt scikit-learn matplotlib umap-learn
 ```
 
@@ -91,7 +91,7 @@ _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR
 
 _In this repository, we provide over 30 million pairs of training, validation, and testing data used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties. To re-train the model or make predictions using the models we provide, follow the steps below to install the dependencies in advance._
 
-```
+``` shell
     pip install rdkit scipy dgllife scikit-learn
     pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 \
         --extra-index-url https://download.pytorch.org/whl/cu116
@@ -101,31 +101,53 @@ _In this repository, we provide over 30 million pairs of training, validation, a
 
 _In this repository, we provide a refined molecular dataset and training code for MolDecoder. If you want to re-train the MolDecoder model or perform molecule generation, please install the package below._
 
-```
+``` shell
     pip install selfies
 ```
 
 ## Training Cross-Encoder
 
 
-```
-CUDA_VISIBLE_DEVICES=0,1,2,3 python ${geminimol_app}/CrossEncoder_Training.py  "../data/css_library/" "${geminimol_data}/Chem_SmELECTRA"  "20"  "1.0e-3"  "200"  "CrossEncoder"  "${geminimol_data}/benchmark.json"
+``` python
+export model_name="CrossEncoder"
+export batch_size_per_gpu=200 # batch size = 200 (batch_size_per_gpu) * 4 (gpu number)
+export epoch=20
+export lr="1.0e-3" # learning rate
+CUDA_VISIBLE_DEVICES=0,1,2,3 python ${geminimol_app}/CrossEncoder_Training.py  "${geminimol_data}/css_library/" "${geminimol_data}/Chem_SmELECTRA"  "${epoch}"  "${lr}"  "${batch_size_per_gpu}"  "${model_name}"  "${geminimol_data}/benchmark.json"
 ```
 
-## Training GeminiMol
+## Training GeminiMol Encoder, PropDecoeder and MolDecoder
+
+``` python
+export model_name="GeminiMol"
+export batch_size=512
+export epoch=20
+export patience=50 # for early stoping
+export GNN='WLN' # Weisfeiler-Lehman Network (WLN)
+export network="Weighted:1024:12:2048:None:0:5:0"
+export label_dict="ShapeScore:0.2,ShapeAggregation:0.2,ShapeOverlap:0.05,ShapeDistance:0.05,CrossSim:0.15,CrossAggregation:0.15,CrossDist:0.05,CrossOverlap:0.05,MCS:0.1"
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/GeminiMol_Training.py "${geminimol_data}/css_library/" "${epoch}" "${batch_size}" "${GNN}" "${network}" "${label_dict}" "${model_name}" "${patience}" "${geminimol_data}/benchmark.json" 
+```
+
 
 
 ## Applying GeminiMol into drug discovery
 
 _In addition to this, we provide Cross-Encoder and GeminiMol models that can be used directly for inference. For common drug discovery tasks, you can make predictions with the following commands._
 
-#### Analysis
+#### Feature Analysis, Similarity Metrics, Clustering
 
-#### Virtual Screening 
+```
 
-#### Target Identification
+```
+
+#### Virtual Screening and Target Identification
+
+
 
 #### QSAR
+
+
 
 #### Molecular Generation
 
@@ -133,6 +155,12 @@ _In addition to this, we provide Cross-Encoder and GeminiMol models that can be 
 ## Citing this work
 
 _Coming in soon...._
+
+## Get in Touch
+
+_In addition to GitHub, we offer a WeChat community to provide a forum for discussion between users. You can access the community's QR code by following the "蛋白矿工" on WeChat._    
+
+_If you have any questions not covered in this overview, please contact the GeminiMol team at wanglin3@shanghaitech.edu.cn. We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wanglin3@shanghaitech.edu.cn or baifang@shanghaitech.edu.cn._    
 
 ## Acknowledgements
 
@@ -146,10 +174,5 @@ _We appreciate the technical support provided by the engineers of the high-perfo
 *  [_SciPy_](https://scipy.org/)
 *  [_scikit-learn_](https://scikit-learn.org/stable/)
 *  [_matplotlib_](https://matplotlib.org/)
-
-## Get in Touch
-
-_In addition to GitHub, we offer a WeChat community to provide a forum for discussion between users. You can access the community's QR code by following the "蛋白矿工" on WeChat._    
-
-_If you have any questions not covered in this overview, please contact the GeminiMol team at wanglin3@shanghaitech.edu.cn. We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wanglin3@shanghaitech.edu.cn or baifang@shanghaitech.edu.cn._  
+*  [_SELFIES_](https://github.com/aspuru-guzik-group/selfies)
 
