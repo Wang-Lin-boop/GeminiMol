@@ -56,6 +56,8 @@ _GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomm
     export geminimol_app=${PWD}" >> ~/.bashrc
     cd ../model
     export geminimol_lib=${PWD}" >> ~/.bashrc
+    cd ../data
+    export geminimol_data=${PWD}" >> ~/.bashrc
     source ~/.bashrc
 ```
 
@@ -76,7 +78,7 @@ _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR
     pip3 install -U setuptools wheel
     pip3 install torch==1.13.1+cu116 torchvision==0.14.1+cu116 \
         --extra-index-url https://download.pytorch.org/whl/cu116
-    pip3 install autogluon==0.7.0
+    pip3 install autogluon==0.8.1
 ```
 
 > Installing the statatics and plot packages
@@ -103,9 +105,21 @@ _In this repository, we provide a refined molecular dataset and training code fo
     pip install selfies
 ```
 
-## Running GeminiMol
+## Training Cross-Encoder
 
 
+```
+CUDA_VISIBLE_DEVICES=0,1,2,3 python ${geminimol_app}/CrossEncoder_Training.py  "../data/css_library/" "${geminimol_data}/Chem_SmELECTRA"  "20"  "1.0e-3"  "200"  "CrossEncoder"  "${geminimol_data}/benchmark.json"
+```
+
+## Training GeminiMol
+
+
+## Applying GeminiMol into drug discovery
+
+_In addition to this, we provide Cross-Encoder and GeminiMol models that can be used directly for inference. For common drug discovery tasks, you can make predictions with the following commands._
+
+#### Analysis
 
 #### Virtual Screening 
 
