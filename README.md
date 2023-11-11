@@ -36,17 +36,22 @@ _To ensure the accurate evaluation of the model's performance, we have additiona
 
 _GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration._   
 
-> Installing MiniConda
+> Installing MiniConda (Can be skipped if conda is installed)   
+
 ``` shell
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
     sh Miniconda3-latest-Linux-x86_64.sh
 ```
-> Creating GeminiMol env
+
+> Creating GeminiMol env   
+
 ``` shell
     conda create -n GeminiMol python=3.8.16
     conda activate GeminiMol
 ```
-> Setting up GeminiMol and configuration
+
+> Setting up GeminiMol and configuration   
+ 
 ``` shell
     git clone https://github.com/Wang-Lin-boop/GeminiMol
     cd GeminiMol/
@@ -61,7 +66,27 @@ _GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomm
     source ~/.bashrc
 ```
 
-#### Baseline Fingerprint Methods and Benchmark Protocol
+### Download datasets and models
+
+_In this repository, we provide all the training, validation, and testing datasets used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties._  
+
+> Download all datasets via Zenodo
+
+```
+    cd ${GeminiMol}/data/
+    wget 
+    unzip *
+```
+
+> Downloading the model parameters and weights via Zenodo
+
+```
+    cd ${GeminiMol}/model/
+    wget 
+    unzip *
+```
+
+### Installing the dependency packages
 
 _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR benchmarking, it is required to install RDKit and AutoGluon in advance._     
 
@@ -87,9 +112,9 @@ _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR
     pip install oddt scikit-learn matplotlib umap-learn
 ```
 
-#### GeminiMol and MolDecoder models
+_To re-train the model or make predictions using the models we provide, follow the steps below to install the dependencies in advance._
 
-_In this repository, we provide over 30 million pairs of training, validation, and testing data used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties. To re-train the model or make predictions using the models we provide, follow the steps below to install the dependencies in advance._
+> Installing the dependency packages of GeminiMol and MolDecoder   
 
 ``` shell
     pip install rdkit scipy dgllife scikit-learn
@@ -105,7 +130,9 @@ _In this repository, we provide a refined molecular dataset and training code fo
     pip install selfies
 ```
 
-## Training Cross-Encoder
+## Reproducing
+
+### Training the Cross-Encoder
 
 
 ``` python
@@ -117,7 +144,7 @@ export label_list="MCMM1AM_MAX:LCMS2A1Q_MAX:MCMM1AM_MIN:LCMS2A1Q_MIN"
 CUDA_VISIBLE_DEVICES=0,1,2,3 python ${geminimol_app}/CrossEncoder_Training.py  "${geminimol_data}/css_library/" "${geminimol_data}/Chem_SmELECTRA"  "${epoch}"  "${lr}"  "${batch_size_per_gpu}"  "${model_name}"  "${geminimol_data}/benchmark.json" "${label_list}"
 ```
 
-## Training GeminiMol Encoder, PropDecoeder and MolDecoder
+### Training the GeminiMol Encoder, PropDecoeder and MolDecoder
 
 ``` python
 export model_name="GeminiMol"
@@ -126,15 +153,17 @@ export epoch=20
 export patience=50 # for early stoping
 export GNN='WLN' # Weisfeiler-Lehman Network (WLN)
 export network="Weighted:1024:12:2048:None:0:5:0"
-export label_dict="ShapeScore:0.2,ShapeAggregation:0.2,ShapeOverlap:0.05,ShapeDistance:0.05,CrossSim:0.15,CrossAggregation:0.15,CrossDist:0.05,CrossOverlap:0.05,MCS:0.1"
+export label_dict="MCMM1AM_MAX:0.2,LCMS2A1Q_MAX:0.2,MCMM1AM_MIN:0.2,LCMS2A1Q_MIN:0.2,MCS:0.2"
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/GeminiMol_Training.py "${geminimol_data}/css_library/" "${epoch}" "${batch_size}" "${GNN}" "${network}" "${label_dict}" "${model_name}" "${patience}" "${geminimol_data}/benchmark.json" 
 ```
+
+### Benchmarking molecular fingerprints and our models
 
 
 
 ## Applying GeminiMol into drug discovery
 
-_In addition to this, we provide Cross-Encoder and GeminiMol models that can be used directly for inference. For common drug discovery tasks, you can make predictions with the following commands._
+_We have provided Cross-Encoder and GeminiMol models that can be used directly for inference. For common drug discovery tasks, you can make predictions with the following commands._
 
 #### Feature Analysis, Similarity Metrics, Clustering
 
