@@ -24,14 +24,6 @@ _The similarity between small molecules provides the opportunity for contrastive
 
 _In this study, a diverse collection of **39,290** molecules was employed for conformational searching and shape alignment to generate a comprehensive dataset of molecular conformational space similarity. Various hyperparameters were employed during the conformational search process, and a multi-task learning approach was adopted to facilitate the model in acquiring a universal representation of molecular conformational space. To assess the model's performance, the **benchmark datasets comprising over millions molecules** was utilized for downstream tasks._    
 
-## Application
-
-_As a molecular representation model, GeminiMol finds applications in **ligand-based virtual screening, target identification, and quantitative structure-activity relationship (QSAR)** modeling of small molecular drugs. Moreover, by exploring the encoding space of GeminiMol, it enables **scaffold hopping** and facilitates the generation of innovative molecules._   
-
-![benchmark](imgs/benchmark.png)
-
-_To ensure the accurate evaluation of the model's performance, we have additionally devised a competitive-performance baseline method utilizing molecular fingerprints. This baseline method has demonstrated competitive performance compared to state-of-the-art traditional methods in the application tasks. GeminiMol has demonstrated comparable or even superior performance compared to the current state-of-the-art baseline method in various statistical metrics across these tasks. Furthermore, it demonstrates a remarkable ability to attain balanced superior performance across multiple diverse tasks **without the necessity of additional fine-tuning or hyperparameter readjustment**._
-
 ## Installation
 
 _GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration._   
@@ -160,6 +152,14 @@ CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/GeminiMol_Training.py "${gemin
 ### Benchmarking molecular fingerprints and our models
 
 
+
+## Application
+
+_As a molecular representation model, GeminiMol finds applications in **ligand-based virtual screening, target identification, and quantitative structure-activity relationship (QSAR)** modeling of small molecular drugs. Moreover, by exploring the encoding space of GeminiMol, it enables **scaffold hopping** and facilitates the generation of innovative molecules._   
+
+![benchmark](imgs/benchmark.png)
+
+_To ensure the accurate evaluation of the model's performance, we have additionally devised a competitive-performance baseline method utilizing molecular fingerprints. This baseline method has demonstrated competitive performance compared to state-of-the-art traditional methods in the application tasks. GeminiMol has demonstrated comparable or even superior performance compared to the current state-of-the-art baseline method in various statistical metrics across these tasks. Furthermore, it demonstrates a remarkable ability to attain balanced superior performance across multiple diverse tasks **without the necessity of additional fine-tuning or hyperparameter readjustment**._
 
 ## Applying GeminiMol into drug discovery
 
