@@ -306,7 +306,7 @@ class AutoQSAR():
 
 if __name__ == "__main__":
     target = sys.argv[1]
-    method = sys.argv[2]
+    encoding_method = sys.argv[2]
     smiles_column = sys.argv[3]
     label_column = sys.argv[4]
     eval_metric = sys.argv[5]
@@ -331,17 +331,42 @@ if __name__ == "__main__":
     print(f"{target} Validation Set: Number=", len(val_data), f", {len(val_data[val_data[label_column]==1])} rows is 1(pos).")
     test_data = pd.read_csv(f'{target}/{target}_scaffold_test.csv')
     print(f"{target} Test Set: Number=", len(test_data), f", {len(test_data[test_data[label_column]==1])} rows is 1(pos).")
-    if method == "CombineFP":
-        methods_list = ["ECFP4", "FCFP6", "AtomPairs", "TopologicalTorsion"]
-        encoders = [Fingerprint(methods_list)]
-    else:
-        methods_list = [method]
-        encoders = [Fingerprint([methods_list])]
+    ## read the encoder models
+    fingerprint_list = []
+    encoders = {}
+    for model_name in encoding_method.split(":"):
+        if os.path.exists(f'{model_name}/GeminiMol.pt'):
+            method_list = [model_name]
+            from model.GeminiMol import GeminiMol
+            encoders[model_name] = GeminiMol(
+                model_name,
+                depth = 0, 
+                custom_label = None, 
+                extrnal_label_list = ['Cosine', 'Pearson', 'RMSE', 'Manhattan']
+            )
+        elif os.path.exists(f'{model_name}/backbone'):
+            from model.CrossEncoder import CrossEncoder
+            encoders[model_name] = CrossEncoder(
+                model_name,
+                candidate_labels = [
+                    'LCMS2A1Q_MAX', 'LCMS2A1Q_MIN', 'MCMM1AM_MAX', 'MCMM1AM_MIN', 
+                    'ShapeScore', 'ShapeOverlap', 'ShapeAggregation', 'CrossSim', 'CrossAggregation', 'CrossOverlap', 
+                ]
+            )
+        elif model_name == "CombineFP":
+            methods_list = ["ECFP4", "FCFP6", "AtomPairs", "TopologicalTorsion"]
+            encoders[model_name] = Fingerprint(methods_list)
+        else:
+            methods_list = [model_name]
+            fingerprint_list += [model_name]
+    if len(fingerprint_list) > 0:
+        encoders['Fingerprints'] = Fingerprint(fingerprint_list)
+    encoders_list = list(encoders.values())
     target = str(target.split('/')[-1])
     if os.path.exists(f"{model_name}"):
         QSAR_model = AutoQSAR(
             f"{model_name}", 
-            encoder_list = encoders, 
+            encoder_list = encoders_list, 
             standardize = True, 
             label_column = label_column, 
             smiles_column = smiles_column, 
@@ -350,7 +375,7 @@ if __name__ == "__main__":
     else:
         QSAR_model = AutoQSAR(
             f"{model_name}", 
-            encoder_list = encoders, 
+            encoder_list = encoders_list, 
             standardize = True, 
             label_column = label_column, 
             smiles_column = smiles_column, 

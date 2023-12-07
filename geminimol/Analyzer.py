@@ -180,8 +180,8 @@ if __name__ == "__main__":
                 extrnal_label_list=['Cosine', 'Pearson', 'RMSE', 'Manhattan']
             )
         elif os.path.exists(f'{model_name}/backbone'):
-            from model.crossshape import CrossShape
-            encoders[model_name] = CrossShape(
+            from model.CrossEncoder import CrossEncoder
+            encoders[model_name] = CrossEncoder(
                 model_name,
                 candidate_labels = [
                     'LCMS2A1Q_MAX', 'LCMS2A1Q_MIN', 'MCMM1AM_MAX', 'MCMM1AM_MIN', 

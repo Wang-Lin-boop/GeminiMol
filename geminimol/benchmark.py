@@ -779,7 +779,7 @@ if __name__ == '__main__':
             )
         model_name = str(model_name.split('/')[-1])
     elif os.path.exists(f'{model_name}/backbone'):
-        from model.crossshape import CrossShape
+        from model.CrossEncoder import CrossEncoder
         if custom_label_list is None:
             candidate_labels = [
                     'LCMS2A1Q_MAX', 'LCMS2A1Q_MIN', 'MCMM1AM_MAX', 'MCMM1AM_MIN', 
@@ -787,7 +787,7 @@ if __name__ == '__main__':
                 ]
         else:
             candidate_labels = custom_label_list
-        predictor = CrossShape(
+        predictor = CrossEncoder(
             model_name,
             candidate_labels = candidate_labels
         )

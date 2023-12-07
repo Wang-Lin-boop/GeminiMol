@@ -6,7 +6,7 @@ import torch
 import numpy as np
 import pandas as pd
 from sklearn.utils import shuffle
-from model.crossshape import CrossSimilarity, CrossShape
+from model.CrossEncoder import CrossSimilarity, CrossEncoder
 from benchmark import Benchmark
 
 if __name__ == '__main__':
@@ -80,7 +80,7 @@ if __name__ == '__main__':
         print(adjacent_score)
         adjacent_score.to_csv(str(model_name+"/"+model_name+"_css_adjacent_results.csv"), index=True, header=True, sep=',')
     del predictor_deepshape
-    Benchmark_Protocol = Benchmark(CrossShape(model_name), model_name=model_name)
+    Benchmark_Protocol = Benchmark(CrossEncoder(model_name), model_name=model_name)
     # benchmarking on all Datasets
     benchmark_index_file = sys.argv[7]
     benchmark_file_basepath = os.path.dirname(benchmark_index_file)

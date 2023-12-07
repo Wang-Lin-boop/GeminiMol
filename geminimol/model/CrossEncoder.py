@@ -98,7 +98,7 @@ class CrossSimilarity():
             seed = 1102,
         )
 
-class CrossShape(CrossSimilarity):
+class CrossEncoder(CrossSimilarity):
     def __init__(self, 
             model_name, 
             candidate_labels = [
@@ -166,6 +166,6 @@ class CrossShape(CrossSimilarity):
         shape_features.index = shape_data.index
         for label_pred_model in self.similarity_metrics_list:
             embedding_df = self.load(label_pred_model).extract_embedding(shape_data, as_pandas=True)
-            embedding_df = embedding_df.add_prefix(f'CS_{label_pred_model}_')
+            embedding_df = embedding_df.add_prefix(f'CE_{label_pred_model}_')
             shape_features = shape_features.join(embedding_df, how='left')
         return shape_features
