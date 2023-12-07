@@ -35,10 +35,20 @@ class Virtual_Screening:
         self.standardize = standardize
         if prepare:
             ref_smiles_table = self.prepare(ref_smiles_table, smiles_column='SMILES')
-            ref_smiles_table.drop_duplicates(subset=['SMILES'], keep='first', inplace=True)
+            ref_smiles_table.drop_duplicates(
+                subset=['SMILES'], 
+                keep='first', 
+                inplace=True,
+                ignore_index = True
+                )
             ref_smiles_table.reset_index(drop=True, inplace=True)
             compound_library = self.prepare(compound_library, smiles_column='SMILES')
-            compound_library.drop_duplicates(subset=['SMILES'], keep='first', inplace=True)
+            compound_library.drop_duplicates(
+                subset=['SMILES'], 
+                keep='first', 
+                inplace=True,
+                ignore_index = True
+                )
             compound_library.reset_index(drop=True, inplace=True)
         ref_smiles_dict = dict(zip(ref_smiles_table['Title'], ref_smiles_table['SMILES']))
         if return_ref_id:
@@ -51,7 +61,12 @@ class Virtual_Screening:
             total_res = self.predictor.virtual_screening(list(ref_smiles_dict.values()), compound_library, reverse=reverse, smiles_column='SMILES', similarity_metrics=score_name)
         total_res.sort_values(score_name, ascending=False, inplace=True)
         if only_best_match:
-            total_res.drop_duplicates(subset=['SMILES'], keep='first', inplace=True)
+            total_res.drop_duplicates(
+                subset=['SMILES'], 
+                keep='first', 
+                inplace=True,
+                ignore_index = True
+            )
         return total_res
 
 if __name__ == '__main__':
@@ -59,9 +74,6 @@ if __name__ == '__main__':
     print('CUDA available:', torch.cuda.is_available())  # Should be True
     print('CUDA capability:', torch.cuda.get_arch_list()) 
     print('GPU number:', torch.cuda.device_count())  # Should be > 0
-    # defalut params
-    training_random_seed = 1207
-    np.random.seed(training_random_seed)
     ## load model
     model_name = sys.argv[1]
     predictor = Virtual_Screening(model_name)
@@ -87,7 +99,12 @@ if __name__ == '__main__':
         total_res = predictor(ref_smiles_table, compound_library, return_ref_id=True, prepare=True, standardize=True, reverse=reverse_screening, only_best_match=False) ## set reverse to True when idenifiying drug targets.
         total_res['Probability'] = total_res[predictor.metric]
     if reverse_screening:
-        total_res.drop_duplicates(subset=['Targets'], keep='first', inplace=True)
+        total_res.drop_duplicates(
+            subset=['Targets'], 
+            keep='first', 
+            inplace=True,
+            ignore_index = True
+        )
     del total_res['features']
     total_res.head(keep_number).to_csv(f"{job_name}_results.csv", index=False, header=True, sep=',')
     # cleaning and exiting
