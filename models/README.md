@@ -2,7 +2,7 @@
 
 ![](../imgs/geminimol.png)  
 
-## download models
+## Download models
 
 Due to file size limitations, the GeminiMol models were stored in the [Zenodo repository](10.5281/zenodo.10273480). This includes all Cross-Encoder models and two Binary-Encoder models, GeminiMol and GeminiMol-MOD in the paper.
 
