@@ -14,7 +14,7 @@ _Please also refer to our paper for a detailed description of GeminiMol._
 
 ## Motivation  
 
-_The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. It has been **widely applied in drug discovery scenarios**, such as **virtual screening**, Quantitative Structure-Activity Relationship (**QSAR**) analysis, and **molecular optimization**._   
+_The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. It has been **widely applied in drug discovery scenarios**, such as **virtual screening**, Quantitative Structure-Activity Relationship (**QSAR**) analysis, and **ADMET propteries prediction**._   
   
 _In previous work, molecular representation models were mostly trained on the static structure of molecules, however, the small molecules in solution are highly dynamic, and their flexible conformational changes endow them with the potential to bind to drug targets. Therefore, introducing information on small molecule conformational space into molecular representation models is a promising aim. In this work, a training strategy, named GeminiMol, was proposed to **incorporate the comprehension of conformational space into the molecular representation model**._   
 
@@ -116,12 +116,6 @@ _To re-train the model or make predictions using the models we provide, follow t
     pip install dglgo -f https://data.dgl.ai/wheels-test/repo.html
 ```
 
-_In this repository, we provide a refined molecular dataset and training code for MolDecoder. If you want to re-train the MolDecoder model or perform molecule generation, please install the package below._
-
-``` shell
-    pip install selfies
-```
-
 ## Reproducing
 
 ### Training the Cross-Encoder
@@ -204,5 +198,4 @@ _We appreciate the technical support provided by the engineers of the high-perfo
 *  [_SciPy_](https://scipy.org/)
 *  [_scikit-learn_](https://scikit-learn.org/stable/)
 *  [_matplotlib_](https://matplotlib.org/)
-*  [_SELFIES_](https://github.com/aspuru-guzik-group/selfies)
 
