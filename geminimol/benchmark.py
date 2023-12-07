@@ -656,17 +656,7 @@ class Benchmark():
             'ADMET-C': partial(
                 self.QSAR, 
                 target_list=[
-                    'Bioavailability_Ma', 'HIA_Hou', 'Pgp_Broccatelli', 'BBB_Martins', 'CYP2C9_Substrate_CarbonMangels', 'CYP2D6_Substrate_CarbonMangels', 'CYP3A4_Substrate_CarbonMangels', 'hERG', 'AMES', 'DILI', 'SkinReaction', 'Carcinogens_Lagunin', 'ClinTox', 'NR-AR', 'NR-AR-LBD', 'NR-AhR', 'NR-Aromatase', 'NR-ER', 'NR-ER-LBD', 'NR-PPAR-gamma', 'SR-ARE', 'SR-ATAD5', 'SR-HSE', 'SR-MMP', 'SR-p53', 'PAMPA_NCATS'
-                ], 
-                standardize=standardize, 
-                smiles_column='Drug', 
-                label_column='Y', 
-                benchmark_task_type="classification"
-            ),
-            'ADMET-CH': partial(
-                self.QSAR, 
-                target_list=[
-                    'CYP2C19_Veith', 'CYP2D6_Veith', 'CYP3A4_Veith', 'CYP1A2_Veith', 'CYP2C9_Veith', 'hERG_Karim', 'hERG_inhib', 'AddictedChem'
+                    'Bioavailability_Ma', 'HIA_Hou', 'Pgp_Broccatelli', 'BBB_Martins', 'CYP2C9_Substrate_CarbonMangels', 'CYP2D6_Substrate_CarbonMangels', 'CYP3A4_Substrate_CarbonMangels', 'hERG', 'AMES', 'DILI', 'SkinReaction', 'Carcinogens_Lagunin', 'ClinTox', 'NR-AR', 'NR-AR-LBD', 'NR-AhR', 'NR-Aromatase', 'NR-ER', 'NR-ER-LBD', 'NR-PPAR-gamma', 'SR-ARE', 'SR-ATAD5', 'SR-HSE', 'SR-MMP', 'SR-p53', 'PAMPA_NCATS', 'CYP2C19_Veith', 'CYP2D6_Veith', 'CYP3A4_Veith', 'CYP1A2_Veith', 'CYP2C9_Veith', 'hERG_Karim', 'hERG_inhib', 'AddictedChem'
                 ], 
                 standardize=standardize, 
                 smiles_column='Drug', 
@@ -676,17 +666,7 @@ class Benchmark():
             'ADMET-R': partial(
                 self.QSAR, 
                 target_list=[
-                    'Caco2_Wang', 'Lipophilicity_AstraZeneca', 'PPBR_AZ', 'VDss_Lombardo', 'Half_Life_Obach', 'Clearance_Hepatocyte_AZ', 'Clearance_Microsome_AZ', 'LD50_Zhu', 'HydrationFreeEnergy_FreeSolv'
-                ], 
-                smiles_column='Drug', 
-                label_column='Y', 
-                standardize=standardize, 
-                benchmark_task_type="regression"
-            ),
-            'ADMET-RH': partial(
-                self.QSAR, 
-                target_list=[
-                    'Solubility_AqSolDB', 'hERG_at_1uM', 'hERG_at_10uM'
+                    'Caco2_Wang', 'Lipophilicity_AstraZeneca', 'PPBR_AZ', 'VDss_Lombardo', 'Half_Life_Obach', 'Clearance_Hepatocyte_AZ', 'Clearance_Microsome_AZ', 'LD50_Zhu', 'HydrationFreeEnergy_FreeSolv', 'Solubility_AqSolDB', 'hERG_at_1uM', 'hERG_at_10uM'
                 ], 
                 smiles_column='Drug', 
                 label_column='Y', 

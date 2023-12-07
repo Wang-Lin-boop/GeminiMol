@@ -50,10 +50,10 @@ _GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomm
     export PATH=${PWD}:\$PATH" >> ~/.bashrc
     export GeminiMol=${PWD}" >> ~/.bashrc
     cd geminimol/
-    export geminimol_app=${PWD}" >> ~/.bashrc
-    cd ../model
-    export geminimol_lib=${PWD}" >> ~/.bashrc
-    cd ../data
+    export geminimol_app=${PWD}" >> ~/.bashrc    
+    cd ../model/   
+    export geminimol_lib=${PWD}" >> ~/.bashrc  
+    cd ../data/
     export geminimol_data=${PWD}" >> ~/.bashrc
     source ~/.bashrc
 ```
@@ -62,20 +62,18 @@ _GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomm
 
 _In this repository, we provide all the training, validation, and testing datasets used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties._  
 
-> Download all datasets via Zenodo
+> Download all datasets, model parameters and weights via Zenodo
 
-```
-    cd ${GeminiMol}/data/
+``` shell
+    cd ${GeminiMol}/
     wget 
     unzip *
-```
-
-> Downloading the model parameters and weights via Zenodo
-
-```
-    cd ${GeminiMol}/model/
-    wget 
-    unzip *
+    mv Benchmark_* data/
+    mv css_library data/
+    mv BindingDB_DATA.csv data/
+    mv GeminiMol* models/
+    mv CrossEncoder models/
+    mv Chem_SmELECTRA models/
 ```
 
 ### Installing the dependency packages
@@ -88,7 +86,7 @@ _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR
     pip install rdkit
 ```
 
-> Installing the AutoGluon for performing QSAR
+> Installing the AutoGluon for performing AutoQSAR
 
 ``` shell
     pip3 install -U pip
@@ -106,7 +104,7 @@ _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR
 
 _To re-train the model or make predictions using the models we provide, follow the steps below to install the dependencies in advance._
 
-> Installing the dependency packages of GeminiMol and MolDecoder   
+> Installing the dependency packages of GeminiMol    
 
 ``` shell
     pip install rdkit scipy dgllife scikit-learn
@@ -121,31 +119,55 @@ _To re-train the model or make predictions using the models we provide, follow t
 ### Training the Cross-Encoder
 
 
-``` python
+``` shell
+conda activate GeminiMol
 export model_name="CrossEncoder"
 export batch_size_per_gpu=200 # batch size = 200 (batch_size_per_gpu) * 4 (gpu number)
-export epoch=20
+export epoch=20 # max epochs
 export lr="1.0e-3" # learning rate
-export label_list="MCMM1AM_MAX:LCMS2A1Q_MAX:MCMM1AM_MIN:LCMS2A1Q_MIN"
+export label_list="MCMM1AM_MAX:LCMS2A1Q_MAX:MCMM1AM_MIN:LCMS2A1Q_MIN" # ShapeScore:ShapeAggregation:ShapeOverlap:CrossSim:CrossAggregation:CrossOverlap
 CUDA_VISIBLE_DEVICES=0,1,2,3 python ${geminimol_app}/CrossEncoder_Training.py  "${geminimol_data}/css_library/" "${geminimol_data}/Chem_SmELECTRA"  "${epoch}"  "${lr}"  "${batch_size_per_gpu}"  "${model_name}"  "${geminimol_data}/benchmark.json" "${label_list}"
 ```
 
-### Training the GeminiMol Encoder, PropDecoeder and MolDecoder
+### Training the GeminiMol Encoder
 
-``` python
+``` shell
+conda activate GeminiMol
 export model_name="GeminiMol"
 export batch_size=512
-export epoch=20
+export epoch=20 # max epochs
 export patience=50 # for early stoping
 export GNN='WLN' # Weisfeiler-Lehman Network (WLN)
-export network="Weighted:1024:12:2048:None:0:5:0"
-export label_dict="MCMM1AM_MAX:0.2,LCMS2A1Q_MAX:0.2,MCMM1AM_MIN:0.2,LCMS2A1Q_MIN:0.2,MCS:0.2"
+export network="MeanMLP:2048:4:2048:None:0:5:0" # "Weighted:1024:12:2048:None:0:5:0" for GeminiMol-MOD
+export label_dict="ShapeScore:0.2,ShapeAggregation:0.2,ShapeOverlap:0.05,ShapeDistance:0.05,CrossSim:0.15,CrossAggregation:0.15,CrossDist:0.05,CrossOverlap:0.05,MCS:0.1"
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/GeminiMol_Training.py "${geminimol_data}/css_library/" "${epoch}" "${batch_size}" "${GNN}" "${network}" "${label_dict}" "${model_name}" "${patience}" "${geminimol_data}/benchmark.json" 
 ```
 
 ### Benchmarking molecular fingerprints and our models
 
-
+``` shell
+conda activate GeminiMol
+# benchmarking Fixed GeminiMol models and Fingerprints
+for task in "DUDE" "LIT-PCBA" "TIBD" \
+    "ADMET-C" "ADMET-R" \ 
+    "LIT-QSAR" "CELLS-QSAR" "ST-QSAR" "PW-QSAR" \ 
+    "PropDecoder-ADMET" "PropDecoder-QSAR"
+    do
+for model_name in "CombineFP" \
+    "FCFP6" "MACCS" "RDK" "ECFP6" "FCFP4" "TopologicalTorsion" "AtomPairs" "ECFP4" \
+    "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"
+    do
+mkdir -p ${model_name}
+CUDA_VISIBLE_DEVICES=0 python -u ../geminimol/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
+done
+done
+# benchmarking FineTuning GeminiMol models
+for task in "FineTuning-ADMET" "FineTuning-QSAR"; do
+for model_name in "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"; do
+CUDA_VISIBLE_DEVICES=0 python -u ../geminimol/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
+done
+done
+```
 
 ## Application
 
@@ -159,21 +181,19 @@ _To ensure the accurate evaluation of the model's performance, we have additiona
 
 _We have provided Cross-Encoder and GeminiMol models that can be used directly for inference. For common drug discovery tasks, you can make predictions with the following commands._
 
-#### Feature Analysis, Similarity Metrics, Clustering
-
-```
-
-```
-
-#### Virtual Screening and Target Identification
+#### Virtual Screening
 
 
 
-#### QSAR
+
+#### Target Identification
 
 
 
-#### Molecular Generation
+
+#### Molecular Proptery Modeling (QSAR and ADMET)
+
+
 
 
 ## Citing this work
