@@ -81,7 +81,7 @@ _In this repository, we provide all the training, validation, and testing datase
 
 ``` shell
     cd ${GeminiMol}/data
-    wget https://zenodo.org/records/10273480
+    wget https://zenodo.org/api/records/10273480/files-archive
     unzip *
     cd ${GeminiMol}/models
     wget 
