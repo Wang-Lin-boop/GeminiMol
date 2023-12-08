@@ -80,15 +80,12 @@ _In this repository, we provide all the training, validation, and testing datase
 > Download all datasets, model parameters and weights via Zenodo
 
 ``` shell
-    cd ${GeminiMol}/
+    cd ${GeminiMol}/data
+    wget https://zenodo.org/records/10273480
+    unzip *
+    cd ${GeminiMol}/models
     wget 
     unzip *
-    mv Benchmark_* data/
-    mv css_library data/
-    mv BindingDB_DATA.csv data/
-    mv GeminiMol* models/
-    mv CrossEncoder models/
-    mv Chem_SmELECTRA models/
 ```
 
 ### Installing the dependency packages
