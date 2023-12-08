@@ -2,7 +2,22 @@
 
 ![](imgs/geminimol.png)  
 
-This repository provides the official implementation of the GeminiMol model, training data, and utitiles.  
+- [GeminiMol](#geminimol)
+  - [Motivation](#motivation)
+  - [Installation](#installation)
+    - [Download datasets and models](#download-datasets-and-models)
+    - [Installing the dependency packages](#installing-the-dependency-packages)
+  - [Reproducing](#reproducing)
+  - [Application](#application)
+    - [Virtual Screening](#virtual-screening)
+    - [Target Identification](#target-identification)
+    - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
+  - [Citing this work](#citing-this-work)
+  - [Get in Touch](#get-in-touch)
+  - [Acknowledgements](#acknowledgements)
+
+  
+This repository provides the official implementation of the GeminiMol model, training data, and utitiles.   
 
 We also provide:   
 
@@ -176,11 +191,9 @@ _As a molecular representation model, GeminiMol finds applications in **ligand-b
 
 ![benchmark](imgs/benchmark.png)
 
-### Applying GeminiMol into drug discovery
-
 _We have provided Cross-Encoder and GeminiMol models that can be used directly for inference. For common drug discovery tasks, you can make predictions with the following commands._
 
-#### Virtual Screening
+### Virtual Screening
 
 _In order to conduct virtual screening, it is essential to preassemble a collection of molecules that represent the pharmacological characteristics, including both active and non-active (optional) compounds, along with a library of compounds. These datasets should be saved in CSV format with specific column names. The column denoting the SMILES representation of the compounds should be labeled as "**SMILES**", while the column indicating the activity label should be named "Label". Please assign the label "active" to the active molecules and "inactive" to the non-active molecules. Lastly, the column representing the molecule ID should be titled "**Title**"._   
 
@@ -194,7 +207,7 @@ export keep_top=1000
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/GeminiMol" "${job_name}" "${decoy_set}" "${compound_library}" "${keep_top}" "${smiles_column}" "${id_column}"
 ```
 
-#### Target Identification
+### Target Identification
 
 _To conduct reverse virtual screening for target identification, it is essential to utilize a database that encompasses ligand-target relationships. This database should be structured with three columns: SMILES, Title, and **Targets**. The Targets column should specify the potential targets with which the drugs may interact. We have provided a processed version of the BindingDB database, which contains target-ligand relationship information._
 
@@ -208,7 +221,7 @@ export keep_top=100
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/GeminiMol" "${job_name}" "${decoy_set}" "${compound_library}" "${keep_top}" "${smiles_column}" "${id_column}"
 ```
 
-#### Molecular Proptery Modeling (QSAR and ADMET)
+### Molecular Proptery Modeling (QSAR and ADMET)
 
 _We have presented three approaches for molecular property modeling, namely AutoQSAR (broad applicability, slow speed), PropDecoder (fast speed), and FineTuning (optimal performance, moderate speed). In the majority of instances, the attainment of optimal performance can be accomplished through the utilization of the FineTuning script to invoke GeminiMol._    
 
