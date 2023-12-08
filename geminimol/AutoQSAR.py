@@ -309,23 +309,22 @@ if __name__ == "__main__":
     encoding_method = sys.argv[2]
     smiles_column = sys.argv[3]
     label_column = sys.argv[4]
-    eval_metric = sys.argv[5]
-    metric_function = sys.argv[6]
-    model_name = sys.argv[7]
-    if len(sys.argv) > 7:
-        extrnal_data = pd.read_csv(sys.argv[8])
+    model_name = sys.argv[5]
+    if len(sys.argv) > 5:
+        extrnal_data = pd.read_csv(sys.argv[6])
     else:
         extrnal_data = None
     train_data = pd.read_csv(f'{target}/{target}_scaffold_train.csv')
     print(f"{target} Training Set: Number=", len(train_data), f", {len(train_data[train_data[label_column]==1])} rows is 1(pos).")
     if len(list(set(train_data[label_column].to_list()))) == 2:
         task_type = 'binary'
+        eval_metric = 'roc_auc'
+        metric_function = 'AUROC'
         test_metrics = ['AUROC', 'ACC', 'BEDROC', 'specificity', 'precision', 'recall', 'sensitivity', 'f1', 'AUPRC']
-    elif 3 <= len(list(set(train_data[label_column].to_list()))) <= 10:
-        task_type = 'multiclass'
-        test_metrics = ['ACC']
     else:
         task_type = 'regression'
+        eval_metric = 'root_mean_squared_error'
+        metric_function = 'SPEARMANR'
         test_metrics = ['RMSE', 'MAE', 'MSE', 'PEARSONR', 'SPEARMANR']
     val_data = pd.read_csv(f'{target}/{target}_scaffold_valid.csv')
     print(f"{target} Validation Set: Number=", len(val_data), f", {len(val_data[val_data[label_column]==1])} rows is 1(pos).")

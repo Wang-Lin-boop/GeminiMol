@@ -11,7 +11,7 @@ class Virtual_Screening:
         if os.path.exists(f'{model_name}/GeminiMol.pt'):
             from model.GeminiMol import GeminiMol
             self.predictor = GeminiMol(model_name)
-            self.metric = 'Cosine'
+            self.metric = 'Pearson'
         else:
             from utils.fingerprint import Fingerprint
             self.predictor = Fingerprint(model_name) # ECFP4 or TopologicalTorsion
@@ -82,13 +82,17 @@ if __name__ == '__main__':
     keep_number = int(sys.argv[5])
     ref_smiles_table = pd.read_csv(sys.argv[3])
     compound_library = pd.read_csv(sys.argv[4])
+    smiles_col = sys.argv[6]
+    id_col = sys.argv[7]
+    compound_library = compound_library[[id_col, smiles_col]]
+    compound_library.columns = ['Title', 'SMILES']
     if "Targets" in compound_library.columns:
         reverse_screening = True ## set reverse to True when idenifiying drug targets.
     else:
         reverse_screening = False ## set reverse to True when idenifiying drug targets.
     if "Label" in ref_smiles_table.columns:
-        active_compounds = ref_smiles_table[ref_smiles_table["Label"].isin(["active", "Active"])]
-        inactive_compounds = ref_smiles_table[ref_smiles_table["Label"].isin(["inactive", "Inactive"])]
+        active_compounds = ref_smiles_table[ref_smiles_table["Label"].isin(["active", "Active", "Yes", "yes", "true", "True", 1])]
+        inactive_compounds = ref_smiles_table[ref_smiles_table["Label"].isin(["inactive", "Inactive", "No", "no", "false", "False", 0])]
         active_total_res = predictor(active_compounds, compound_library, return_ref_id=True, prepare=True, standardize=True, reverse=reverse_screening) ## set reverse to True when idenifiying drug targets.
         active_total_res['Active_Probability'] = active_total_res[predictor.metric]
         total_res = predictor(inactive_compounds, active_total_res.head(keep_number*10), return_ref_id=False, prepare=True, standardize=True, reverse=reverse_screening)

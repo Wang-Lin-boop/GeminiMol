@@ -116,8 +116,9 @@ _To re-train the model or make predictions using the models we provide, follow t
 
 ## Reproducing
 
-### Training the Cross-Encoder
+_Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the conformational space similarity descriptors of 39,290 molecules described in the paper. Additionally, benchmark test scripts is provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, or incorporate additional molecular similarity data to further enhance the performance of the models._  
 
+> Training the Cross-Encoder
 
 ``` shell
 conda activate GeminiMol
@@ -129,7 +130,7 @@ export label_list="MCMM1AM_MAX:LCMS2A1Q_MAX:MCMM1AM_MIN:LCMS2A1Q_MIN" # ShapeSco
 CUDA_VISIBLE_DEVICES=0,1,2,3 python ${geminimol_app}/CrossEncoder_Training.py  "${geminimol_data}/css_library/" "${geminimol_data}/Chem_SmELECTRA"  "${epoch}"  "${lr}"  "${batch_size_per_gpu}"  "${model_name}"  "${geminimol_data}/benchmark.json" "${label_list}"
 ```
 
-### Training the GeminiMol Encoder
+> Training the GeminiMol Encoder
 
 ``` shell
 conda activate GeminiMol
@@ -143,7 +144,7 @@ export label_dict="ShapeScore:0.2,ShapeAggregation:0.2,ShapeOverlap:0.05,ShapeDi
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/GeminiMol_Training.py "${geminimol_data}/css_library/" "${epoch}" "${batch_size}" "${GNN}" "${network}" "${label_dict}" "${model_name}" "${patience}" "${geminimol_data}/benchmark.json" 
 ```
 
-### Benchmarking molecular fingerprints and our models
+> Benchmarking molecular fingerprints and our models
 
 ``` shell
 conda activate GeminiMol
@@ -158,13 +159,13 @@ for model_name in "CombineFP" \
     "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"
     do
 mkdir -p ${model_name}
-CUDA_VISIBLE_DEVICES=0 python -u ../geminimol/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
 done
 done
 # benchmarking FineTuning GeminiMol models
 for task in "FineTuning-ADMET" "FineTuning-QSAR"; do
 for model_name in "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"; do
-CUDA_VISIBLE_DEVICES=0 python -u ../geminimol/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
 done
 done
 ```
@@ -183,18 +184,64 @@ _We have provided Cross-Encoder and GeminiMol models that can be used directly f
 
 #### Virtual Screening
 
+_In order to conduct virtual screening, it is essential to preassemble a collection of molecules that represent the pharmacological characteristics, including both active and non-active (optional) compounds, along with a library of compounds. These datasets should be saved in CSV format with specific column names. The column denoting the SMILES representation of the compounds should be labeled as "**SMILES**", while the column indicating the activity label should be named "Label". Please assign the label "active" to the active molecules and "inactive" to the non-active molecules. Lastly, the column representing the molecule ID should be titled "**Title**"._   
 
-
+``` shell
+export job_name="Virtual_Screening"
+export decoy_set="decoys.csv" # SMILES, Title, and Label (optional)
+export compound_library="database.csv" 
+export smiles_column="SMILES" # Specify the column name in the compound_library
+export id_column="Title" # Specify the column name in the compound_library
+export keep_top=1000
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/GeminiMol" "${job_name}" "${decoy_set}" "${compound_library}" "${keep_top}" "${smiles_column}" "${id_column}"
+```
 
 #### Target Identification
 
+_To conduct reverse virtual screening for target identification, it is essential to utilize a database that encompasses ligand-target relationships. This database should be structured with three columns: SMILES, Title, and **Targets**. The Targets column should specify the potential targets with which the drugs may interact. We have provided a processed version of the BindingDB database, which contains target-ligand relationship information._
 
-
+``` shell
+export job_name="Target_Identification"
+export decoy_set="decoys.csv" # SMILES, Title, and Label (optional)
+export compound_library="${geminimol_data}/BindingDB_DATA.csv" 
+export smiles_column="Ligand_SMILES" # Specify the column name in the compound_library
+export id_column="Monomer_ID" # Specify the column name in the compound_library
+export keep_top=100
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/GeminiMol" "${job_name}" "${decoy_set}" "${compound_library}" "${keep_top}" "${smiles_column}" "${id_column}"
+```
 
 #### Molecular Proptery Modeling (QSAR and ADMET)
 
+_We have presented three approaches for molecular property modeling, namely AutoQSAR (broad applicability, slow speed), PropDecoder (fast speed), and FineTuning (optimal performance, moderate speed). In the majority of instances, the attainment of optimal performance can be accomplished through the utilization of the FineTuning script to invoke GeminiMol._    
 
+``` shell
+export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
+export smiles_column="SMILES" # Specify the column name in datasets
+export label_column="Label" # Specify the column name in datasets
+CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/FineTuning.py "${task}" "${geminimol_lib}/GeminiMol" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
+```
 
+_If the integration of molecular fingerprints and a pre-trained GeminiMol model is desired for training a molecular property prediction model, either PropDecoder or AutoQSAR can be employed._   
+
+> PropDecoder
+
+``` shell
+export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
+export fingerprints="ECFP4:MACCS"
+export smiles_column="SMILES" # Specify the column name in datasets
+export label_column="Label" # Specify the column name in datasets
+CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropDecoder.py "${task}" "${geminimol_lib}/GeminiMol:${fingerprints}" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
+```
+
+> AutoQSAR (AutoGluon)
+
+``` shell
+export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
+export fingerprints="ECFP4:MACCS"
+export smiles_column="SMILES" # Specify the column name in datasets
+export label_column="Label" # Specify the column name in datasets
+CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" "${geminimol_lib}/GeminiMol:${fingerprints}" "${smiles_column}" "${label_column}" "" "${task}_GeminiMol"
+```
 
 ## Citing this work
 
