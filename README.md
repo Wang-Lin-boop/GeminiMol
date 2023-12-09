@@ -81,12 +81,13 @@ _In this repository, we provide all the training, validation, and testing datase
 
 ``` shell
     cd ${GeminiMol}/data
-    wget https://zenodo.org/api/records/10273480/files-archive
-    unzip *
-    cd ${GeminiMol}/models
-    wget 
+    wget https://zenodo.org/api/records/10273480/files-archive 
     unzip *
 ```
+
+> Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link)
+
+_Then, we need place the models to the_ `${GeminiMol}/models`.   
 
 ### Installing the dependency packages
 
