@@ -112,7 +112,7 @@ If you intend to utilize molecular fingerprint baseline methods or conduct QSAR 
 > Installing the statatics and plot packages
 
 ``` shell
-    pip install oddt scikit-learn matplotlib umap-learn
+    pip install oddt scikit-learn matplotlib
 ```
 
 To re-train the model or make predictions using the models we provide, follow the steps below to install the dependencies in advance.
@@ -120,7 +120,7 @@ To re-train the model or make predictions using the models we provide, follow th
 > Installing the dependency packages of GeminiMol    
 
 ``` shell
-    pip install rdkit scipy dgllife scikit-learn
+    pip install scipy dgllife
     pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 \
         --extra-index-url https://download.pytorch.org/whl/cu116
     pip install dgl -f https://data.dgl.ai/wheels/cu116/repo.html
