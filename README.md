@@ -25,23 +25,23 @@ We also provide:
 2.  scripts for features analysis, visualisation and similarity calculation.   
 3.  scripts, datasets and results for benchmarking molecular fingerprints and GeminiMol models on virtual screening, target identification, and QSAR (drug-target binding affinity, cellar activity, ADME, and toxicity).    
 
-_Please also refer to our paper for a detailed description of GeminiMol._
+Please also refer to our paper for a detailed description of GeminiMol.
 
 ## Motivation  
 
-_The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. It has been **widely applied in drug discovery scenarios**, such as **virtual screening**, Quantitative Structure-Activity Relationship (**QSAR**) analysis, and **ADMET propteries prediction**._   
+The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. It has been **widely applied in drug discovery scenarios**, such as **virtual screening**, Quantitative Structure-Activity Relationship (**QSAR**) analysis, and **ADMET propteries prediction**.   
   
-_In previous work, molecular representation models were mostly trained on the static structure of molecules, however, the small molecules in solution are highly dynamic, and their flexible conformational changes endow them with the potential to bind to drug targets. Therefore, introducing information on small molecule conformational space into molecular representation models is a promising aim. In this work, a training strategy, named GeminiMol, was proposed to **incorporate the comprehension of conformational space into the molecular representation model**._   
+In previous work, molecular representation models were mostly trained on the static structure of molecules, however, the small molecules in solution are highly dynamic, and their flexible conformational changes endow them with the potential to bind to drug targets. Therefore, introducing information on small molecule conformational space into molecular representation models is a promising aim. In this work, a training strategy, named GeminiMol, was proposed to **incorporate the comprehension of conformational space into the molecular representation model**.   
 
-_The similarity between small molecules provides the opportunity for contrastive learning, as illustrated in followed figure, the shape similarity contained more pharmacological and physical information than the 2D structure and fingerprint similarity, therefore, **introducing the molecular shape similarity in contrastive learning is a promising strategy**._
+The similarity between small molecules provides the opportunity for contrastive learning, as illustrated in followed figure, the shape similarity contained more pharmacological and physical information than the 2D structure and fingerprint similarity, therefore, **introducing the molecular shape similarity in contrastive learning is a promising strategy**.
 
 ![similarity](imgs/similarity.png)
 
-_In this study, a diverse collection of **39,290** molecules was employed for conformational searching and shape alignment to generate a comprehensive dataset of molecular conformational space similarity. Various hyperparameters were employed during the conformational search process, and a multi-task learning approach was adopted to facilitate the model in acquiring a universal representation of molecular conformational space. To assess the model's performance, the **benchmark datasets comprising over millions molecules** was utilized for downstream tasks._    
+In this study, a diverse collection of **39,290** molecules was employed for conformational searching and shape alignment to generate a comprehensive dataset of molecular conformational space similarity. Various hyperparameters were employed during the conformational search process, and a multi-task learning approach was adopted to facilitate the model in acquiring a universal representation of molecular conformational space. To assess the model's performance, the **benchmark datasets comprising over millions molecules** was utilized for downstream tasks.    
 
 ## Installation
 
-_GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration._   
+GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration.   
 
 > Installing MiniConda (Can be skipped if conda is installed)   
 
@@ -75,7 +75,7 @@ _GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomm
 
 ### Download datasets and models
 
-_In this repository, we provide all the training, validation, and testing datasets used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties._  
+In this repository, we provide all the training, validation, and testing datasets used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties.  
 
 > Download all datasets, model parameters and weights via Zenodo
 
@@ -87,11 +87,11 @@ _In this repository, we provide all the training, validation, and testing datase
 
 > Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link)
 
-_Then, we need place the models to the_ `${GeminiMol}/models`.   
+Then, we need place the models to the `${GeminiMol}/models`.   
 
 ### Installing the dependency packages
 
-_If you intend to utilize molecular fingerprint baseline methods or conduct QSAR benchmarking, it is required to install RDKit and AutoGluon in advance._     
+If you intend to utilize molecular fingerprint baseline methods or conduct QSAR benchmarking, it is required to install RDKit and AutoGluon in advance.     
 
 > Installing the RDkit for generating fingerprints
 
@@ -115,7 +115,7 @@ _If you intend to utilize molecular fingerprint baseline methods or conduct QSAR
     pip install oddt scikit-learn matplotlib umap-learn
 ```
 
-_To re-train the model or make predictions using the models we provide, follow the steps below to install the dependencies in advance._
+To re-train the model or make predictions using the models we provide, follow the steps below to install the dependencies in advance.
 
 > Installing the dependency packages of GeminiMol    
 
@@ -129,7 +129,7 @@ _To re-train the model or make predictions using the models we provide, follow t
 
 ## Reproducing
 
-_Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the conformational space similarity descriptors of 39,290 molecules described in the paper. Additionally, benchmark test scripts is provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, or incorporate additional molecular similarity data to further enhance the performance of the models._  
+Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the conformational space similarity descriptors of 39,290 molecules described in the paper. Additionally, benchmark test scripts is provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, or incorporate additional molecular similarity data to further enhance the performance of the models.  
 
 > Training the Cross-Encoder
 
@@ -185,15 +185,15 @@ done
 
 ## Application
 
-_As a molecular representation model, GeminiMol finds applications in **ligand-based virtual screening, target identification, and quantitative structure-activity relationship (QSAR)** modeling of small molecular drugs._   
+As a molecular representation model, GeminiMol finds applications in **ligand-based virtual screening, target identification, and quantitative structure-activity relationship (QSAR)** modeling of small molecular drugs.   
 
 ![benchmark](imgs/benchmark.png)
 
-_We have provided Cross-Encoder and GeminiMol models that can be used directly for inference. For common drug discovery tasks, you can make predictions with the following commands._
+We have provided Cross-Encoder and GeminiMol models that can be used directly for inference. For common drug discovery tasks, you can make predictions with the following commands.
 
 ### Virtual Screening
 
-_In order to conduct virtual screening, it is essential to preassemble a collection of molecules that represent the pharmacological characteristics, including both active and non-active (optional) compounds, along with a library of compounds. These datasets should be saved in CSV format with specific column names. The column denoting the SMILES representation of the compounds should be labeled as "**SMILES**", while the column indicating the activity label should be named "Label". Please assign the label "active" to the active molecules and "inactive" to the non-active molecules. Lastly, the column representing the molecule ID should be titled "**Title**"._   
+In order to conduct virtual screening, it is essential to preassemble a collection of molecules that represent the pharmacological characteristics, including both active and non-active (optional) compounds, along with a library of compounds. These datasets should be saved in CSV format with specific column names. The column denoting the SMILES representation of the compounds should be labeled as "**SMILES**", while the column indicating the activity label should be named "Label". Please assign the label "active" to the active molecules and "inactive" to the non-active molecules. Lastly, the column representing the molecule ID should be titled "**Title**".   
 
 ``` shell
 export job_name="Virtual_Screening"
@@ -207,7 +207,7 @@ CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/
 
 ### Target Identification
 
-_To conduct reverse virtual screening for target identification, it is essential to utilize a database that encompasses ligand-target relationships. This database should be structured with three columns: SMILES, Title, and **Targets**. The Targets column should specify the potential targets with which the drugs may interact. We have provided a processed version of the BindingDB database, which contains target-ligand relationship information._
+To conduct reverse virtual screening for target identification, it is essential to utilize a database that encompasses ligand-target relationships. This database should be structured with three columns: SMILES, Title, and **Targets**. The Targets column should specify the potential targets with which the drugs may interact. We have provided a processed version of the BindingDB database, which contains target-ligand relationship information.
 
 ``` shell
 export job_name="Target_Identification"
@@ -221,7 +221,7 @@ CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/
 
 ### Molecular Proptery Modeling (QSAR and ADMET)
 
-_We have presented three approaches for molecular property modeling, namely AutoQSAR (broad applicability, slow speed), PropDecoder (fast speed), and FineTuning (optimal performance, moderate speed). In the majority of instances, the attainment of optimal performance can be accomplished through the utilization of the FineTuning script to invoke GeminiMol._    
+We have presented three approaches for molecular property modeling, namely AutoQSAR (broad applicability, slow speed), PropDecoder (fast speed), and FineTuning (optimal performance, moderate speed). In the majority of instances, the attainment of optimal performance can be accomplished through the utilization of the FineTuning script to invoke GeminiMol.     
 
 ``` shell
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
@@ -230,7 +230,7 @@ export label_column="Label" # Specify the column name in datasets
 CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/FineTuning.py "${task}" "${geminimol_lib}/GeminiMol" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
 ```
 
-_If the integration of molecular fingerprints and a pre-trained GeminiMol model is desired for training a molecular property prediction model, either PropDecoder or AutoQSAR can be employed._   
+If the integration of molecular fingerprints and a pre-trained GeminiMol model is desired for training a molecular property prediction model, either PropDecoder or AutoQSAR can be employed.   
 
 > PropDecoder
 
@@ -254,17 +254,17 @@ CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" 
 
 ## Citing this work
 
-_Coming in soon...._
+Coming in soon....
 
 ## Get in Touch
 
-_In addition to GitHub, we offer a WeChat community to provide a forum for discussion between users. You can access the community's QR code by following the "蛋白矿工" on WeChat._    
+In addition to GitHub, we offer a WeChat community to provide a forum for discussion between users. You can access the community's QR code by following the "蛋白矿工" on WeChat.    
 
-_If you have any questions not covered in this overview, please contact the GeminiMol team at wanglin3@shanghaitech.edu.cn. We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wanglin3@shanghaitech.edu.cn or baifang@shanghaitech.edu.cn._    
+If you have any questions not covered in this overview, please contact the GeminiMol team at wanglin3@shanghaitech.edu.cn. We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wanglin3@shanghaitech.edu.cn or baifang@shanghaitech.edu.cn.    
 
 ## Acknowledgements
 
-_We appreciate the technical support provided by the engineers of the high-performance computing cluster of ShanghaiTech University. Lin Wang also thanks Jianxin Duan, Gaokeng Xiao, Quanwei Yu, Shiwei Li and Fenglei Li for providing technical support, inspiration and help for this work. We appreciate the developers of AutoGluon and Deep Graph Library (DGL), and we thank for the RetNet implementations provided by Jamie Stirling and Frank Odom. We also thank the developers and maintainers of MarcoModel and PhaseShape modules in the Schrödinger package. Besides, GeminiMol communicates with and/or references the following separate libraries and packages, we thank all their contributors and maintainers!_  
+We appreciate the technical support provided by the engineers of the high-performance computing cluster of ShanghaiTech University. Lin Wang also thanks Jianxin Duan, Gaokeng Xiao, Quanwei Yu, Shiwei Li and Fenglei Li for providing technical support, inspiration and help for this work. We appreciate the developers of AutoGluon and Deep Graph Library (DGL), and we thank for the RetNet implementations provided by Jamie Stirling and Frank Odom. We also thank the developers and maintainers of MarcoModel and PhaseShape modules in the Schrödinger package. Besides, GeminiMol communicates with and/or references the following separate libraries and packages, we thank all their contributors and maintainers!  
 
 *  [_RDKit_](https://www.rdkit.org/)
 *  [_PyTorch_](https://pytorch.org/)
