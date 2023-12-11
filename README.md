@@ -43,26 +43,26 @@ In this study, a diverse collection of **39,290** molecules was employed for con
 
 GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration.   
 
-> Installing MiniConda (Can be skipped if conda is installed)   
+> Installing MiniConda (skip if conda was installed)   
 
 ``` shell
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
     sh Miniconda3-latest-Linux-x86_64.sh
 ```
 
-> Creating GeminiMol env   
+> Creating GeminiMol environment   
 
 ``` shell
     conda create -n GeminiMol python=3.8.16
     conda activate GeminiMol
 ```
 
-> Setting up GeminiMol and configuration   
+> Setting up GeminiMol PATH and configuration   
  
 ``` shell
     git clone https://github.com/Wang-Lin-boop/GeminiMol
     cd GeminiMol/
-    export PATH=${PWD}:\$PATH" >> ~/.bashrc
+    export PATH=${PWD}:\${PATH}" >> ~/.bashrc # optional, not required in the current version
     export GeminiMol=${PWD}" >> ~/.bashrc
     cd geminimol/
     export geminimol_app=${PWD}" >> ~/.bashrc    
