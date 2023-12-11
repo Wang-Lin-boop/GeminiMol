@@ -225,7 +225,7 @@ CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/
 
 We have presented three approaches for molecular property modeling, namely AutoQSAR (broad applicability, slow speed), PropDecoder (fast speed), and FineTuning (optimal performance, moderate speed). In the majority of instances, the attainment of optimal performance can be accomplished through the utilization of the FineTuning script to invoke GeminiMol.     
 
-> Fine-Tuning on downstream task 
+> Fine-Tuning on downstream task     
 
 ``` shell
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
@@ -236,7 +236,7 @@ CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/FineTuning.py "${task}
 
 If the integration of molecular fingerprints and a pre-trained GeminiMol model is desired for training a molecular property prediction model, either PropDecoder or AutoQSAR can be employed.   
 
-> PropDecoder
+> PropDecoder    
 
 ``` shell
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
@@ -246,7 +246,7 @@ export label_column="Label" # Specify the column name in datasets
 CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropDecoder.py "${task}" "${geminimol_lib}/GeminiMol:${fingerprints}" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
 ```
 
-> AutoQSAR (AutoGluon)
+> AutoQSAR (AutoGluon)    
 
 ``` shell
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
@@ -262,7 +262,7 @@ Coming in soon....
 
 ## License
 
-GeminiMol is released under the Academic Free Licence, which permits academic use, modification and distribution free of charge, but prohibits unauthorised commercial use, including commercial training purposes and as part of a paid computational platform. However, communication and authorization with [our laboratory supervisor](baifang@shanghaitech.edu.cn) is permitted for its application in pipeline development and research activities within pharmaceutical R&D.
+GeminiMol is released under the Academic Free Licence, which permits academic use, modification and distribution free of charge, but prohibits unauthorised commercial use, including commercial training and as part of a paid computational platform. However, communication and authorization with [our laboratory supervisor](baifang@shanghaitech.edu.cn) is permitted for its application in pipeline development and research activities within pharmaceutical R&D.     
 
 ## Get in Touch
 
