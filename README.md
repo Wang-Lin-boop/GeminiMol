@@ -13,9 +13,9 @@
     - [Target Identification](#target-identification)
     - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
   - [Citing this work](#citing-this-work)
+  - [License](#license)
   - [Get in Touch](#get-in-touch)
   - [Acknowledgements](#acknowledgements)
-
   
 This repository provides the official implementation of the GeminiMol model, training data, and utitiles.   
 
@@ -205,6 +205,8 @@ export keep_top=1000
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/GeminiMol" "${job_name}" "${decoy_set}" "${compound_library}" "${keep_top}" "${smiles_column}" "${id_column}"
 ```
 
+We restrict the use of column names to those specified in the designated compound library. This is primarily done to avoid confusion for novice users when modifying column names in large files. As for the decoy set, please ensure that the input CSV file contains at least two columns: SMILES and Title.
+
 ### Target Identification
 
 To conduct reverse virtual screening for target identification, it is essential to utilize a database that encompasses ligand-target relationships. This database should be structured with three columns: SMILES, Title, and **Targets**. The Targets column should specify the potential targets with which the drugs may interact. We have provided a processed version of the BindingDB database, which contains target-ligand relationship information.
@@ -222,6 +224,8 @@ CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/
 ### Molecular Proptery Modeling (QSAR and ADMET)
 
 We have presented three approaches for molecular property modeling, namely AutoQSAR (broad applicability, slow speed), PropDecoder (fast speed), and FineTuning (optimal performance, moderate speed). In the majority of instances, the attainment of optimal performance can be accomplished through the utilization of the FineTuning script to invoke GeminiMol.     
+
+> Fine-Tuning on downstream task 
 
 ``` shell
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
@@ -256,11 +260,15 @@ CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" 
 
 Coming in soon....
 
+## License
+
+GeminiMol is released under the Academic Free Licence, which permits academic use, modification and distribution free of charge, but prohibits unauthorised commercial use, including commercial training purposes and as part of a paid computational platform. However, communication and authorization with [our laboratory supervisor](baifang@shanghaitech.edu.cn) is permitted for its application in pipeline development and research activities within pharmaceutical R&D.
+
 ## Get in Touch
 
 In addition to GitHub, we offer a WeChat community to provide a forum for discussion between users. You can access the community's QR code by following the "蛋白矿工" on WeChat.    
 
-If you have any questions not covered in this overview, please contact the GeminiMol team at wanglin3@shanghaitech.edu.cn. We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wanglin3@shanghaitech.edu.cn or baifang@shanghaitech.edu.cn.    
+If you have any questions not covered in this overview, please contact the [GeminiMol Developer Team](wanglin3@shanghaitech.edu.cn). We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wanglin3@shanghaitech.edu.cn or baifang@shanghaitech.edu.cn.    
 
 ## Acknowledgements
 
