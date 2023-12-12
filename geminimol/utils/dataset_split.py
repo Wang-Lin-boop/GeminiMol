@@ -35,6 +35,6 @@ if __name__ == '__main__':
     dataset = dataset[dataset[smiles_column]!='smiles_unvaild']
     train, val, test = scaffold_split(dataset, smiles_column=smiles_column, label_column=label_column)
     print(dataset_name, '::  Train:', len(train), '  Validation:', len(val), '  Test:', len(test))
-    train[['ID', smiles_column, label_column]].to_csv(f'{dataset_name}_scaffold_train.csv', index=False)
-    val[['ID', smiles_column, label_column]].to_csv(f'{dataset_name}_scaffold_valid.csv', index=False)
-    test[['ID', smiles_column, label_column]].to_csv(f'{dataset_name}_scaffold_test.csv', index=False)
+    train.to_csv(f'{dataset_name}_scaffold_train.csv', index=False)
+    val.to_csv(f'{dataset_name}_scaffold_valid.csv', index=False)
+    test.to_csv(f'{dataset_name}_scaffold_test.csv', index=False)

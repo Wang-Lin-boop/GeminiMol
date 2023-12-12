@@ -201,7 +201,9 @@ We have provided Cross-Encoder and GeminiMol models that can be used directly fo
 
 In order to conduct virtual screening, it is essential to preassemble a collection of molecules that represent the pharmacological profile, including both active and non-active (optional) compounds, along with a library of compounds. These datasets should be saved in CSV format with specific column names.      
 
-The column denoting the SMILES representation of the compounds should be labeled as "**SMILES**", while the column indicating the activity label should be named "Label". Please assign the label "active" to the active molecules and "inactive" to the non-active molecules. Lastly, the column representing the molecule ID should be titled "**Title**".   
+Note that the "**Label**" column is used to input the pharmacological profile. Ideally, you can input some **active** molecules and some **inactive** molecules that are similar to the active ones but lack activity. This will ensure that the selected molecules are as close as possible to the active molecules and simultaneously far from the inactive ones.     
+
+Please note that the inactive molecules can refer to those lacking activity or those with **side effects** or **lower activity**.   
 
 ``` shell
 export job_name="Virtual_Screening"
@@ -213,7 +215,9 @@ export keep_top=1000
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/GeminiMol" "${job_name}" "${decoy_set}" "${compound_library}" "${keep_top}" "${smiles_column}" "${id_column}"
 ```
 
-We restrict the use of column names to those specified in the designated compound library. This is primarily done to avoid confusion for novice users when modifying column names in large files. As for the decoy set, please ensure that the input CSV file contains at least two columns: SMILES and Title.
+The column denoting the SMILES representation of the compounds should be labeled as "**SMILES**", while the column indicating the activity label should be named "**Label**". Please assign the label "active" to the active molecules and "inactive" to the non-active molecules. Lastly, the column representing the molecule ID should be titled "**Title**".   
+
+We restrict the use of column names to those specified in the designated compound library. This is primarily done to avoid confusion for novice users when modifying column names in large files. As for the decoy set, please ensure that the input CSV file contains at least two columns: SMILES and Title.   
 
 ### Target Identification
 
@@ -234,6 +238,25 @@ CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/
 ```
 
 ### Molecular Proptery Modeling (QSAR and ADMET)
+
+> Prepare your datasets
+
+Before conducting molecular property modeling, it is crucial to carefully prepare your data, which includes compound structure processing and dataset splitting.     
+
+Firstly, you need to clarify the chirality and protonation states of molecules in the dataset, which can be done using chemical informatics tools such as RDKit or Schrödinger software package. The processed data should be saved in CSV file format, containing at least one column for **SMILES** and one column for **Labels**.    
+
+Subsequently, utilize the following command for skeleton splitting. You can modify the script to change the splitting ratio, where by default, 70% of the dataset is used for training and 30% for validation and testing.     
+
+``` shell
+export dataset_path="data.csv"
+export dataset_name="My_QSAR"
+export smiles_column="SMILES" # Specify the column name in datasets
+export label_column="Label" # Specify the column name in datasets
+python -u ${geminimol_app}/utils/dataset_split.py "${dataset_path}" "${dataset_name}" "${smiles_column}" "${label_column}"
+mkdir ${dataset_name}
+mv ${dataset_name}_scaffold_*.csv ${dataset_name}/
+export task=${dataset_name}
+```
 
 We have presented three approaches for molecular property modeling, namely AutoQSAR (broad applicability, slow speed), PropDecoder (fast speed), and FineTuning (optimal performance, moderate speed).     
 
