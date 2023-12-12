@@ -285,7 +285,7 @@ CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropDecoder.py "${task
 
 ``` shell
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
-export fingerprints="ECFP4:MACCS"
+export fingerprints="ECFP4:AtomPairs:TopologicalTorsion:FCFP6:MACCS"
 export smiles_column="SMILES" # Specify the column name in datasets
 export label_column="Label" # Specify the column name in datasets
 CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" "${geminimol_lib}/GeminiMol:${fingerprints}" "${smiles_column}" "${label_column}" "" "${task}_GeminiMol"
