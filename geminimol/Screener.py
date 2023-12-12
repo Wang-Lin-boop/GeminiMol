@@ -82,6 +82,7 @@ if __name__ == '__main__':
     keep_number = int(sys.argv[5])
     ref_smiles_table = pd.read_csv(sys.argv[3])
     compound_library = pd.read_csv(sys.argv[4])
+    prepare_library = False
     smiles_col = sys.argv[6]
     id_col = sys.argv[7]
     compound_library = compound_library[[id_col, smiles_col]]
@@ -93,14 +94,14 @@ if __name__ == '__main__':
     if "Label" in ref_smiles_table.columns:
         active_compounds = ref_smiles_table[ref_smiles_table["Label"].isin(["active", "Active", "Yes", "yes", "true", "True", 1])]
         inactive_compounds = ref_smiles_table[ref_smiles_table["Label"].isin(["inactive", "Inactive", "No", "no", "false", "False", 0])]
-        active_total_res = predictor(active_compounds, compound_library, return_ref_id=True, prepare=True, standardize=True, reverse=reverse_screening) ## set reverse to True when idenifiying drug targets.
+        active_total_res = predictor(active_compounds, compound_library, return_ref_id=True, prepare=prepare_library, standardize=prepare_library, reverse=reverse_screening) ## set reverse to True when idenifiying drug targets.
         active_total_res['Active_Probability'] = active_total_res[predictor.metric]
-        total_res = predictor(inactive_compounds, active_total_res.head(keep_number*10), return_ref_id=False, prepare=True, standardize=True, reverse=reverse_screening)
+        total_res = predictor(inactive_compounds, active_total_res.head(keep_number*10), return_ref_id=False, prepare=prepare_library, standardize=prepare_library, reverse=reverse_screening)
         total_res['Inactive_Probability'] = total_res[predictor.metric]
         total_res['Probability'] = max(total_res['Active_Probability'] - total_res['Inactive_Probability'], 0)
         total_res.sort_values('Probability', ascending=False, inplace=True)
     else:
-        total_res = predictor(ref_smiles_table, compound_library, return_ref_id=True, prepare=True, standardize=True, reverse=reverse_screening, only_best_match=False) ## set reverse to True when idenifiying drug targets.
+        total_res = predictor(ref_smiles_table, compound_library, return_ref_id=True, prepare=prepare_library, standardize=prepare_library, reverse=reverse_screening, only_best_match=False) ## set reverse to True when idenifiying drug targets.
         total_res['Probability'] = total_res[predictor.metric]
     if reverse_screening:
         total_res.drop_duplicates(
