@@ -24,18 +24,7 @@ from dgllife.model.gnn.attentivefp import AttentiveFPGNN
 from dgllife.model.readout.mlp_readout import MLPNodeReadout
 from dgllife.model.readout.attentivefp_readout import AttentiveFPReadout
 from dgllife.model.readout.weighted_sum_and_max import WeightedSumAndMax
-# for retnet (MolDecoder)
-from rdkit import Chem, DataStructs
-from rdkit.Chem import MACCSkeys
-from rdkit.Chem import RDConfig
-sys.path.append(os.path.join(RDConfig.RDContribDir, 'SA_Score'))
-import sascorer
-import selfies as sf
 import torch.nn.init as init
-from rdkit import Chem
-import rdkit.Chem.rdFMCS as FMCS
-from collections import Counter
-from .RetNet import RetNet
 
 def initialize_weights(model):
     for module in model.modules():
@@ -1126,3 +1115,5 @@ class GeminiMol(BinarySimilarity):
             labels=self.label_list
         )
         return pd.DataFrame(shape_features).add_prefix('GM_')
+    
+
