@@ -203,12 +203,14 @@ In order to conduct virtual screening, it is essential to preassemble a collecti
 
 Note that the "**Label**" column is used to input the pharmacological profile. Ideally, you can input some **active** molecules and some **inactive** molecules that are similar to the active ones but lack activity. This will ensure that the selected molecules are as close as possible to the active molecules and simultaneously far from the inactive ones.     
 
-Please note that the inactive molecules can refer to those lacking activity or those with **side effects** or **lower activity**.   
+Please note that the inactive molecules can refer to those lacking activity or those with **side effects** or **lower activity**.    
+
+We have provided a processed version of the commercial Specs and ChemDiv compound library at the `${geminimol_data}/specs.csv` and `${geminimol_data}/ChemDiv.csv`, which contained 335,212 and 1,755,930 purchasable compounds. If you intend to utilize your own prepared compound library, please enable the "prepare" switch in the line 85 at the `Screener.py` script.    
 
 ``` shell
 export job_name="Virtual_Screening"
 export decoy_set="decoys.csv" # SMILES, Title, and Label (optional)
-export compound_library="database.csv" 
+export compound_library="${geminimol_data}/ChemDiv.csv" 
 export smiles_column="SMILES" # Specify the column name in the compound_library
 export id_column="Title" # Specify the column name in the compound_library
 export keep_top=1000
@@ -221,11 +223,9 @@ We restrict the use of column names to those specified in the designated compoun
 
 ### Target Identification
 
-To conduct reverse virtual screening for target identification, it is essential to utilize a database that encompasses ligand-target relationships.     
+To conduct reverse virtual screening for target identification, it is essential to utilize a database that encompasses ligand-target relationships. This database should be structured with three columns: SMILES, Title, and **Targets**. The Targets column should specify the potential targets with which the drugs may interact.    
 
-This database should be structured with three columns: SMILES, Title, and **Targets**. The Targets column should specify the potential targets with which the drugs may interact.    
-
-We have provided a processed version of the BindingDB database at the `${geminimol_data}/BindingDB_DATA.csv`, which contains target-ligand relationship information.
+We have provided a processed version of the BindingDB database at the `${geminimol_data}/BindingDB_DATA.csv`, which contains 2,159,221 target-ligand paris.    
 
 ``` shell
 export job_name="Target_Identification"
