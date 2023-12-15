@@ -293,7 +293,9 @@ CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" 
 
 ## Citing this work
 
-Coming in soon....
+**Conformational Space Profile Enhances Generic Molecular Representation Learning**
+Lin Wang, Shihang Wang, Hao Yang, Shiwei Li, Xinyu Wang, Yongqi Zhou, Siyuan Tian, Lu Liu, Fang Bai
+bioRxiv 2023.12.14.571629; doi: https://doi.org/10.1101/2023.12.14.571629
 
 ## License
 
