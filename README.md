@@ -1,23 +1,26 @@
-# GeminiMol
+<h1 align="center">  GeminiMol  </h1>
+<h3 align="center"> Conformational Space Profile Enhanced Molecular Representation Learning </h3>
+<p align="center">
+  📃 <a href="https://www.biorxiv.org/content/10.1101/2023.12.14.571629" target="_blank">Paper</a> <br>
+</p>
 
 ![](imgs/geminimol.png)  
 
-- [GeminiMol](#geminimol)
-  - [💡 Highlight](#-highlight)
-  - [💗 Motivation](#-motivation)
-  - [🔔 News](#-news)
-  - [📕 Installation](#-installation)
-    - [Download datasets and models](#download-datasets-and-models)
-    - [Installing the dependency packages](#installing-the-dependency-packages)
-  - [👐 Reproducing](#-reproducing)
-  - [📓 Application](#-application)
-    - [Virtual Screening](#virtual-screening)
-    - [Target Identification](#target-identification)
-    - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
-  - [⭐ Citing this work](#-citing-this-work)
-  - [✅ License](#-license)
-  - [💌 Get in Touch](#-get-in-touch)
-  - [😃 Acknowledgements](#-acknowledgements)
+- [💡 Highlight](#-highlight)
+- [💗 Motivation](#-motivation)
+- [🔔 News](#-news)
+- [📕 Installation](#-installation)
+  - [Download datasets and models](#download-datasets-and-models)
+  - [Installing the dependency packages](#installing-the-dependency-packages)
+- [👐 Reproducing](#-reproducing)
+- [📓 Application](#-application)
+  - [Virtual Screening](#virtual-screening)
+  - [Target Identification](#target-identification)
+  - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
+- [⭐ Citing this work](#-citing-this-work)
+- [✅ License](#-license)
+- [💌 Get in Touch](#-get-in-touch)
+- [😃 Acknowledgements](#-acknowledgements)
   
 This repository provides the official implementation of the GeminiMol model, training data, and utitiles.   
 
