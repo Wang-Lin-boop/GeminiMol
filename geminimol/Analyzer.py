@@ -5,7 +5,6 @@ import pandas as pd
 import math
 import torch
 from utils.fingerprint import Fingerprint
-import matplotlib
 import matplotlib.pyplot as plt
 from utils.chem import check_smiles_validity, gen_standardize_smiles
 from sklearn.manifold import TSNE
@@ -13,22 +12,7 @@ from sklearn.decomposition import PCA, DictionaryLearning, KernelPCA, Incrementa
 from sklearn.cluster import KMeans, AgglomerativeClustering, MeanShift, DBSCAN, AffinityPropagation, SpectralClustering, Birch, OPTICS
 from sklearn.metrics import confusion_matrix, adjusted_rand_score
 from sklearn.preprocessing import LabelEncoder
-
-def find_closest_factors(x):
-    factors = []
-    for i in range(1, int(math.sqrt(x)) + 1):
-        if x % i == 0:
-            factors.append([i, x // i])
-    min_diff = float('inf')
-    result = (None, None)
-    for i in range(len(factors)):
-        n = factors[i][0]
-        m = factors[i][1]
-        diff = abs(n - m)
-        if diff < min_diff:
-            min_diff = diff
-            result = (n, m)
-    return result
+from scipy.stats import pearsonr
 
 class Mol_Encoder:
     def __init__(self, 
@@ -219,12 +203,26 @@ if __name__ == "__main__":
         dataset, features_columns = predictor.encoder(data_table)
     elif running_mode == 'heatmap':
         dataset = predictor.prepare(data_table)
+    elif running_mode == 'matrix':
+        if len(method.split(":")) == 1 and 'GeminiMol' in method:
+            dataset = predictor.prepare(data_table)
+        else:
+            raise RuntimeError(f"ERROR: matrix mode only support for 1 GeminiMol model!")
     else:
         ## encode
         dataset, features_columns = predictor.encoder(data_table)
     ## processing
     if running_mode == 'encode':
         dataset.to_csv(f"{output_fn}_encoding.csv", index=False)
+    elif running_mode == 'matrix':
+        id_column = sys.argv[5].split(':')[1]
+        id_list = dataset[id_column].to_list()
+        matrix = pd.DataFrame(index=id_list, columns=id_list)
+        for ref_id in id_list:
+            for query_id in id_list:
+                pearson_similarity = pearsonr(dataset[dataset[id_column]==ref_id][features_columns].values[0], dataset[dataset[id_column]==query_id][features_columns].values[0])[0]
+                matrix.loc[ref_id, query_id] = pearson_similarity
+        matrix.to_csv(f"{output_fn}_data.csv", index=True, header=True, sep=',')        
     elif running_mode == 'cluster':
         cluster_num = sys.argv[5].split(':')[1]
         for cluster_algorithm in analyzer.cluster_algorithm_list:
