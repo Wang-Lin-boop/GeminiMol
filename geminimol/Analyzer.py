@@ -204,8 +204,11 @@ if __name__ == "__main__":
     elif running_mode == 'heatmap':
         dataset = predictor.prepare(data_table)
     elif running_mode == 'matrix':
+        id_column = sys.argv[5].split(':')[1]
         if len(method.split(":")) == 1 and 'GeminiMol' in method:
-            dataset = predictor.prepare(data_table)
+            data_table.dropna(subset=[id_column], inplace=True)
+            data_table.reset_index(drop=True, inplace=True)
+            dataset, features_columns = predictor.encoder(data_table)
         else:
             raise RuntimeError(f"ERROR: matrix mode only support for 1 GeminiMol model!")
     else:
@@ -306,6 +309,9 @@ if __name__ == "__main__":
         id_column = sys.argv[5].split(':')[1]
         smiles_list = dataset[smiles_column].to_list()
         id_list = dataset[id_column].to_list()
+        if len(smiles_list) >= 300:
+            print(f"Warning: {len(smiles_list)} molecules is too large for heatmap.")
+            print(f"Warning: we need long time to calculate the similarity matrix.")
         matrix_dict = {}
         for encoder_name, encoder in encoders.items():
             encoder_basename = encoder_name.split('/')[-1]
