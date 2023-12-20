@@ -221,10 +221,17 @@ if __name__ == "__main__":
         id_column = sys.argv[5].split(':')[1]
         id_list = dataset[id_column].to_list()
         matrix = pd.DataFrame(index=id_list, columns=id_list)
-        for ref_id in id_list:
-            for query_id in id_list:
-                pearson_similarity = pearsonr(dataset[dataset[id_column]==ref_id][features_columns].values[0], dataset[dataset[id_column]==query_id][features_columns].values[0])[0]
+        features_dict = {
+            mol_id:dataset[dataset[id_column]==mol_id][features_columns].values[0] 
+            for mol_id in id_list
+            }
+        for ref_no in range(id_list):
+            ref_id = id_list[ref_no]
+            for query_no in range(id_list[ref_no:]):
+                query_id = id_list[ref_no+query_no]
+                pearson_similarity = pearsonr(features_dict[ref_id], features_dict[query_id])[0]
                 matrix.loc[ref_id, query_id] = pearson_similarity
+                matrix.loc[query_id, ref_id] = pearson_similarity
         matrix.to_csv(f"{output_fn}_data.csv", index=True, header=True, sep=',')        
     elif running_mode == 'cluster':
         cluster_num = sys.argv[5].split(':')[1]
