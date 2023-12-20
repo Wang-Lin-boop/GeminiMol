@@ -225,9 +225,9 @@ if __name__ == "__main__":
             mol_id:dataset[dataset[id_column]==mol_id][features_columns].values[0] 
             for mol_id in id_list
             }
-        for ref_no in range(id_list):
+        for ref_no in range(len(id_list)):
             ref_id = id_list[ref_no]
-            for query_no in range(id_list[ref_no:]):
+            for query_no in range(len(id_list[ref_no:])):
                 query_id = id_list[ref_no+query_no]
                 pearson_similarity = pearsonr(features_dict[ref_id], features_dict[query_id])[0]
                 matrix.loc[ref_id, query_id] = pearson_similarity
