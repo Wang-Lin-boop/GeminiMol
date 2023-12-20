@@ -92,7 +92,7 @@ In this repository, we provide all the training, validation, and testing dataset
     unzip *
 ```
 
-> Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link)
+> Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link) or [HuggingFace](https://huggingface.co/AlphaMWang)
 
 Then, we need place the models to the `${GeminiMol}/models`.   
 
