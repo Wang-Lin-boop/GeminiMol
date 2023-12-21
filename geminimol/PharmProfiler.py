@@ -143,10 +143,11 @@ if __name__ == '__main__':
     # update profiles
     if ':' in sys.argv[5]:
         ref_smiles_table = pd.read_csv(sys.argv[5].split(':')[0])
-        for weight in ref_smiles_table[sys.argv[5].split(':')[1]].to_list(): # weight column 
+        label_col = sys.argv[5].split(':')[1]
+        for weight in ref_smiles_table[label_col].to_list(): # weight column 
             predictor.update_probes(
                 name = f'weight_{weight}',
-                smiles_list = ref_smiles_table[ref_smiles_table[weight]==weight][smiles_col].to_list(),
+                smiles_list = ref_smiles_table[ref_smiles_table[label_col]==weight][smiles_col].to_list(),
                 weight = weight
                 )
     else:
