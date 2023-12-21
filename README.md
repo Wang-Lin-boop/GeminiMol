@@ -69,14 +69,14 @@ GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomme
 ``` shell
     git clone https://github.com/Wang-Lin-boop/GeminiMol
     cd GeminiMol/
-    export PATH=${PWD}:\${PATH}" >> ~/.bashrc # optional, not required in the current version
-    export GeminiMol=${PWD}" >> ~/.bashrc
+    echo "export PATH=\"${PWD}:\${PATH}\"" >> ~/.bashrc # optional, not required in the current version
+    echo "export GeminiMol=\"${PWD}\"" >> ~/.bashrc
     cd geminimol/
-    export geminimol_app=${PWD}" >> ~/.bashrc    
-    cd ../model/   
-    export geminimol_lib=${PWD}" >> ~/.bashrc  
+    echo "export geminimol_app=\"${PWD}\"" >> ~/.bashrc    
+    cd ../models/   
+    echo "export geminimol_lib=\"${PWD}\"" >> ~/.bashrc  
     cd ../data/
-    export geminimol_data=${PWD}" >> ~/.bashrc
+    echo "export geminimol_data=\"${PWD}\"" >> ~/.bashrc
     source ~/.bashrc
 ```
 
