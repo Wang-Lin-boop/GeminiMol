@@ -156,7 +156,7 @@ if __name__ == '__main__':
         label_col = sys.argv[5].split(':')[1]
         for weight in ref_smiles_table[label_col].to_list(): # weight column 
             predictor.update_probes(
-                name = f'weight_{weight}',
+                name = f'w_{weight}',
                 smiles_list = ref_smiles_table[ref_smiles_table[label_col]==weight][smiles_col].to_list(),
                 weight = weight
                 )
@@ -190,4 +190,5 @@ if __name__ == '__main__':
     )
     total_res.sort_values('Score', ascending=False, inplace=True)
     total_res.head(keep_number).to_csv(f"{job_name}_results.csv", index=False, header=True, sep=',')
+    print(f'NOTE: job completed! check {job_name}_results.csv for results!')
 
