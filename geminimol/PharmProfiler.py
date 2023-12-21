@@ -157,7 +157,9 @@ if __name__ == '__main__':
             weight = 1.0
             )
     keep_number = int(sys.argv[6])
-    probe_cluster = True if sys.argv[7] in ['True', 'true', 'T', 't', 'Yes', 'yes', 'Y', 'y'] else False
+    probe_cluster = True if sys.argv[7] in [
+        'True', 'true', 'T', 't', 'Yes', 'yes', 'Y', 'y'
+        ] else False
     # virtual screening 
     total_res = predictor(
         compound_library,
