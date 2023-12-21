@@ -134,7 +134,7 @@ if __name__ == '__main__':
     # job_name
     job_name = sys.argv[2]
     smiles_col = sys.argv[3]
-    if ':' in sys.argv[4]:
+    if ':' not in sys.argv[4]:
         compound_library = pd.read_csv(sys.argv[4])
         target_col = 'none'
     else:
