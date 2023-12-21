@@ -2,7 +2,6 @@ import os
 import sys
 import time
 import torch
-import numpy as np
 import pandas as pd
 from utils.chem import gen_standardize_smiles, check_smiles_validity
 

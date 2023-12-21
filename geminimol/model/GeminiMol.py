@@ -999,6 +999,7 @@ class GeminiMol(BinarySimilarity):
             batch_size = None, 
             depth = 0, 
             custom_label = None, 
+            internal_label_list = None,
             extrnal_label_list = ['Cosine', 'Pearson', 'RMSE', 'Manhattan'] # 'Minkowski', 'Euclidean', 'KLDiv'
             ):
         self.model_name = model_name
@@ -1007,15 +1008,19 @@ class GeminiMol(BinarySimilarity):
             self.params = json.load(f)
         if not batch_size is None:
             self.params['batch_size'] = batch_size
-        super().__init__(model_name=model_name, **self.params)
-        self.eval()
         if os.path.exists(f'{self.model_name}/feat_stat.csv'):
             self.noise_stat=pd.read_csv(f"{model_name}/feat_stat.csv")
         else:
             self.noise_stat=None
+        super().__init__(model_name=model_name, **self.params)
         if custom_label is not None:
             self.label_list = custom_label
-        self.similarity_metrics_list = self.label_list + extrnal_label_list
+        self.eval()
+        if internal_label_list is None:
+            self.internal_label_list = ['ShapeScore', 'ShapeAggregation', 'CrossSim', 'CrossAggregation']
+        else:
+            self.internal_label_list = internal_label_list
+        self.similarity_metrics_list = self.internal_label_list + extrnal_label_list
         if os.path.exists(f'{self.model_name}/propdecoders'):
             for propdecoder_mode in os.listdir(f'{self.model_name}/propdecoders'):
                 if os.path.exists(f"{propdecoder_mode}/predictor.pt"):
@@ -1091,12 +1096,23 @@ class GeminiMol(BinarySimilarity):
             else:
                 return pred_values 
 
-    def virtual_screening(self, ref_smiles_list, query_smiles_table, reverse=False, smiles_column='smiles', similarity_metrics=None, worker_num=1):
-        shape_database = self.create_database(query_smiles_table, smiles_column=smiles_column, worker_num=worker_num)
+    def virtual_screening(self, 
+            ref_smiles_list, 
+            query_smiles_table, 
+            input_with_features = False,
+            reverse = False, 
+            smiles_column = 'smiles', 
+            similarity_metrics = None, 
+            worker_num = 1
+        ):
+        if input_with_features:
+            features_database = query_smiles_table
+        else:
+            features_database = self.create_database(query_smiles_table, smiles_column=smiles_column, worker_num=worker_num)
         total_res = pd.DataFrame()
         for ref_smiles in ref_smiles_list:
             query_scores = self.similarity_predict(
-                shape_database, 
+                features_database, 
                 ref_smiles, 
                 ref_as_frist=reverse, 
                 as_pandas=True, 
