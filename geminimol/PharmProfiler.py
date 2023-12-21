@@ -1,3 +1,4 @@
+import os
 import sys
 import torch
 import pandas as pd
@@ -46,13 +47,10 @@ class Pharm_Profiler:
             'weight': weight
         }
 
-    def __call__(
-        self, 
-        compound_library, 
+    def update_library(self,
+        compound_library,
         prepare = True,
         smiles_column = 'smiles',
-        target_column = 'target',
-        probe_cluster = False,
     ):
         if prepare:
             compound_library = self.prepare(compound_library, smiles_column=smiles_column)
@@ -64,13 +62,24 @@ class Pharm_Profiler:
             ignore_index = True
             )
         compound_library.reset_index(drop=True, inplace=True)
-        total_res = compound_library.copy()
         print(f'NOTE: non-duplicates compound library contains {len(compound_library)} compounds.')
-        features_database = self.predictor.create_database(
-            compound_library, smiles_column=smiles_column, worker_num=1
+        self.features_database = self.predictor.create_database(
+            compound_library, 
+            smiles_column = smiles_column, 
+            worker_num = 2
         )
         print('NOTE: features database was created.')
-        if target_column in compound_library.columns:
+        return self.features_database
+
+    def __call__(
+        self, 
+        smiles_column = 'smiles',
+        target_column = 'target',
+        probe_cluster = False,
+    ):
+        total_res = self.features_database.copy()
+        del total_res['features']
+        if target_column in self.features_database.columns:
             reverse_screening = True
             print(f'NOTE: the target column {target_column} was found in compound library.')
             print(f'NOTE: starting reverse screening...')
@@ -85,38 +94,38 @@ class Pharm_Profiler:
             if probe_cluster:
                 probe_res = self.predictor.virtual_screening(
                     probe_list, 
-                    features_database, 
+                    self.features_database, 
                     input_with_features = True,
                     reverse = reverse_screening, 
                     smiles_column = smiles_column, 
                     similarity_metrics = 'Pearson',
-                    worker_num = 4
+                    worker_num = 2
                 )
                 probe_res[f'{name}'] = probe['weight'] * probe_res['Pearson']
                 probe_res.drop(columns=[smiles_column], inplace=True)
-                total_res = total_res.merge(
+                total_res = pd.merge(
+                    total_res,
                     probe_res[[smiles_column, f'{name}']], 
-                    on=smiles_column, 
-                    how='left'
+                    on = smiles_column, 
                 )
                 score_list.append(f'{name}')
             else:
                 for i in range(len(probe_list)):
                     probe_res = self.predictor.virtual_screening(
                         [probe['smiles'][i]], 
-                        features_database, 
+                        self.features_database, 
                         input_with_features = True,
                         reverse = reverse_screening, 
                         smiles_column = smiles_column, 
                         similarity_metrics = 'Pearson',
-                        worker_num = 4
+                        worker_num = 2
                     )
                     probe_res[f'{name}_{i}'] = probe['weight'] * probe_res['Pearson']
                     probe_res.drop(columns=[smiles_column], inplace=True)
-                    total_res = total_res.merge(
+                    total_res = pd.merge(
+                        total_res,
                         probe_res[[smiles_column, f'{name}_{i}']], 
-                        on=smiles_column, 
-                        how='left'
+                        on = smiles_column, 
                     )
                     score_list.append(f'{name}_{i}')
         total_res.fillna(0, inplace=True)
@@ -136,9 +145,11 @@ if __name__ == '__main__':
     smiles_col = sys.argv[3]
     if ':' not in sys.argv[4]:
         compound_library = pd.read_csv(sys.argv[4])
+        library_path = sys.argv[4].split('.')[0]
         target_col = 'none'
     else:
         compound_library = pd.read_csv(sys.argv[4].split(':')[0])
+        library_path = sys.argv[4].split(':')[0].split('.')[0]
         target_col = sys.argv[4].split(':')[1]
     # update profiles
     if ':' in sys.argv[5]:
@@ -161,10 +172,19 @@ if __name__ == '__main__':
     probe_cluster = True if sys.argv[7] in [
         'True', 'true', 'T', 't', 'Yes', 'yes', 'Y', 'y'
         ] else False
+    # generate features database
+    if os.path.exists(f'{library_path}.pkl'):
+        predictor.features_database = pd.read_pickle(f'{library_path}.pkl')
+    else:
+        features_database = predictor.update_library(
+            compound_library,
+            prepare = True,
+            smiles_column = smiles_col,
+        )
+        # save database to pkl
+        features_database.to_pickle(f'{library_path}.pkl')
     # virtual screening 
     total_res = predictor(
-        compound_library,
-        prepare = False,
         smiles_column = smiles_col,
         target_column = target_col,
         probe_cluster = probe_cluster,
