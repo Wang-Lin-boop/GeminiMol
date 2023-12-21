@@ -1078,7 +1078,7 @@ class GeminiMol(BinarySimilarity):
             similarity_metrics = self.similarity_metrics_list
         features_list = shape_database['features'].tolist()
         with torch.no_grad():
-            pred_values = {key:[] for key in self.similarity_metrics_list}
+            pred_values = {key:[] for key in similarity_metrics}
             ref_features = self.encode([ref_smiles]).cuda()
             for i in range(0, len(features_list), worker_num*self.batch_size):
                 features_batch = features_list[i:i+worker_num*self.batch_size]
@@ -1087,11 +1087,11 @@ class GeminiMol(BinarySimilarity):
                     features = torch.cat((query_features, ref_features.repeat(len(features_batch), 1)), dim=0)
                 else:
                     features = torch.cat((ref_features.repeat(len(features_batch), 1), query_features), dim=0)
-                for label_name in self.similarity_metrics_list:
+                for label_name in similarity_metrics:
                     pred = self.decode(features, label_name, len(features_batch), depth=self.features_depth)
                     pred_values[label_name] += list(pred.cpu().detach().numpy())
             if as_pandas == True:
-                res_df = pd.DataFrame(pred_values, columns=self.similarity_metrics_list)
+                res_df = pd.DataFrame(pred_values, columns=similarity_metrics)
                 return res_df
             else:
                 return pred_values 
@@ -1108,7 +1108,11 @@ class GeminiMol(BinarySimilarity):
         if input_with_features:
             features_database = query_smiles_table
         else:
-            features_database = self.create_database(query_smiles_table, smiles_column=smiles_column, worker_num=worker_num)
+            features_database = self.create_database(
+                query_smiles_table, 
+                smiles_column = smiles_column, 
+                worker_num = worker_num
+            )
         total_res = pd.DataFrame()
         for ref_smiles in ref_smiles_list:
             query_scores = self.similarity_predict(

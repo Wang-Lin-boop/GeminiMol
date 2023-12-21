@@ -77,6 +77,7 @@ class Pharm_Profiler:
         target_column = 'target',
         probe_cluster = False,
     ):
+        print(f'NOTE: columns of feature database: {self.features_database.columns}')
         total_res = self.features_database.copy()
         del total_res['features']
         if target_column in self.features_database.columns:
@@ -98,15 +99,14 @@ class Pharm_Profiler:
                     input_with_features = True,
                     reverse = reverse_screening, 
                     smiles_column = smiles_column, 
-                    similarity_metrics = 'Pearson',
+                    similarity_metrics = ['Pearson'],
                     worker_num = 2
                 )
                 probe_res[f'{name}'] = probe['weight'] * probe_res['Pearson']
-                probe_res.drop(columns=[smiles_column], inplace=True)
                 total_res = pd.merge(
                     total_res,
                     probe_res[[smiles_column, f'{name}']], 
-                    on = smiles_column, 
+                    on = smiles_column
                 )
                 score_list.append(f'{name}')
             else:
@@ -117,15 +117,14 @@ class Pharm_Profiler:
                         input_with_features = True,
                         reverse = reverse_screening, 
                         smiles_column = smiles_column, 
-                        similarity_metrics = 'Pearson',
+                        similarity_metrics = ['Pearson'],
                         worker_num = 2
                     )
                     probe_res[f'{name}_{i}'] = probe['weight'] * probe_res['Pearson']
-                    probe_res.drop(columns=[smiles_column], inplace=True)
                     total_res = pd.merge(
                         total_res,
                         probe_res[[smiles_column, f'{name}_{i}']], 
-                        on = smiles_column, 
+                        on = smiles_column
                     )
                     score_list.append(f'{name}_{i}')
         total_res.fillna(0, inplace=True)
