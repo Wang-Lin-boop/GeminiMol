@@ -90,9 +90,11 @@ In this repository, we provide all the training, validation, and testing dataset
     cd ${GeminiMol}/data
     wget https://zenodo.org/api/records/10273480/files-archive 
     unzip *
+    mv ChemDiv.csv compound_library/
+    mv BindingDB_DATA.csv compound_library/
 ```
 
-> Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link) or [HuggingFace](https://huggingface.co/AlphaMWang)
+> Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link) and [HuggingFace](https://huggingface.co/AlphaMWang)
 
 Then, we need place the models to the `${GeminiMol}/models`.   
 
