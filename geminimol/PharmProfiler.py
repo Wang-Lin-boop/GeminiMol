@@ -12,7 +12,7 @@ class Pharm_Profiler:
         self.predictor = GeminiMol(
             model_name,
             internal_label_list = [],
-            external_label_list = ['Pearson'],
+            extrnal_label_list = ['Pearson'],
         )
         self.probes_dict = {
             # name : { 
@@ -163,7 +163,7 @@ if __name__ == '__main__':
     # virtual screening 
     total_res = predictor(
         compound_library,
-        prepare = True,
+        prepare = False,
         smiles_column = smiles_col,
         target_column = target_col,
         probe_cluster = probe_cluster,
