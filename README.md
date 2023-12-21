@@ -4,8 +4,6 @@
   📃 <a href="https://www.biorxiv.org/content/10.1101/2023.12.14.571629" target="_blank">Paper</a> ·  🤗 <a href="https://huggingface.co/AlphaMWang/GeminiMol" target="_blank">Model</a><br>
 </p>
 
-![](imgs/geminimol.png)  
-
 - [💡 Highlight](#-highlight)
 - [💗 Motivation](#-motivation)
 - [🔔 News](#-news)
@@ -22,6 +20,8 @@
 - [💌 Get in Touch](#-get-in-touch)
 - [😃 Acknowledgements](#-acknowledgements)
   
+![](imgs/geminimol.png)  
+
 This repository provides the official implementation of the GeminiMol model, training data, and utitiles.   
 
 We also provide:   
