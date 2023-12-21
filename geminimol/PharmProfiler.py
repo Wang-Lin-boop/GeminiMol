@@ -52,6 +52,7 @@ class Pharm_Profiler:
         prepare = True,
         smiles_column = 'smiles',
         target_column = 'target',
+        probe_cluster = False,
     ):
         if prepare:
             compound_library = self.prepare(compound_library, smiles_column=smiles_column)
@@ -77,22 +78,49 @@ class Pharm_Profiler:
             reverse_screening = False
             print(f'NOTE: we did not find the target column {target_column} in compound library.')
             print(f'NOTE: starting forward screening...')
+        score_list = []
         for name, probe in self.probes_dict.items():
             print(f'NOTE: using {name} as the probe.')
-            probe_res = self.predictor.virtual_screening(
-                probe['smiles'], 
-                features_database, 
-                input_with_features = True,
-                reverse = reverse_screening, 
-                smiles_column = smiles_column, 
-                similarity_metrics = 'Pearson',
-                worker_num = 4
-            )
-            probe_res[name] = probe['weight'] * probe_res['Pearson']
-            probe_res.drop(columns=[smiles_column], inplace=True)
-            total_res = total_res.merge(probe_res[[smiles_column, name]], on=smiles_column, how='left')
+            probe_list = probe['smiles']
+            if probe_cluster:
+                probe_res = self.predictor.virtual_screening(
+                    probe_list, 
+                    features_database, 
+                    input_with_features = True,
+                    reverse = reverse_screening, 
+                    smiles_column = smiles_column, 
+                    similarity_metrics = 'Pearson',
+                    worker_num = 4
+                )
+                probe_res[f'{name}'] = probe['weight'] * probe_res['Pearson']
+                probe_res.drop(columns=[smiles_column], inplace=True)
+                total_res = total_res.merge(
+                    probe_res[[smiles_column, f'{name}']], 
+                    on=smiles_column, 
+                    how='left'
+                )
+                score_list.append(f'{name}')
+            else:
+                for i in range(len(probe_list)):
+                    probe_res = self.predictor.virtual_screening(
+                        [probe['smiles'][i]], 
+                        features_database, 
+                        input_with_features = True,
+                        reverse = reverse_screening, 
+                        smiles_column = smiles_column, 
+                        similarity_metrics = 'Pearson',
+                        worker_num = 4
+                    )
+                    probe_res[f'{name}_{i}'] = probe['weight'] * probe_res['Pearson']
+                    probe_res.drop(columns=[smiles_column], inplace=True)
+                    total_res = total_res.merge(
+                        probe_res[[smiles_column, f'{name}_{i}']], 
+                        on=smiles_column, 
+                        how='left'
+                    )
+                    score_list.append(f'{name}_{i}')
         total_res.fillna(0, inplace=True)
-        total_res['Score'] = total_res[list(self.probes_dict.keys())].sum(axis=1)
+        total_res['Score'] = total_res[score_list].sum(axis=1)
         return total_res
 
 if __name__ == '__main__':
@@ -129,12 +157,14 @@ if __name__ == '__main__':
             weight = 1.0
             )
     keep_number = int(sys.argv[6])
+    probe_cluster = True if sys.argv[7] in ['True', 'true', 'T', 't', 'Yes', 'yes', 'Y', 'y'] else False
     # virtual screening 
     total_res = predictor(
         compound_library,
         prepare = True,
         smiles_column = smiles_col,
         target_column = target_col,
+        probe_cluster = probe_cluster,
     )
     total_res.sort_values('Score', ascending=False, inplace=True)
     total_res.head(keep_number).to_csv(f"{job_name}_results.csv", index=False, header=True, sep=',')
