@@ -1126,6 +1126,10 @@ class GeminiMol(BinarySimilarity):
             total_res = pd.concat([total_res, query_smiles_table.join(query_scores, how='left')], ignore_index=True)
         return total_res
 
+    '''
+    This method is employed to extract pre-trained GeminiMol encodings from raw molecular SMILES representations.
+    query_smiles_table: pd.DataFrame
+    '''
     def extract_features(self, query_smiles_table, smiles_column='smiles'):
         shape_features = self.extract(
             query_smiles_table, 
