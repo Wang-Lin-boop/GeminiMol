@@ -91,6 +91,7 @@ In this repository, we provide all the training, validation, and testing dataset
     cd ${GeminiMol}/data
     wget https://zenodo.org/api/records/10273480/files-archive 
     for i in *.zip;do
+        mkdir ${i%%.zip}
         unzip $i
     done
     mv ChemDiv.csv compound_library/
