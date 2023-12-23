@@ -92,7 +92,9 @@ In this repository, we provide all the training, validation, and testing dataset
     wget https://zenodo.org/api/records/10273480/files-archive 
     for i in *.zip;do
         mkdir ${i%%.zip}
-        unzip $i
+        cd ${i%%.zip}
+        unzip ../$i
+        cd ..
     done
     mv ChemDiv.csv compound_library/
     mv BindingDB_DATA.csv compound_library/
