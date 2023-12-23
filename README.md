@@ -84,7 +84,7 @@ GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomme
 
 In this repository, we provide all the training, validation, and testing datasets used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties.  
 
-> Download all datasets, model parameters and weights via Zenodo
+> Download all datasets via Zenodo for training, benchmarking, and applications   
 
 ``` shell
     cd ${GeminiMol}/data
