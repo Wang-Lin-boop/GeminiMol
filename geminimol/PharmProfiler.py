@@ -76,6 +76,7 @@ class Pharm_Profiler:
         smiles_column = 'smiles',
         target_column = 'target',
         probe_cluster = False,
+        smiliarity_metrics = 'Pearson',
     ):
         print(f'NOTE: columns of feature database: {self.features_database.columns}')
         total_res = self.features_database.copy()
@@ -99,10 +100,10 @@ class Pharm_Profiler:
                     input_with_features = True,
                     reverse = reverse_screening, 
                     smiles_column = smiles_column, 
-                    similarity_metrics = ['Pearson'],
+                    similarity_metrics = [smiliarity_metrics],
                     worker_num = 2
                 )
-                probe_res[f'{name}'] = probe['weight'] * probe_res['Pearson']
+                probe_res[f'{name}'] = probe['weight'] * probe_res[smiliarity_metrics]
                 total_res = pd.merge(
                     total_res,
                     probe_res[[smiles_column, f'{name}']], 
@@ -117,10 +118,10 @@ class Pharm_Profiler:
                         input_with_features = True,
                         reverse = reverse_screening, 
                         smiles_column = smiles_column, 
-                        similarity_metrics = ['Pearson'],
+                        similarity_metrics = [smiliarity_metrics],
                         worker_num = 2
                     )
-                    probe_res[f'{name}_{i}'] = probe['weight'] * probe_res['Pearson']
+                    probe_res[f'{name}_{i}'] = probe['weight'] * probe_res[smiliarity_metrics]
                     total_res = pd.merge(
                         total_res,
                         probe_res[[smiles_column, f'{name}_{i}']], 
