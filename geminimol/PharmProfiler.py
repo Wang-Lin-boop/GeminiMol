@@ -7,14 +7,10 @@ from utils.chem import gen_standardize_smiles, check_smiles_validity, is_valid_s
 
 class Pharm_Profiler:
     def __init__(self, 
-            model_name, 
+            encoder, 
             standardize = False
         ):
-        self.predictor = GeminiMol(
-            model_name,
-            internal_label_list = [],
-            extrnal_label_list = ['Pearson'],
-        )
+        self.encoder = encoder
         self.probes_dict = {
             # name : { 
             # 'smiles': smiles_list: 
@@ -63,7 +59,7 @@ class Pharm_Profiler:
             )
         compound_library.reset_index(drop=True, inplace=True)
         print(f'NOTE: non-duplicates compound library contains {len(compound_library)} compounds.')
-        self.features_database = self.predictor.create_database(
+        self.features_database = self.encoder.create_database(
             compound_library, 
             smiles_column = smiles_column, 
             worker_num = 2
@@ -94,7 +90,7 @@ class Pharm_Profiler:
             print(f'NOTE: using {name} as the probe.')
             probe_list = probe['smiles']
             if probe_cluster:
-                probe_res = self.predictor.virtual_screening(
+                probe_res = self.encoder.virtual_screening(
                     probe_list, 
                     self.features_database, 
                     input_with_features = True,
@@ -112,7 +108,7 @@ class Pharm_Profiler:
                 score_list.append(f'{name}')
             else:
                 for i in range(len(probe_list)):
-                    probe_res = self.predictor.virtual_screening(
+                    probe_res = self.encoder.virtual_screening(
                         [probe['smiles'][i]], 
                         self.features_database, 
                         input_with_features = True,
@@ -139,7 +135,12 @@ if __name__ == '__main__':
     print('GPU number:', torch.cuda.device_count())  # Should be > 0
     ## load model
     model_name = sys.argv[1]
-    predictor = Pharm_Profiler(model_name)
+    encoder = GeminiMol(
+            model_name,
+            internal_label_list = [],
+            extrnal_label_list = ['Pearson'],
+        )
+    predictor = Pharm_Profiler(encoder)
     # job_name
     job_name = sys.argv[2]
     smiles_col = sys.argv[3]

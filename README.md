@@ -90,14 +90,12 @@ In this repository, we provide all the training, validation, and testing dataset
 ``` shell
     cd ${GeminiMol}/data
     wget https://zenodo.org/api/records/10273480/files-archive 
-    for i in *.zip;do
+    for i in Benchmark*.zip css*.zip Chem*.zip;do
         mkdir ${i%%.zip}
-        cd ${i%%.zip}
-        unzip ../$i
-        cd ..
+        unzip -d ${i%%.zip}/ $i
     done
-    mv ChemDiv.csv compound_library/
-    mv BindingDB_DATA.csv compound_library/
+    unzip -d compound_library/ ChemDiv.zip 
+    unzip -d compound_library/ BindingDB_DATA.zip 
 ```
 
 > Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link) and [HuggingFace](https://huggingface.co/AlphaMWang)
