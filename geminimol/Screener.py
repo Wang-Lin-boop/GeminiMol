@@ -6,15 +6,9 @@ import pandas as pd
 from utils.chem import gen_standardize_smiles, check_smiles_validity
 
 class Virtual_Screening:
-    def __init__(self, model_name):
-        if os.path.exists(f'{model_name}/GeminiMol.pt'):
-            from model.GeminiMol import GeminiMol
-            self.predictor = GeminiMol(model_name)
-            self.metric = 'Pearson'
-        else:
-            from utils.fingerprint import Fingerprint
-            self.predictor = Fingerprint(model_name) # ECFP4 or TopologicalTorsion
-            self.metric = 'Tversky'
+    def __init__(self, predictor, metric = 'Cosine'):
+        self.predictor = predictor
+        self.metric = metric
     
     def prepare(self, dataset, smiles_column='smiles'):
         if self.standardize == True:
@@ -75,7 +69,15 @@ if __name__ == '__main__':
     print('GPU number:', torch.cuda.device_count())  # Should be > 0
     ## load model
     model_name = sys.argv[1]
-    predictor = Virtual_Screening(model_name)
+    if os.path.exists(f'{model_name}/GeminiMol.pt'):
+        from model.GeminiMol import GeminiMol
+        predictor = GeminiMol(model_name)
+        metric = 'Pearson'
+    else:
+        from utils.fingerprint import Fingerprint
+        predictor = Fingerprint(model_name) # ECFP4 or TopologicalTorsion
+        metric = 'Tversky'
+    predictor = Virtual_Screening(predictor, metric = metric)
     # running
     job_name = sys.argv[2]
     keep_number = int(sys.argv[5])
