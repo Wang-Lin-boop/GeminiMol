@@ -274,7 +274,7 @@ We have provided a processed version of the commercial Specs and ChemDiv compoun
 
 ``` shell
 export job_name="Virtual_Screening"
-export profile_set="profile.csv" # SMILES, Title, and Label (optional)
+export profile_set="profile.csv" # SMILES (same to compound library) and Label (requried)
 export compound_library="${geminimol_data}/compound_library/ChemDiv.csv" 
 export smiles_column="SMILES" # Specify the column name in the compound_library
 export keep_top=1000
@@ -286,7 +286,7 @@ To perform target identification, the compound library can be replaced with the 
 
 ``` shell
 export job_name="Target_Identification"
-export profile_set="profile.csv" # SMILES, Title, and Label (optional)
+export profile_set="profile.csv" # Ligand_SMILES (same to compound library), and Label (requried)
 export compound_library="${geminimol_data}/compound_library/BindingDB_DATA.csv" 
 export smiles_column="Ligand_SMILES" # Specify the column name in the compound_library
 export keep_top=2000
