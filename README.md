@@ -19,9 +19,9 @@
 - [💌 Get in Touch](#-get-in-touch)
 - [😃 Acknowledgements](#-acknowledgements)
   
-![](imgs/geminimol.png)  
+![](imgs/geminimol.png)    
 
-This repository provides the official implementation of the GeminiMol model, training data, and utitiles.   
+This repository provides the official implementation of the GeminiMol model, training data, and utitiles.     
 
 We also provide:   
 
@@ -262,7 +262,7 @@ C/C(=C\c1ncccc1C)[C@@H]1C[C@@H]2O[C@]2(C)CCC[C@H](C)[C@H](O)[C@@H](C)C(=O)C(C)(C
 
 The "Label" column signifies the weight assigned to the reference compound. Positive values indicate that the selected compounds should bear resemblance to the reference compound, while negative values imply that the selected compounds should be dissimilar to the reference compound. Typically, positive values are assigned to **active** compounds, whereas negative values are assigned to **inactive** compounds or those causing **side effects**.   
 
-The compound libraries are also stored in CSV format in the `${geminimol_data}/compound_library/` directory. When conducting screening, it is essential to specify the column name that represents the compound structures in the library, typically referred to as the SMILES column. It is recommended to maintain consistency between the SMILES column name in the `profile.csv` file and the compound library. For the provided commercial compound libraries, the column name is "SMILES", whereas for the drug-target relationship databases, the column name is "Ligand_SMILES".         
+The compound libraries are also stored in CSV format in the `${geminimol_data}/compound_library/` directory. When conducting screening, it is essential to specify the column name that represents the compound structures in the library, typically referred to as the SMILES column. It is recommended to maintain consistency between the SMILES column name in the `profile.csv` file and the compound library. For the provided commercial compound libraries, the column name is "SMILES", whereas for the drug-target relationship databases, the column name is "Ligand_SMILES".   
 
 > Perform the PharmProfiler
 
@@ -282,7 +282,7 @@ export probe_cluster="Yes"
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}" "${keep_top}"  "${probe_cluster}"
 ```
 
-To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/BindingDB_DATA.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris.     
+To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/BindingDB_DATA.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris. When applying the same profile file for target identification as mentioned above, it is necessary to modify the SMILES column name to "Ligand_SMILES" to match those in the `BindingDB_DATA.csv`. Of course, you may consider altering the column name in `BindingDB_DATA.csv` to "SMILES".    
 
 ``` shell
 export job_name="Target_Identification"
