@@ -262,7 +262,7 @@ C/C(=C\c1ncccc1C)[C@@H]1C[C@@H]2O[C@]2(C)CCC[C@H](C)[C@H](O)[C@@H](C)C(=O)C(C)(C
 
 The "Label" column signifies the weight assigned to the reference compound. Positive values indicate that the selected compounds should bear resemblance to the reference compound, while negative values imply that the selected compounds should be dissimilar to the reference compound. Typically, positive values are assigned to **active** compounds, whereas negative values are assigned to **inactive** compounds or those causing **side effects**.   
 
-The compound libraries are also stored in CSV format in the `${geminimol_data}/compound_library/` directory. When conducting screening, it is essential to specify the column name that represents the compound structures in the library, typically referred to as the SMILES column. It is recommended to maintain consistency between the SMILES column name in the `profile.csv` file and the compound library. For the provided commercial compound libraries, the column name is "SMILES", whereas for the drug-target relationship databases, the column name is "Ligand_SMILES".   
+The compound libraries are also stored in CSV format in the `${geminimol_data}/compound_library/` directory. When conducting screening, it is essential to specify the column name that represents the compound structures in the library. It is requried to maintain consistency between the SMILES column name in the `profile.csv` file and the compound library. For the provided commercial compound libraries, the column name is "SMILES", whereas for the drug-target relationship databases, the column name is "Ligand_SMILES".   
 
 > Perform the PharmProfiler
 
