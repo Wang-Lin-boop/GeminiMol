@@ -12,8 +12,7 @@
   - [Installing the dependency packages](#installing-the-dependency-packages)
 - [👐 Reproducing](#-reproducing)
 - [📓 Application](#-application)
-  - [Virtual Screening](#virtual-screening)
-  - [Target Identification](#target-identification)
+  - [Virtual Screening and Target Identification](#virtual-screening-and-target-identification)
   - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
 - [⭐ Citing this work](#-citing-this-work)
 - [✅ License](#-license)
@@ -243,45 +242,59 @@ As a molecular representation model, GeminiMol finds applications in **ligand-ba
 
 We have provided Cross-Encoder and GeminiMol models that can be used directly for inference. Here, we demonstrate the utilization of GeminiMol for virtual screening, target identification, and molecular property modeling.       
 
-### Virtual Screening
+### Virtual Screening and Target Identification
 
-In order to conduct virtual screening, it is essential to preassemble a collection of molecules that represent the pharmacological profile, including both active and non-active (optional) compounds, along with a library of compounds. These datasets should be saved in CSV format with specific column names.      
+In concept, molecules share similar conformational space also share similar biological activities, allowing us to predict the similarity of biological activities between molecules by comparing the similarity of GeminiMol encodings. Here, we introduce the ``PharmProfiler.py``, a novel approach that employs the GeminiMol encoding to establish pharmacological profiles and facilitate the search for molecules with specific properties in chemical space. ``PharmProfiler.py`` offers the capability to conduct ligand-based virtual screening using commercially available compound libraries. Furthermore, it enables target identification through ligand similarity analysis by leveraging comprehensive drug-target relationship databases. To support experimentation, we have included a collection of diverse commercial compound libraries and drug-target relationship databases, conveniently located in the `${geminimol_data}/compound_library/` directory.     
 
-Note that the "**Label**" column is used to input the pharmacological profile. Ideally, you can input some **active** molecules and some **inactive** molecules that are similar to the active ones but lack activity. This will ensure that the selected molecules are as close as possible to the active molecules and simultaneously far from the inactive ones.     
+> Prepare the pharmacological profile and compound libraries
 
-Please note that the inactive molecules can refer to those lacking activity or those with **side effects** or **lower activity**.    
+To define a pharmacological profile, you will need to input a `profile.csv` file, which should have the following format:   
 
-We have provided a processed version of the commercial Specs and ChemDiv compound library at the `${geminimol_data}/compound_library/specs.csv` and `${geminimol_data}/compound_library/ChemDiv.csv`, which contained 335,212 and 1,755,930 purchasable compounds. If you intend to utilize your own prepared compound library, please enable the "prepare" switch in the line 85 at the `Screener.py` script.    
+``` 
+SMILES,Label
+C=CC(=O)N[C@@H]1CN(c2nc(Nc3cn(C)nc3OC)c3ncn(C)c3n2)C[C@H]1F,1.0
+C=CC(=O)Nc1cccc(Nc2nc(Nc3ccc(N4CCN(C(C)=O)CC4)cc3OC)ncc2C(F)(F)F)c1,1.0
+C#Cc1cccc(Nc2ncnc3cc(OCCOC)c(OCCOC)cc23)c1,1.0
+COC(=O)CCC/N=C1\SCCN1Cc1ccccc1,0.4
+C=C(C)[C@@H]1C[C@@H](CC2(CC=C(C)C)C(=O)C(C(CC(=O)O)c3ccccc3)=C3O[C@@H](C)[C@@H](C)C(=O)C3=C2O)C1(C)C,-0.8
+C/C(=C\c1ncccc1C)[C@@H]1C[C@@H]2O[C@]2(C)CCC[C@H](C)[C@H](O)[C@@H](C)C(=O)C(C)(C)[C@@H](O)CC(=O)O1,-0.5
+```
+
+The "Label" column signifies the weight assigned to the reference compound. Positive values indicate that the selected compounds should bear resemblance to the reference compound, while negative values imply that the selected compounds should be dissimilar to the reference compound. Typically, positive values are assigned to **active** compounds, whereas negative values are assigned to **inactive** compounds or those causing **side effects**.   
+
+The compound libraries are also stored in CSV format in the `${geminimol_data}/compound_library/` directory. When conducting screening, it is essential to specify the column name that represents the compound structures in the library, typically referred to as the SMILES column. It is recommended to maintain consistency between the SMILES column name in the `profile.csv` file and the compound library. For the provided commercial compound libraries, the column name is "SMILES", whereas for the drug-target relationship databases, the column name is "Ligand_SMILES".         
+
+> Perform the PharmProfiler
+
+To perform virtual screening, the following command can be used.   
+
+Here, `profile_set` represents the provided pharmacological profile by the user, `keep_top` indicates the number of compounds to be outputted in the end, and `probe_cluster` determines whether compounds with the same weight should be treated as a cluster. Compounds within the same cluster will be compared individually with the query mol, and the highest similarity score will be taken as the score of query mol.   
+
+We have provided a processed version of the commercial Specs and ChemDiv compound library at the `${geminimol_data}/compound_library/specs.csv` and `${geminimol_data}/compound_library/ChemDiv.csv`, which contained 335,212 and 1,755,930 purchasable compounds.   
 
 ``` shell
 export job_name="Virtual_Screening"
-export decoy_set="decoys.csv" # SMILES, Title, and Label (optional)
+export profile_set="profile.csv" # SMILES, Title, and Label (optional)
 export compound_library="${geminimol_data}/compound_library/ChemDiv.csv" 
 export smiles_column="SMILES" # Specify the column name in the compound_library
-export id_column="Title" # Specify the column name in the compound_library
 export keep_top=1000
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/GeminiMol" "${job_name}" "${decoy_set}" "${compound_library}" "${keep_top}" "${smiles_column}" "${id_column}"
+export probe_cluster="Yes"
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}" "${keep_top}"  "${probe_cluster}"
 ```
 
-The column denoting the SMILES representation of the compounds should be labeled as "**SMILES**", while the column indicating the activity label should be named "**Label**". Please assign the label "active" to the active molecules and "inactive" to the non-active molecules. Lastly, the column representing the molecule ID should be titled "**Title**".   
-
-We restrict the use of column names to those specified in the designated compound library. This is primarily done to avoid confusion for novice users when modifying column names in large files. As for the decoy set, please ensure that the input CSV file contains at least two columns: SMILES and Title.   
-
-### Target Identification
-
-To conduct reverse virtual screening for target identification, it is essential to utilize a database that encompasses ligand-target relationships. This database should be structured with three columns: SMILES, Title, and **Targets**. The Targets column should specify the potential targets with which the drugs may interact.    
-
-We have provided a processed version of the BindingDB database at the `${geminimol_data}/compound_library/BindingDB_DATA.csv`, which contains 2,159,221 target-ligand paris.    
+To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/BindingDB_DATA.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris.     
 
 ``` shell
 export job_name="Target_Identification"
-export decoy_set="decoys.csv" # SMILES, Title, and Label (optional)
-export compound_library="${geminimol_data}/BindingDB_DATA.csv" 
+export profile_set="profile.csv" # SMILES, Title, and Label (optional)
+export compound_library="${geminimol_data}/compound_library/BindingDB_DATA.csv" 
 export smiles_column="Ligand_SMILES" # Specify the column name in the compound_library
-export id_column="Monomer_ID" # Specify the column name in the compound_library
-export keep_top=100
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/GeminiMol" "${job_name}" "${decoy_set}" "${compound_library}" "${keep_top}" "${smiles_column}" "${id_column}"
+export keep_top=2000
+export probe_cluster="Yes"
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}" "${keep_top}"  "${probe_cluster}"
 ```
+
+After the initial run of PharmProfiler, a extracted GeminiMol feature file will be generated in the `${geminimol_data}/compound_library/`. Subsequent screening tasks on the same compound library can benefit from PharmProfiler automatically reading the feature file, which helps to accelerate the running speed.    
 
 ### Molecular Proptery Modeling (QSAR and ADMET)
 
