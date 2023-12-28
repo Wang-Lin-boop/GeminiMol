@@ -282,7 +282,7 @@ export probe_cluster="Yes"
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}" "${keep_top}"  "${probe_cluster}"
 ```
 
-To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/BindingDB_DATA.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris. When applying the same profile file for target identification as mentioned above, it is necessary to modify the SMILES column name to "Ligand_SMILES" to match those in the `BindingDB_DATA.csv`. Of course, you may consider altering the column name in `BindingDB_DATA.csv` to "SMILES".    
+To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/BindingDB_DATA.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris. When applying the same profile file for target identification as mentioned above, it is necessary to modify the SMILES column name to "Ligand_SMILES" to match those in the `BindingDB_DATA.csv`. Of course, you may consider altering the column name in `BindingDB_DATA.csv` from "Ligand_SMILES" to "SMILES".    
 
 ``` shell
 export job_name="Target_Identification"
