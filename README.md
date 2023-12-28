@@ -290,7 +290,7 @@ export profile_set="profile.csv" # SMILES, Title, and Label (optional)
 export compound_library="${geminimol_data}/compound_library/BindingDB_DATA.csv" 
 export smiles_column="Ligand_SMILES" # Specify the column name in the compound_library
 export keep_top=2000
-export probe_cluster="Yes"
+export probe_cluster="No"
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}" "${keep_top}"  "${probe_cluster}"
 ```
 
