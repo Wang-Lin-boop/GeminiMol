@@ -362,7 +362,7 @@ GeminiMol is released under the Academic Free Licence, which permits academic us
 
 ## 💌 Get in Touch
 
-We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the [GeminiMol Developer Team](wangl@shanghaitech.edu.cn). We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wangl@shanghaitech.edu.cn or baifang@shanghaitech.edu.cn.       
+We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the GeminiMol Developer Team at wangl@shanghaitech.edu.cn. We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wangl@shanghaitech.edu.cn or baifang@shanghaitech.edu.cn.       
 
 In addition to GitHub, we offer a WeChat community to provide a forum for discussion between users. You can access the community's QR code by following the "蛋白矿工" on WeChat.     
 
