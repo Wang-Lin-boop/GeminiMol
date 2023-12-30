@@ -4,8 +4,8 @@
   📃 <a href="https://www.biorxiv.org/content/10.1101/2023.12.14.571629" target="_blank">Paper</a> ·  🤗 <a href="https://huggingface.co/AlphaMWang/GeminiMol" target="_blank">Model</a><br>
 </p>
 
-- [💡 Highlight](#-highlight)
 - [💗 Motivation](#-motivation)
+- [💡 Highlight](#-highlight)
 - [🔔 News](#-news)
 - [📕 Installation](#-installation)
   - [Download datasets and models](#download-datasets-and-models)
@@ -31,15 +31,15 @@ We also provide:
 
 Please also refer to our paper for a detailed description of GeminiMol.    
 
-## 💡 Highlight
-
-* By capturing the intricate interplay between molecular structure and conformational space, our training strategy enhances the representational capacity of GeminiMol.    
-* GeminiMol was pre-trained on only 37,336 molecular structures, yet it can generalize to zero-shot and QSAR tasks involving millions of molecules.    
-* GeminiMol exhibits the capability to identify pairs of molecules with similar 3D active conformation, even in scenarios where their 2D structures exhibit significant differences.    
-
 ## 💗 Motivation  
 
 The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. It has been **widely applied in drug discovery scenarios**, such as **virtual screening**, Quantitative Structure-Activity Relationship (**QSAR**) analysis, and **ADMET propteries prediction**. In previous work, molecular representation models were mostly trained on the static structure of molecules, however, the small molecules in solution are highly dynamic, and their flexible conformational changes endow them with the potential to bind to drug targets. Therefore, introducing information on small molecule conformational space into molecular representation models is a promising aim. In this work, a training strategy, named GeminiMol, was proposed to **incorporate the comprehension of conformational space into the molecular representation model**.    
+
+## 💡 Highlight
+
+* GeminiMol exhibits the capability to identify pairs of molecules with similar 3D active conformation, even in scenarios where their 2D structures exhibit significant differences.   
+* GeminiMol was pre-trained on only 37,336 molecular structures, yet it can generalize to zero-shot and QSAR tasks involving millions of molecules.    
+* By capturing the intricate interplay between molecular structure and conformational space, our training strategy enhances the representational capacity of GeminiMol.       
 
 ## 🔔 News    
 
