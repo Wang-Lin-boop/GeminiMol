@@ -185,6 +185,7 @@ To re-train the model or make predictions using the models we provide, follow th
 ## 👐 Reproducing
 
 Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the conformational space similarity descriptors of 39,290 molecules described in the paper.    
+
 Additionally, benchmark test scripts were provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, or incorporate additional molecular similarity data to further enhance the performance of the models.  
 
 > Training the Cross-Encoder
@@ -249,7 +250,13 @@ We have provided Cross-Encoder and GeminiMol models that can be used directly fo
 
 #### Virtual Screening and Target Identification
 
-In concept, molecules share similar conformational space also share similar biological activities, allowing us to predict the similarity of biological activities between molecules by comparing the similarity of GeminiMol encodings. Here, we introduce the ``PharmProfiler.py``, a novel approach that employs the GeminiMol encoding to establish pharmacological profiles and facilitate the search for molecules with specific properties in chemical space. ``PharmProfiler.py`` offers the capability to conduct ligand-based virtual screening using commercially available compound libraries. Furthermore, it enables target identification through ligand similarity analysis by leveraging comprehensive drug-target relationship databases. To support experimentation, we have included a collection of diverse commercial compound libraries and drug-target relationship databases, conveniently located in the `${geminimol_data}/compound_library/` directory.     
+In concept, molecules share similar conformational space also share similar biological activities, allowing us to predict the similarity of biological activities between molecules by comparing the similarity of GeminiMol encodings.     
+
+Here, we introduce the ``PharmProfiler.py``, a novel approach that employs the GeminiMol encoding to establish pharmacological profiles and facilitate the search for molecules with specific properties in chemical space.    
+
+``PharmProfiler.py`` offers the capability to conduct ligand-based virtual screening using commercially available compound libraries. Furthermore, it enables target identification through ligand similarity analysis by leveraging comprehensive drug-target relationship databases.    
+
+To support experimentation, we have included a collection of diverse commercial compound libraries and drug-target relationship databases, conveniently located in the `${geminimol_data}/compound_library/` directory.     
 
 > Prepare the pharmacological profile and compound libraries
 
@@ -265,9 +272,13 @@ C=C(C)[C@@H]1C[C@@H](CC2(CC=C(C)C)C(=O)C(C(CC(=O)O)c3ccccc3)=C3O[C@@H](C)[C@@H](
 C/C(=C\c1ncccc1C)[C@@H]1C[C@@H]2O[C@]2(C)CCC[C@H](C)[C@H](O)[C@@H](C)C(=O)C(C)(C)[C@@H](O)CC(=O)O1,-0.5
 ```
 
-The "Label" column signifies the weight assigned to the reference compound. Positive values indicate that the selected compounds should bear resemblance to the reference compound, while negative values imply that the selected compounds should be dissimilar to the reference compound. Typically, positive values are assigned to **active** compounds, whereas negative values are assigned to **inactive** compounds or those causing **side effects**.   
+The "Label" column signifies the weight assigned to the reference compound. Positive values indicate that the selected compounds should bear resemblance to the reference compound, while negative values imply that the selected compounds should be dissimilar to the reference compound.    
 
-The compound libraries are also stored in CSV format in the `${geminimol_data}/compound_library/` directory. When conducting screening, it is essential to specify the column name that represents the compound structures in the library. It is requried to maintain consistency between the SMILES column name in the `profile.csv` file and the compound library. For the provided commercial compound libraries, the column name is "SMILES", whereas for the drug-target relationship databases, the column name is "Ligand_SMILES".   
+Typically, positive values are assigned to **active** compounds, whereas negative values are assigned to **inactive** compounds or those causing **side effects**.   
+
+The compound libraries are also stored in CSV format in the `${geminimol_data}/compound_library/` directory. When conducting screening, it is essential to specify the column name that represents the compound structures in the library. It is requried to maintain consistency between the SMILES column name in the `profile.csv` file and the compound library.    
+
+For the provided commercial compound libraries, the column name is `SMILES`, whereas for the drug-target relationship databases, the column name is `Ligand_SMILES`.   
 
 > Perform the PharmProfiler
 
@@ -287,7 +298,9 @@ export probe_cluster="Yes"
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}" "${keep_top}"  "${probe_cluster}"
 ```
 
-To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/BindingDB_DATA.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris. When applying the same profile file for target identification as mentioned above, it is necessary to modify the SMILES column name to "Ligand_SMILES" to match those in the `BindingDB_DATA.csv`. Of course, you may consider altering the column name in `BindingDB_DATA.csv` from "Ligand_SMILES" to "SMILES".    
+To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/BindingDB_DATA.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris.     
+
+When applying the same profile file for target identification as mentioned above, it is necessary to modify the SMILES column name to "`Ligand_SMILES`" to match those in the `BindingDB_DATA.csv`. Of course, you may consider altering the column name in `BindingDB_DATA.csv` from "`Ligand_SMILES`" to "`SMILES`".    
 
 ``` shell
 export job_name="Target_Identification"
@@ -307,7 +320,9 @@ After the initial run of PharmProfiler, a extracted GeminiMol feature file will 
 
 Before conducting molecular property modeling, it is crucial to carefully prepare your data, which includes compound structure pre-processing and dataset splitting.     
 
-Firstly, you need to clarify the chirality and protonation states of molecules in the dataset, which can be done using chemical informatics tools such as RDKit or Schrödinger software package. The processed data should be saved in CSV file format, containing at least one column for **SMILES** and one column for **Labels**. Subsequently, utilize the following command for skeleton splitting. You can modify the script to change the splitting ratio, where by default, 70% of the dataset is used for training and 30% for validation and testing.     
+Firstly, you need to clarify the chirality and protonation states of molecules in the dataset, which can be done using chemical informatics tools such as RDKit or Schrödinger software package. Typically, omitting pre-processing will not result in an error, but it may potentially impair the performance of GeminiMol.    
+
+The processed data should be saved in CSV file format, containing at least one column for **`SMILES`** and one column for **`Labels`**. Subsequently, utilize the following command for skeleton splitting. You can modify the script to change the splitting ratio, where by default, 70% of the dataset is used for training and 30% for validation and testing.     
 
 ``` shell
 export dataset_path="data.csv"
@@ -369,7 +384,9 @@ bioRxiv 2023.12.14.571629; doi: https://doi.org/10.1101/2023.12.14.571629
 
 ## ✅ License
 
-GeminiMol is released under the Academic Free Licence, which permits academic use, modification and distribution free of charge, but prohibits unauthorised commercial use, including commercial training and as part of a paid computational platform. However, communication and authorization with [our supervisor](baifang@shanghaitech.edu.cn) is permitted for its application in pipeline development and research activities within pharmaceutical R&D.     
+GeminiMol is released under the Academic Free Licence, which permits academic use, modification and distribution free of charge, but prohibits unauthorised commercial use, including commercial training and as part of a paid computational platform. 
+
+However, communication and authorization with [our supervisor](baifang@shanghaitech.edu.cn) is permitted for its application in pipeline development and research activities within pharmaceutical R&D.     
 
 ## 💌 Get in Touch
 
