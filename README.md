@@ -8,12 +8,12 @@
 - [💡 Highlight](#-highlight)
 - [🔔 News](#-news)
 - [📕 Installation](#-installation)
-  - [Download datasets and models](#download-datasets-and-models)
-  - [Installing the dependency packages](#installing-the-dependency-packages)
+    - [Download datasets and models](#download-datasets-and-models)
+    - [Installing the dependency packages](#installing-the-dependency-packages)
 - [👐 Reproducing](#-reproducing)
 - [📓 Application](#-application)
-  - [Virtual Screening and Target Identification](#virtual-screening-and-target-identification)
-  - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
+    - [Virtual Screening and Target Identification](#virtual-screening-and-target-identification)
+    - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
 - [⭐ Citing This Work](#-citing-this-work)
 - [😫 Limitations](#-limitations)
 - [✅ License](#-license)
@@ -81,7 +81,7 @@ GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomme
     source ~/.bashrc
 ```
 
-### Download datasets and models
+#### Download datasets and models
 
 In this repository, we provide all the training, validation, and testing datasets used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties.  
 
@@ -140,7 +140,7 @@ GeminiMol
 │   ├── GeminiMol-MOD                    # GeminiMol-MOD, recommended for QSAR tasks    
 ``` 
 
-### Installing the dependency packages
+#### Installing the dependency packages
 
 If you intend to utilize molecular fingerprint baseline methods or conduct QSAR benchmarking, it is required to install RDKit and AutoGluon in advance.     
 
@@ -243,7 +243,7 @@ As a molecular representation model, GeminiMol finds applications in **ligand-ba
 
 We have provided Cross-Encoder and GeminiMol models that can be used directly for inference. Here, we demonstrate the utilization of GeminiMol for virtual screening, target identification, and molecular property modeling.       
 
-### Virtual Screening and Target Identification
+#### Virtual Screening and Target Identification
 
 In concept, molecules share similar conformational space also share similar biological activities, allowing us to predict the similarity of biological activities between molecules by comparing the similarity of GeminiMol encodings. Here, we introduce the ``PharmProfiler.py``, a novel approach that employs the GeminiMol encoding to establish pharmacological profiles and facilitate the search for molecules with specific properties in chemical space. ``PharmProfiler.py`` offers the capability to conduct ligand-based virtual screening using commercially available compound libraries. Furthermore, it enables target identification through ligand similarity analysis by leveraging comprehensive drug-target relationship databases. To support experimentation, we have included a collection of diverse commercial compound libraries and drug-target relationship databases, conveniently located in the `${geminimol_data}/compound_library/` directory.     
 
@@ -297,7 +297,7 @@ CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_
 
 After the initial run of PharmProfiler, a extracted GeminiMol feature file will be generated in the `${geminimol_data}/compound_library/`. Subsequent screening tasks on the same compound library can benefit from PharmProfiler automatically reading the feature file, which helps to accelerate the running speed.    
 
-### Molecular Proptery Modeling (QSAR and ADMET)
+#### Molecular Proptery Modeling (QSAR and ADMET)
 
 > Prepare your datasets
 
