@@ -14,7 +14,8 @@
 - [📓 Application](#-application)
   - [Virtual Screening and Target Identification](#virtual-screening-and-target-identification)
   - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
-- [⭐ Citing this work](#-citing-this-work)
+- [⭐ Citing This Work](#-citing-this-work)
+- [😫 Limitations](#-limitations)
 - [✅ License](#-license)
 - [💌 Get in Touch](#-get-in-touch)
 - [😃 Acknowledgements](#-acknowledgements)
@@ -350,11 +351,17 @@ export label_column="Label" # Specify the column name in datasets
 CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" "${geminimol_lib}/GeminiMol:${fingerprints}" "${smiles_column}" "${label_column}" "" "${task}_GeminiMol"
 ```
 
-## ⭐ Citing this work
+## ⭐ Citing This Work
 
 **Conformational Space Profile Enhances Generic Molecular Representation Learning**     
 Lin Wang, Shihang Wang, Hao Yang, Shiwei Li, Xinyu Wang, Yongqi Zhou, Siyuan Tian, Lu Liu, Fang Bai    
 bioRxiv 2023.12.14.571629; doi: https://doi.org/10.1101/2023.12.14.571629    
+
+## 😫 Limitations
+
+* Note that, the conformational space profile is not a panacea for drug discovery. For a portion of tasks, the 2D structure of a compound already contains sufficient information to establish structure-activity relationships, rendering the introduction of the conformational space profile inconsequential for these tasks. Additionally, the absorption, distribution, and metabolism of many drugs are closely related to the involvement of other biomacromolecules. Therefore, relying solely on information from small molecule conformational space is not an effective strategy for addressing such problems.    
+* The evaluation of intermolecular similarity is not limited to conformational pharmacophore similarity in three-dimensional space and maximum common substructure similarity in two-dimensional structures. By incorporating additional intermolecular similarity metrics during pre-training, we can further enrich the knowledge that the model can learn, such as molecular fingerprints and molecular surface potentials.   
+* Due to computational resource limitations, we only included 39,290 molecules in our pre-training. It is foreseeable that incorporating a larger number of molecular structures during pre-training could further enhance the performance of GeminiMol, particularly when guided by drug-target relationships to obtain more high-quality data.    
 
 ## ✅ License
 
