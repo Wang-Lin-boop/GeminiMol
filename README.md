@@ -35,7 +35,9 @@ Please also refer to our [paper](https://doi.org/10.1101/2023.12.14.571629) for 
 ## 💗 Motivation  
 
 The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. It has been **widely applied in drug discovery scenarios**, such as Quantitative Structure-Activity Relationship (**QSAR**) analysis, and **ADMET propteries prediction**.    
+
 The small molecules are highly dynamic in solution, and their flexible conformational changes endow them with the potential to bind to drug targets. Therefore, introducing information on small molecule conformational space into molecular representation models is a promising aim.     
+
 In this work, we proposed to incorporate the **conformational space profile** into the molecular representation model.    
 
 ## 💡 Highlight
