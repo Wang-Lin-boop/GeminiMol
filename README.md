@@ -30,7 +30,7 @@ We also provide:
 2.  scripts for features analysis, visualisation and similarity calculation.   
 3.  scripts, datasets and results for benchmarking molecular fingerprints and GeminiMol models on virtual screening, target identification, and QSAR (drug-target binding affinity, cellar activity, ADME, and toxicity).    
 
-Please also refer to our paper for a detailed description of GeminiMol.    
+Please also refer to our [paper](https://doi.org/10.1101/2023.12.14.571629) for a detailed description of GeminiMol.    
 
 ## 💗 Motivation  
 
