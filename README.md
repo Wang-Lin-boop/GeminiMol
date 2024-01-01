@@ -293,9 +293,10 @@ export job_name="Virtual_Screening"
 export profile_set="profile.csv" # SMILES (same to compound library) and Label (requried)
 export compound_library="${geminimol_data}/compound_library/ChemDiv.csv" 
 export smiles_column="SMILES" # Specify the column name in the compound_library
+export weight_column="Label" # weights for profiles
 export keep_top=1000
 export probe_cluster="Yes"
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}" "${keep_top}"  "${probe_cluster}"
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}:${weight_column}" "${keep_top}"  "${probe_cluster}"
 ```
 
 To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/BindingDB_DATA.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris.     
@@ -307,9 +308,10 @@ export job_name="Target_Identification"
 export profile_set="profile.csv" # Ligand_SMILES (same to compound library), and Label (requried)
 export compound_library="${geminimol_data}/compound_library/BindingDB_DATA.csv" 
 export smiles_column="Ligand_SMILES" # Specify the column name in the compound_library
+export weight_column="Label" # weights for profiles
 export keep_top=2000
 export probe_cluster="No"
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}" "${keep_top}"  "${probe_cluster}"
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}:${weight_column}" "${keep_top}"  "${probe_cluster}"
 ```
 
 After the initial run of PharmProfiler, a extracted GeminiMol feature file will be generated in the `${geminimol_data}/compound_library/`. Subsequent screening tasks on the same compound library can benefit from PharmProfiler automatically reading the feature file, which helps to accelerate the running speed.    
