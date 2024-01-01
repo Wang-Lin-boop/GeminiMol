@@ -70,21 +70,13 @@ class Pharm_Profiler:
     def __call__(
         self, 
         smiles_column = 'smiles',
-        target_column = 'target',
         probe_cluster = False,
         smiliarity_metrics = 'Pearson',
     ):
         print(f'NOTE: columns of feature database: {self.features_database.columns}')
         total_res = self.features_database.copy()
         del total_res['features']
-        if target_column in self.features_database.columns:
-            reverse_screening = True
-            print(f'NOTE: the target column {target_column} was found in compound library.')
-            print(f'NOTE: starting reverse screening...')
-        else:
-            reverse_screening = False
-            print(f'NOTE: we did not find the target column {target_column} in compound library.')
-            print(f'NOTE: starting forward screening...')
+        print(f'NOTE: starting screening...')
         score_list = []
         for name, probe in self.probes_dict.items():
             print(f'NOTE: using {name} as the probe.')
@@ -94,7 +86,7 @@ class Pharm_Profiler:
                     probe_list, 
                     self.features_database, 
                     input_with_features = True,
-                    reverse = reverse_screening, 
+                    reverse = True, 
                     smiles_column = smiles_column, 
                     similarity_metrics = [smiliarity_metrics],
                     worker_num = 2
@@ -112,7 +104,7 @@ class Pharm_Profiler:
                         [probe['smiles'][i]], 
                         self.features_database, 
                         input_with_features = True,
-                        reverse = reverse_screening, 
+                        reverse = True, 
                         smiles_column = smiles_column, 
                         similarity_metrics = [smiliarity_metrics],
                         worker_num = 2
@@ -140,18 +132,15 @@ if __name__ == '__main__':
             internal_label_list = [],
             extrnal_label_list = ['Pearson'],
         )
-    predictor = Pharm_Profiler(encoder)
+    predictor = Pharm_Profiler(
+        encoder,
+        standardize = True
+        )
     # job_name
     job_name = sys.argv[2]
     smiles_col = sys.argv[3]
-    if ':' not in sys.argv[4]:
-        compound_library = pd.read_csv(sys.argv[4])
-        library_path = sys.argv[4].split('.')[0]
-        target_col = 'none'
-    else:
-        compound_library = pd.read_csv(sys.argv[4].split(':')[0])
-        library_path = sys.argv[4].split(':')[0].split('.')[0]
-        target_col = sys.argv[4].split(':')[1]
+    compound_library = pd.read_csv(sys.argv[4])
+    library_path = sys.argv[4].split('.')[0]
     # update profiles
     if ':' in sys.argv[5]:
         ref_smiles_table = pd.read_csv(sys.argv[5].split(':')[0])
@@ -187,7 +176,6 @@ if __name__ == '__main__':
     # virtual screening 
     total_res = predictor(
         smiles_column = smiles_col,
-        target_column = target_col,
         probe_cluster = probe_cluster,
     )
     total_res.sort_values('Score', ascending=False, inplace=True)

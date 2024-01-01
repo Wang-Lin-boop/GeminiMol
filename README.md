@@ -4,25 +4,25 @@
   📃 <a href="https://www.biorxiv.org/content/10.1101/2023.12.14.571629" target="_blank">Paper</a> ·  🤗 <a href="https://huggingface.co/AlphaMWang/GeminiMol" target="_blank">Model</a><br>
 </p>
 
-- [💡 Highlight](#-highlight)
 - [💗 Motivation](#-motivation)
+- [💡 Highlight](#-highlight)
 - [🔔 News](#-news)
 - [📕 Installation](#-installation)
-  - [Download datasets and models](#download-datasets-and-models)
-  - [Installing the dependency packages](#installing-the-dependency-packages)
+    - [Download datasets and models](#download-datasets-and-models)
+    - [Installing the dependency packages](#installing-the-dependency-packages)
 - [👐 Reproducing](#-reproducing)
 - [📓 Application](#-application)
-  - [Virtual Screening](#virtual-screening)
-  - [Target Identification](#target-identification)
-  - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
-- [⭐ Citing this work](#-citing-this-work)
+    - [Virtual Screening and Target Identification](#virtual-screening-and-target-identification)
+    - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
+- [⭐ Citing This Work](#-citing-this-work)
+- [😫 Limitations](#-limitations)
 - [✅ License](#-license)
 - [💌 Get in Touch](#-get-in-touch)
 - [😃 Acknowledgements](#-acknowledgements)
   
-![](imgs/geminimol.png)  
+![](imgs/geminimol.png)    
 
-This repository provides the official implementation of the GeminiMol model, training data, and utitiles.   
+This repository provides the official implementation of the GeminiMol model, training data, and utitiles.     
 
 We also provide:   
 
@@ -30,17 +30,21 @@ We also provide:
 2.  scripts for features analysis, visualisation and similarity calculation.   
 3.  scripts, datasets and results for benchmarking molecular fingerprints and GeminiMol models on virtual screening, target identification, and QSAR (drug-target binding affinity, cellar activity, ADME, and toxicity).    
 
-Please also refer to our paper for a detailed description of GeminiMol.    
-
-## 💡 Highlight
-
-* By capturing the intricate interplay between molecular structure and conformational space, our training strategy enhances the representational capacity of GeminiMol.    
-* GeminiMol was pre-trained on only 37,336 molecular structures, yet it can generalize to zero-shot and QSAR tasks involving millions of molecules.    
-* GeminiMol exhibits the capability to identify pairs of molecules with similar 3D active conformation, even in scenarios where their 2D structures exhibit significant differences.    
+Please also refer to our [paper](https://doi.org/10.1101/2023.12.14.571629) for a detailed description of GeminiMol.    
 
 ## 💗 Motivation  
 
-The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. It has been **widely applied in drug discovery scenarios**, such as **virtual screening**, Quantitative Structure-Activity Relationship (**QSAR**) analysis, and **ADMET propteries prediction**. In previous work, molecular representation models were mostly trained on the static structure of molecules, however, the small molecules in solution are highly dynamic, and their flexible conformational changes endow them with the potential to bind to drug targets. Therefore, introducing information on small molecule conformational space into molecular representation models is a promising aim. In this work, a training strategy, named GeminiMol, was proposed to **incorporate the comprehension of conformational space into the molecular representation model**.    
+The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. It has been **widely applied in drug discovery scenarios**, such as Quantitative Structure-Activity Relationship (**QSAR**) analysis, and **ADMET propteries prediction**.    
+
+The small molecules are highly dynamic in solution, and their flexible conformational changes endow them with the potential to bind to drug targets. Therefore, introducing information on small molecule conformational space into molecular representation models is a promising aim.     
+
+In this work, we proposed to incorporate the **conformational space profile** into the molecular representation model.    
+
+## 💡 Highlight
+
+* GeminiMol exhibits the capability to **identify molecular pairs with similar 3D active conformers**, even in scenarios where their 2D structures exhibit significant differences.     
+* GeminiMol was pre-trained on only 37,336 molecular structures, yet it can **generalize** to zero-shot and QSAR tasks involving millions of molecules.    
+* By capturing the intricate interactions between molecular structure and conformational space, our training strategy empowers GeminiMol with **balanced performance across various downstream tasks** in drug discovery, including virtual screening, target identification, QSAR, and ADMET property modeling.       
 
 ## 🔔 News    
 
@@ -81,7 +85,7 @@ GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomme
     source ~/.bashrc
 ```
 
-### Download datasets and models
+#### Download datasets and models
 
 In this repository, we provide all the training, validation, and testing datasets used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties.  
 
@@ -140,7 +144,7 @@ GeminiMol
 │   ├── GeminiMol-MOD                    # GeminiMol-MOD, recommended for QSAR tasks    
 ``` 
 
-### Installing the dependency packages
+#### Installing the dependency packages
 
 If you intend to utilize molecular fingerprint baseline methods or conduct QSAR benchmarking, it is required to install RDKit and AutoGluon in advance.     
 
@@ -181,6 +185,7 @@ To re-train the model or make predictions using the models we provide, follow th
 ## 👐 Reproducing
 
 Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the conformational space similarity descriptors of 39,290 molecules described in the paper.    
+
 Additionally, benchmark test scripts were provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, or incorporate additional molecular similarity data to further enhance the performance of the models.   
 
 > Training the Cross-Encoder
@@ -243,53 +248,81 @@ As a molecular representation model, GeminiMol finds applications in **ligand-ba
 
 We have provided Cross-Encoder and GeminiMol models that can be used directly for inference. Here, we demonstrate the utilization of GeminiMol for virtual screening, target identification, and molecular property modeling.       
 
-### Virtual Screening
+#### Virtual Screening and Target Identification
 
-In order to conduct virtual screening, it is essential to preassemble a collection of molecules that represent the pharmacological profile, including both active and non-active (optional) compounds, along with a library of compounds. These datasets should be saved in CSV format with specific column names.      
+In concept, molecules share similar conformational space also share similar biological activities, allowing us to predict the similarity of biological activities between molecules by comparing the similarity of GeminiMol encodings.     
 
-Note that the "**Label**" column is used to input the pharmacological profile. Ideally, you can input some **active** molecules and some **inactive** molecules that are similar to the active ones but lack activity. This will ensure that the selected molecules are as close as possible to the active molecules and simultaneously far from the inactive ones.     
+Here, we introduce the ``PharmProfiler.py``, a novel approach that employs the GeminiMol encoding to establish pharmacological profiles and facilitate the search for molecules with specific properties in chemical space.    
 
-Please note that the inactive molecules can refer to those lacking activity or those with **side effects** or **lower activity**.    
+``PharmProfiler.py`` offers the capability to conduct ligand-based virtual screening using commercially available compound libraries. Furthermore, it enables target identification through ligand similarity analysis by leveraging comprehensive drug-target relationship databases.    
 
-We have provided a processed version of the commercial Specs and ChemDiv compound library at the `${geminimol_data}/compound_library/specs.csv` and `${geminimol_data}/compound_library/ChemDiv.csv`, which contained 335,212 and 1,755,930 purchasable compounds. If you intend to utilize your own prepared compound library, please enable the "prepare" switch in the line 85 at the `Screener.py` script.    
+To support experimentation, we have included a collection of diverse commercial compound libraries and drug-target relationship databases, conveniently located in the `${geminimol_data}/compound_library/` directory.     
+
+> Prepare the pharmacological profile and compound libraries
+
+To define a pharmacological profile, you will need to input a `profile.csv` file, which should have the following format:   
+
+``` 
+SMILES,Label
+C=CC(=O)N[C@@H]1CN(c2nc(Nc3cn(C)nc3OC)c3ncn(C)c3n2)C[C@H]1F,1.0
+C=CC(=O)Nc1cccc(Nc2nc(Nc3ccc(N4CCN(C(C)=O)CC4)cc3OC)ncc2C(F)(F)F)c1,1.0
+C#Cc1cccc(Nc2ncnc3cc(OCCOC)c(OCCOC)cc23)c1,1.0
+COC(=O)CCC/N=C1\SCCN1Cc1ccccc1,0.4
+C=C(C)[C@@H]1C[C@@H](CC2(CC=C(C)C)C(=O)C(C(CC(=O)O)c3ccccc3)=C3O[C@@H](C)[C@@H](C)C(=O)C3=C2O)C1(C)C,-0.8
+C/C(=C\c1ncccc1C)[C@@H]1C[C@@H]2O[C@]2(C)CCC[C@H](C)[C@H](O)[C@@H](C)C(=O)C(C)(C)[C@@H](O)CC(=O)O1,-0.5
+```
+
+The "Label" column signifies the weight assigned to the reference compound. Positive values indicate that the selected compounds should bear resemblance to the reference compound, while negative values imply that the selected compounds should be dissimilar to the reference compound.    
+
+Typically, positive values are assigned to **active** compounds, whereas negative values are assigned to **inactive** compounds or those causing **side effects**.   
+
+The compound libraries are also stored in CSV format in the `${geminimol_data}/compound_library/` directory. When conducting screening, it is essential to specify the column name that represents the compound structures in the library. It is requried to maintain consistency between the SMILES column name in the `profile.csv` file and the compound library.    
+
+For the provided commercial compound libraries, the column name is `SMILES`, whereas for the drug-target relationship databases, the column name is `Ligand_SMILES`.   
+
+> Perform the PharmProfiler
+
+To perform virtual screening, the following command can be used.   
+
+Here, `profile_set` represents the provided pharmacological profile by the user, `keep_top` indicates the number of compounds to be outputted in the end, and `probe_cluster` determines whether compounds with the same weight should be treated as a cluster. Compounds within the same cluster will be compared individually with the query mol, and the highest similarity score will be taken as the score of query mol.   
+
+We have provided a processed version of the commercial Specs and ChemDiv compound library at the `${geminimol_data}/compound_library/specs.csv` and `${geminimol_data}/compound_library/ChemDiv.csv`, which contained 335,212 and 1,755,930 purchasable compounds.   
 
 ``` shell
 export job_name="Virtual_Screening"
-export decoy_set="decoys.csv" # SMILES, Title, and Label (optional)
+export profile_set="profile.csv" # SMILES (same to compound library) and Label (requried)
 export compound_library="${geminimol_data}/compound_library/ChemDiv.csv" 
 export smiles_column="SMILES" # Specify the column name in the compound_library
-export id_column="Title" # Specify the column name in the compound_library
 export keep_top=1000
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/GeminiMol" "${job_name}" "${decoy_set}" "${compound_library}" "${keep_top}" "${smiles_column}" "${id_column}"
+export probe_cluster="Yes"
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}" "${keep_top}"  "${probe_cluster}"
 ```
 
-The column denoting the SMILES representation of the compounds should be labeled as "**SMILES**", while the column indicating the activity label should be named "**Label**". Please assign the label "active" to the active molecules and "inactive" to the non-active molecules. Lastly, the column representing the molecule ID should be titled "**Title**".   
+To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/BindingDB_DATA.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris.     
 
-We restrict the use of column names to those specified in the designated compound library. This is primarily done to avoid confusion for novice users when modifying column names in large files. As for the decoy set, please ensure that the input CSV file contains at least two columns: SMILES and Title.   
-
-### Target Identification
-
-To conduct reverse virtual screening for target identification, it is essential to utilize a database that encompasses ligand-target relationships. This database should be structured with three columns: SMILES, Title, and **Targets**. The Targets column should specify the potential targets with which the drugs may interact.    
-
-We have provided a processed version of the BindingDB database at the `${geminimol_data}/compound_library/BindingDB_DATA.csv`, which contains 2,159,221 target-ligand paris.    
+When applying the same profile file for target identification as mentioned above, it is necessary to modify the SMILES column name to "`Ligand_SMILES`" to match those in the `BindingDB_DATA.csv`. Of course, you may consider altering the column name in `BindingDB_DATA.csv` from "`Ligand_SMILES`" to "`SMILES`".    
 
 ``` shell
 export job_name="Target_Identification"
-export decoy_set="decoys.csv" # SMILES, Title, and Label (optional)
-export compound_library="${geminimol_data}/BindingDB_DATA.csv" 
+export profile_set="profile.csv" # Ligand_SMILES (same to compound library), and Label (requried)
+export compound_library="${geminimol_data}/compound_library/BindingDB_DATA.csv" 
 export smiles_column="Ligand_SMILES" # Specify the column name in the compound_library
-export id_column="Monomer_ID" # Specify the column name in the compound_library
-export keep_top=100
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/Screener.py "${geminimol_lib}/GeminiMol" "${job_name}" "${decoy_set}" "${compound_library}" "${keep_top}" "${smiles_column}" "${id_column}"
+export keep_top=2000
+export probe_cluster="No"
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}" "${keep_top}"  "${probe_cluster}"
 ```
 
-### Molecular Proptery Modeling (QSAR and ADMET)
+After the initial run of PharmProfiler, a extracted GeminiMol feature file will be generated in the `${geminimol_data}/compound_library/`. Subsequent screening tasks on the same compound library can benefit from PharmProfiler automatically reading the feature file, which helps to accelerate the running speed.    
+
+#### Molecular Proptery Modeling (QSAR and ADMET)
 
 > Prepare your datasets
 
 Before conducting molecular property modeling, it is crucial to carefully prepare your data, which includes compound structure pre-processing and dataset splitting.     
 
-Firstly, you need to clarify the chirality and protonation states of molecules in the dataset, which can be done using chemical informatics tools such as RDKit or Schrödinger software package. The processed data should be saved in CSV file format, containing at least one column for **SMILES** and one column for **Labels**. Subsequently, utilize the following command for skeleton splitting. You can modify the script to change the splitting ratio, where by default, 70% of the dataset is used for training and 30% for validation and testing.     
+Firstly, you need to clarify the chirality and protonation states of molecules in the dataset, which can be done using chemical informatics tools such as RDKit or Schrödinger software package. Typically, omitting pre-processing will not result in an error, but it may potentially impair the performance of GeminiMol.    
+
+The processed data should be saved in CSV file format, containing at least one column for **`SMILES`** and one column for **`Labels`**. Subsequently, utilize the following command for skeleton splitting. You can modify the script to change the splitting ratio, where by default, 70% of the dataset is used for training and 30% for validation and testing.     
 
 ``` shell
 export dataset_path="data.csv"
@@ -337,19 +370,27 @@ export label_column="Label" # Specify the column name in datasets
 CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" "${geminimol_lib}/GeminiMol:${fingerprints}" "${smiles_column}" "${label_column}" "" "${task}_GeminiMol"
 ```
 
-## ⭐ Citing this work
+## ⭐ Citing This Work
 
 **Conformational Space Profile Enhances Generic Molecular Representation Learning**     
 Lin Wang, Shihang Wang, Hao Yang, Shiwei Li, Xinyu Wang, Yongqi Zhou, Siyuan Tian, Lu Liu, Fang Bai    
 bioRxiv 2023.12.14.571629; doi: https://doi.org/10.1101/2023.12.14.571629    
 
+## 😫 Limitations
+
+* Note that, the conformational space profile is **not a panacea** for drug discovery. For a portion of tasks, the 2D structure of a compound already contains sufficient information to establish structure-activity relationships, rendering the introduction of the conformational space profile inconsequential for these tasks.       
+* The evaluation of intermolecular similarity is not limited to pharmacophore similarity in 3D conformational space and maximum common substructure similarity in 2D structures. By incorporating **additional intermolecular similarity metrics** during pre-training, we can further enrich the knowledge that the model can learn, such as molecular fingerprints and molecular surface potentials.   
+* Due to computational resource limitations, we only included 39,290 molecules in our pre-training. It is foreseeable that incorporating **more molecular structures** during pre-training could further enhance the performance of GeminiMol, particularly when guided by drug-target relationships to obtain high-quality data.    
+
 ## ✅ License
 
-GeminiMol is released under the Academic Free Licence, which permits academic use, modification and distribution free of charge, but prohibits unauthorised commercial use, including commercial training and as part of a paid computational platform. However, communication and authorization with [our supervisor](baifang@shanghaitech.edu.cn) is permitted for its application in pipeline development and research activities within pharmaceutical R&D.     
+GeminiMol is released under the Academic Free Licence, which permits academic use, modification and distribution free of charge, but prohibits unauthorised commercial use, including commercial training and as part of a paid computational platform. 
+
+However, communication and authorization with [our supervisor](baifang@shanghaitech.edu.cn) is permitted for its application in pipeline development and research activities within pharmaceutical R&D.     
 
 ## 💌 Get in Touch
 
-We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the [GeminiMol Developer Team](wangl@shanghaitech.edu.cn). We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wangl@shanghaitech.edu.cn or baifang@shanghaitech.edu.cn.       
+We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the GeminiMol Developer Team at wangl@shanghaitech.edu.cn. We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wangl@shanghaitech.edu.cn or baifang@shanghaitech.edu.cn.       
 
 In addition to GitHub, we offer a WeChat community to provide a forum for discussion between users. You can access the community's QR code by following the "蛋白矿工" on WeChat.     
 
@@ -358,6 +399,8 @@ In addition to GitHub, we offer a WeChat community to provide a forum for discus
 We appreciate the technical support provided by the engineers of the high-performance computing cluster of ShanghaiTech University.  Lin Wang also thanks Jianxin Duan, Gaokeng Xiao, Quanwei Yu, Zheyuan Shen, Shenghao Dong, Huiqiong Li, Zongquan Li, and Fenglei Li for providing technical support, inspiration and help for this work.      
 
 We appreciate the developers of AutoGluon and Deep Graph Library (DGL). We also thank the developers and maintainers of MarcoModel and PhaseShape modules in the Schrödinger package.      
+
+We express our gratitude to Dr. Zhongji Pu for his invaluable assistance in conducting third-party testing for model installation, reproducibility and application.
 
 Besides, GeminiMol communicates with and/or references the following separate libraries and packages, we thank all their contributors and maintainers!  
 
