@@ -116,7 +116,6 @@ class Pharm_Profiler:
                         on = smiles_column
                     )
                     score_list.append(f'{name}_{i}')
-        total_res.fillna(0, inplace=True)
         total_res['Score'] = total_res[score_list].sum(axis=1)
         return total_res
 
