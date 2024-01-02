@@ -99,7 +99,7 @@ In this repository, we provide all the training, validation, and testing dataset
         unzip -d ${i%%.zip}/ $i
     done
     unzip -d compound_library/ ChemDiv.zip 
-    unzip -d compound_library/ BindingDB_DATA.zip 
+    unzip -d compound_library/ DTIDB.zip 
 ```
 
 > Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link) and [HuggingFace](https://huggingface.co/AlphaMWang)
@@ -135,7 +135,7 @@ GeminiMol
 │   ├── css_library                      # CSS training data
 │   ├── benchmark.json                   # dataset index for benchmark tasks         
 │   ├── database.csv                     # molecular datasets in this work      
-│   ├── BindingDB_DATA.csv               # dataset used in target identification    
+│   ├── DTIDB.csv               # dataset used in target identification    
 │   ├── ChemDiv.csv                      # library of common commercial compounds     
 │   ├── Specs.csv                        # library of common commercial compounds    
 ├── models                               # CrossEncoder and GeminiMol models
@@ -278,8 +278,6 @@ Typically, positive values are assigned to **active** compounds, whereas negativ
 
 The compound libraries are also stored in CSV format in the `${geminimol_data}/compound_library/` directory. When conducting screening, it is essential to specify the column name that represents the compound structures in the library. It is requried to maintain consistency between the SMILES column name in the `profile.csv` file and the compound library.    
 
-For the provided commercial compound libraries, the column name is `SMILES`, whereas for the drug-target relationship databases, the column name is `Ligand_SMILES`.   
-
 > Perform the PharmProfiler
 
 To perform virtual screening, the following command can be used.   
@@ -299,15 +297,13 @@ export probe_cluster="Yes"
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}:${weight_column}" "${keep_top}"  "${probe_cluster}"
 ```
 
-To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/BindingDB_DATA.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris.     
-
-When applying the same profile file for target identification as mentioned above, it is necessary to modify the SMILES column name to "`Ligand_SMILES`" to match those in the `BindingDB_DATA.csv`. Of course, you may consider altering the column name in `BindingDB_DATA.csv` from "`Ligand_SMILES`" to "`SMILES`".    
+To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/DTIDB.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris.     
 
 ``` shell
 export job_name="Target_Identification"
 export profile_set="profile.csv" # Ligand_SMILES (same to compound library), and Label (requried)
-export compound_library="${geminimol_data}/compound_library/BindingDB_DATA.csv" 
-export smiles_column="Ligand_SMILES" # Specify the column name in the compound_library
+export compound_library="${geminimol_data}/compound_library/DTIDB.csv" 
+export smiles_column="SMILES" # Specify the column name in the compound_library
 export weight_column="Label" # weights for profiles
 export keep_top=2000
 export probe_cluster="No"
