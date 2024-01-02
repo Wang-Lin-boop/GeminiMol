@@ -164,6 +164,12 @@ if __name__ == '__main__':
     # generate features database
     if os.path.exists(f'{library_path}.pkl'):
         predictor.features_database = pd.read_pickle(f'{library_path}.pkl')
+        predictor.features_database.drop_duplicates(
+            subset = [smiles_col], 
+            keep = 'first', 
+            inplace = True,
+            ignore_index = True
+        )
     else:
         features_database = predictor.update_library(
             compound_library,
