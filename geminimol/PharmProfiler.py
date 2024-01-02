@@ -6,6 +6,9 @@ from model.GeminiMol import GeminiMol
 from utils.chem import gen_standardize_smiles, check_smiles_validity, is_valid_smiles
 import gc
 
+def aggregate(x):
+    return ':'.join(x.unique())
+
 class Pharm_Profiler:
     def __init__(self, 
             encoder, 
@@ -52,13 +55,7 @@ class Pharm_Profiler:
         if prepare:
             compound_library = self.prepare(compound_library, smiles_column=smiles_column)
         print(f'NOTE: the compound library contains {len(compound_library)} compounds.')
-        compound_library.drop_duplicates(
-            subset=[smiles_column], 
-            keep='first', 
-            inplace=True,
-            ignore_index = True
-            )
-        compound_library.reset_index(drop=True, inplace=True)
+        compound_library = compound_library.groupby(smiles_column).agg(aggregate).reset_index()
         print(f'NOTE: non-duplicates compound library contains {len(compound_library)} compounds.')
         self.database = self.encoder.create_database(
             compound_library, 
