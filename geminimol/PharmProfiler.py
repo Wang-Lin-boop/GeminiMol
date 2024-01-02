@@ -123,7 +123,7 @@ class Pharm_Profiler:
             probe_res = None
             gc.collect()
         self.database['Score'] = self.database[score_list].sum(axis=1)
-        self.database.drop(['features'], axis=1, inplace=True)
+        del self.database['features']
         return self.database
 
 if __name__ == '__main__':
