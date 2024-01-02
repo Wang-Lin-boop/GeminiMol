@@ -4,6 +4,7 @@ import torch
 import pandas as pd
 from model.GeminiMol import GeminiMol
 from utils.chem import gen_standardize_smiles, check_smiles_validity, is_valid_smiles
+import gc
 
 class Pharm_Profiler:
     def __init__(self, 
@@ -59,13 +60,14 @@ class Pharm_Profiler:
             )
         compound_library.reset_index(drop=True, inplace=True)
         print(f'NOTE: non-duplicates compound library contains {len(compound_library)} compounds.')
-        self.features_database = self.encoder.create_database(
+        self.database = self.encoder.create_database(
             compound_library, 
             smiles_column = smiles_column, 
             worker_num = 2
         )
         print('NOTE: features database was created.')
-        return self.features_database
+        gc.collect()
+        return self.database
 
     def __call__(
         self, 
@@ -73,28 +75,30 @@ class Pharm_Profiler:
         probe_cluster = False,
         smiliarity_metrics = 'Pearson',
     ):
-        print(f'NOTE: columns of feature database: {self.features_database.columns}')
-        total_res = self.features_database.copy()
-        del total_res['features']
+        print(f'NOTE: columns of feature database: {self.database.columns}')
+        gc.collect()
         print(f'NOTE: starting screening...')
         score_list = []
         for name, probe in self.probes_dict.items():
-            print(f'NOTE: using {name} as the probe.')
+            print(f'NOTE: using {name} as the probe....', end='')
             probe_list = probe['smiles']
+            gc.collect()
             if probe_cluster:
                 probe_res = self.encoder.virtual_screening(
                     probe_list, 
-                    self.features_database, 
+                    self.database, 
                     input_with_features = True,
-                    reverse = True, 
+                    reverse = False, 
                     smiles_column = smiles_column, 
                     similarity_metrics = [smiliarity_metrics],
                     worker_num = 2
                 )
                 probe_res[f'{name}'] = probe['weight'] * probe_res[smiliarity_metrics]
-                total_res = pd.merge(
-                    total_res,
-                    probe_res[[smiles_column, f'{name}']], 
+                probe_res =  probe_res[[smiles_column, f'{name}']]
+                probe_res[f'{name}'] = probe_res[f'{name}'].astype('float16')
+                self.database = pd.merge(
+                    self.database,
+                    probe_res, 
                     on = smiles_column
                 )
                 score_list.append(f'{name}')
@@ -102,22 +106,28 @@ class Pharm_Profiler:
                 for i in range(len(probe_list)):
                     probe_res = self.encoder.virtual_screening(
                         [probe['smiles'][i]], 
-                        self.features_database, 
+                        self.database, 
                         input_with_features = True,
-                        reverse = True, 
+                        reverse = False, 
                         smiles_column = smiles_column, 
                         similarity_metrics = [smiliarity_metrics],
                         worker_num = 2
                     )
                     probe_res[f'{name}_{i}'] = probe['weight'] * probe_res[smiliarity_metrics]
-                    total_res = pd.merge(
-                        total_res,
-                        probe_res[[smiles_column, f'{name}_{i}']], 
+                    probe_res = probe_res[[smiles_column, f'{name}_{i}']]
+                    probe_res[f'{name}_{i}'] = probe_res[f'{name}_{i}'].astype('float16')
+                    self.database = pd.merge(
+                        self.database,
+                        probe_res, 
                         on = smiles_column
                     )
                     score_list.append(f'{name}_{i}')
-        total_res['Score'] = total_res[score_list].sum(axis=1)
-        return total_res
+            print('Done!')
+            probe_res = None
+            gc.collect()
+        self.database['Score'] = self.database[score_list].sum(axis=1)
+        self.database.drop(['features'], axis=1, inplace=True)
+        return self.database
 
 if __name__ == '__main__':
     # check GPU
@@ -138,7 +148,6 @@ if __name__ == '__main__':
     # job_name
     job_name = sys.argv[2]
     smiles_col = sys.argv[3]
-    compound_library = pd.read_csv(sys.argv[4])
     library_path = sys.argv[4].split('.')[0]
     # update profiles
     if ':' in sys.argv[5]:
@@ -163,14 +172,15 @@ if __name__ == '__main__':
         ] else False
     # generate features database
     if os.path.exists(f'{library_path}.pkl'):
-        predictor.features_database = pd.read_pickle(f'{library_path}.pkl')
-        predictor.features_database.drop_duplicates(
+        predictor.database = pd.read_pickle(f'{library_path}.pkl')
+        predictor.database.drop_duplicates(
             subset = [smiles_col], 
             keep = 'first', 
             inplace = True,
             ignore_index = True
         )
     else:
+        compound_library = pd.read_csv(sys.argv[4])
         features_database = predictor.update_library(
             compound_library,
             prepare = True,
@@ -178,6 +188,9 @@ if __name__ == '__main__':
         )
         # save database to pkl
         features_database.to_pickle(f'{library_path}.pkl')
+        del compound_library
+        del features_database
+        gc.collect()
     # virtual screening 
     total_res = predictor(
         smiles_column = smiles_col,
