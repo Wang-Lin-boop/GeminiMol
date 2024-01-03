@@ -139,7 +139,7 @@ if __name__ == '__main__':
         )
     predictor = Pharm_Profiler(
         encoder,
-        standardize = True
+        standardize = False
         )
     # job_name
     job_name = sys.argv[2]
