@@ -1102,6 +1102,7 @@ class GeminiMol(BinarySimilarity):
             input_with_features = False,
             reverse = False, 
             smiles_column = 'smiles', 
+            return_all_col = True,
             similarity_metrics = None, 
             worker_num = 1
         ):
@@ -1123,7 +1124,10 @@ class GeminiMol(BinarySimilarity):
                 similarity_metrics=similarity_metrics
             )
             assert len(query_scores) == len(query_smiles_table), f"Error: different length between original dataframe with predicted scores! {ref_smiles}"
-            total_res = pd.concat([total_res, query_smiles_table.join(query_scores, how='left')], ignore_index=True)
+            if return_all_col:
+                total_res = pd.concat([total_res, query_smiles_table.join(query_scores, how='left')], ignore_index=True)
+            else:
+                total_res = pd.concat([total_res, query_smiles_table[[smiles_column]].join(query_scores, how='left')], ignore_index=True)
         return total_res
 
     '''

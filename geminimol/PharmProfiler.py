@@ -89,15 +89,14 @@ class Pharm_Profiler:
                     input_with_features = True,
                     reverse = False, 
                     smiles_column = smiles_column, 
+                    return_all_col = False,
                     similarity_metrics = [smiliarity_metrics],
                     worker_num = 2
                 )
                 probe_res[f'{name}'] = probe['weight'] * probe_res[smiliarity_metrics]
-                probe_res =  probe_res[[smiles_column, f'{name}']]
-                probe_res[f'{name}'] = probe_res[f'{name}'].astype('float16')
                 total_res = pd.merge(
                     total_res,
-                    probe_res, 
+                    probe_res[[smiles_column, f'{name}']], 
                     on = smiles_column
                 )
                 score_list.append(f'{name}')
@@ -109,15 +108,14 @@ class Pharm_Profiler:
                         input_with_features = True,
                         reverse = False, 
                         smiles_column = smiles_column, 
+                        return_all_col = False,
                         similarity_metrics = [smiliarity_metrics],
                         worker_num = 2
                     )
                     probe_res[f'{name}_{i}'] = probe['weight'] * probe_res[smiliarity_metrics]
-                    probe_res = probe_res[[smiles_column, f'{name}_{i}']]
-                    probe_res[f'{name}_{i}'] = probe_res[f'{name}_{i}'].astype('float16')
                     total_res = pd.merge(
                         total_res,
-                        probe_res, 
+                        probe_res[[smiles_column, f'{name}_{i}']], 
                         on = smiles_column
                     )
                     score_list.append(f'{name}_{i}')
@@ -188,7 +186,8 @@ if __name__ == '__main__':
         smiles_column = smiles_col,
         probe_cluster = probe_cluster,
     )
+    total_res = total_res.nlargest(keep_number, 'Score', keep='all')
     total_res.sort_values('Score', ascending=False, inplace=True)
-    total_res.head(keep_number).to_csv(f"{job_name}_results.csv", index=False, header=True, sep=',')
+    total_res.to_csv(f"{job_name}_results.csv", index=False, header=True, sep=',')
     print(f'NOTE: job completed! check {job_name}_results.csv for results!')
 
