@@ -73,6 +73,8 @@ class Pharm_Profiler:
         smiliarity_metrics = 'Pearson',
     ):
         print(f'NOTE: columns of feature database: {self.database.columns}')
+        res_columns = [x for x in self.database.columns if x != 'features'] 
+        total_res = self.database[res_columns]
         gc.collect()
         print(f'NOTE: starting screening...')
         score_list = []
@@ -93,8 +95,8 @@ class Pharm_Profiler:
                 probe_res[f'{name}'] = probe['weight'] * probe_res[smiliarity_metrics]
                 probe_res =  probe_res[[smiles_column, f'{name}']]
                 probe_res[f'{name}'] = probe_res[f'{name}'].astype('float16')
-                self.database = pd.merge(
-                    self.database,
+                total_res = pd.merge(
+                    total_res,
                     probe_res, 
                     on = smiles_column
                 )
@@ -113,8 +115,8 @@ class Pharm_Profiler:
                     probe_res[f'{name}_{i}'] = probe['weight'] * probe_res[smiliarity_metrics]
                     probe_res = probe_res[[smiles_column, f'{name}_{i}']]
                     probe_res[f'{name}_{i}'] = probe_res[f'{name}_{i}'].astype('float16')
-                    self.database = pd.merge(
-                        self.database,
+                    total_res = pd.merge(
+                        total_res,
                         probe_res, 
                         on = smiles_column
                     )
@@ -122,9 +124,8 @@ class Pharm_Profiler:
             print('Done!')
             probe_res = None
             gc.collect()
-        self.database['Score'] = self.database[score_list].sum(axis=1)
-        del self.database['features']
-        return self.database
+        total_res['Score'] = total_res[score_list].sum(axis=1)
+        return total_res
 
 if __name__ == '__main__':
     # check GPU
