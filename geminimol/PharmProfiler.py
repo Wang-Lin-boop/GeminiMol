@@ -93,6 +93,13 @@ class Pharm_Profiler:
                     similarity_metrics = [smiliarity_metrics],
                     worker_num = 2
                 )
+                probe_res.sort_values(smiliarity_metrics, ascending=False, inplace=True)
+                probe_res.drop_duplicates(
+                    subset = [smiles_column], 
+                    keep = 'first', 
+                    inplace = True,
+                    ignore_index = True
+                )
                 probe_res[f'{name}'] = probe['weight'] * probe_res[smiliarity_metrics]
                 total_res = pd.merge(
                     total_res,
