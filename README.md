@@ -232,7 +232,7 @@ mkdir -p ${model_name}
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
 done
 done
-# benchmarking FineTuning GeminiMol models
+# benchmarking with FineTuning GeminiMol models for PropDecoder 
 for task in "FineTuning-ADMET" "FineTuning-QSAR"; do
 for model_name in "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"; do
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
