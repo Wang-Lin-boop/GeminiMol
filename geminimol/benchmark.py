@@ -782,6 +782,6 @@ if __name__ == '__main__':
         predictor = Fingerprint([model_name])
     Benchmark_Protocol = Benchmark(predictor=predictor, model_name=model_name, data_record=True)
     # benchmarking
-    Benchmark_Protocol(benchmark_task, f"{benchmark_file_basepath}/{benchmark_index_dict[benchmark_task]}", standardize=True)
+    Benchmark_Protocol(benchmark_task, f"{benchmark_file_basepath}/{benchmark_index_dict[benchmark_task]}", standardize=False)
 
 
