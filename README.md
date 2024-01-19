@@ -240,6 +240,10 @@ done
 done
 ```
 
+It is worth noting that different decoders exhibit varying performance on different tasks and encodings. Therefore, it is essential to select the appropriate decoder for each specific molecular encoder and task. Consequently, all results should be merged using a data pivot table to analyze the optimal decoder for each encoder-task combination.   
+
+In our work, the hyperparameters of the PropDecoder were chosen based on empirical experience and were not subjected to any hyperparameter tuning. Performing further hyperparameter tuning for each task may potentially yield improved performance.    
+
 ## 📓 Application
 
 As a molecular representation model, GeminiMol finds applications in **ligand-based virtual screening, target identification, and quantitative structure-activity relationship (QSAR)** modeling of small molecular drugs.   

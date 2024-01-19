@@ -948,7 +948,7 @@ class PropDecoder(nn.Module):
                 nn.Linear(feature_dim, feature_dim * expand_ratio, bias=True),
                 activation_dict[rectifier_activation],
                 nn.BatchNorm1d(feature_dim * expand_ratio),
-                nn.Dropout(p=dropout_rate, inplace=False),
+                nn.Dropout(p=dropout_rate, inplace=False), 
                 nn.Linear(feature_dim * expand_ratio, hidden_dim, bias=True),
                 activation_dict[rectifier_activation],
                 nn.BatchNorm1d(hidden_dim),
