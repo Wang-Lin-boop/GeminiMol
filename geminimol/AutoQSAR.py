@@ -309,7 +309,7 @@ if __name__ == "__main__":
     encoding_method = sys.argv[2]
     smiles_column = sys.argv[3]
     label_column = sys.argv[4]
-    model_name = sys.argv[5]
+    product_model_name = sys.argv[5]
     train_data = pd.read_csv(f'{target}/{target}_scaffold_train.csv')
     print(f"{target} Training Set: Number=", len(train_data), f", {len(train_data[train_data[label_column]==1])} rows is 1(pos).")
     if len(list(set(train_data[label_column].to_list()))) == 2:
@@ -329,38 +329,38 @@ if __name__ == "__main__":
     ## read the encoder models
     fingerprint_list = []
     encoders = {}
-    for model_name in encoding_method.split(":"):
-        if os.path.exists(f'{model_name}/GeminiMol.pt'):
-            method_list = [model_name]
+    for method in encoding_method.split(":"):
+        if os.path.exists(f'{method}/GeminiMol.pt'):
+            method_list = [method]
             from model.GeminiMol import GeminiMol
-            encoders[model_name] = GeminiMol(
-                model_name,
+            encoders[method] = GeminiMol(
+                method,
                 depth = 0, 
                 custom_label = None, 
                 extrnal_label_list = ['Cosine', 'Pearson', 'RMSE', 'Manhattan']
             )
-        elif os.path.exists(f'{model_name}/backbone'):
+        elif os.path.exists(f'{method}/backbone'):
             from model.CrossEncoder import CrossEncoder
-            encoders[model_name] = CrossEncoder(
-                model_name,
+            encoders[method] = CrossEncoder(
+                method,
                 candidate_labels = [
                     'LCMS2A1Q_MAX', 'LCMS2A1Q_MIN', 'MCMM1AM_MAX', 'MCMM1AM_MIN', 
                     'ShapeScore', 'ShapeOverlap', 'ShapeAggregation', 'CrossSim', 'CrossAggregation', 'CrossOverlap', 
                 ]
             )
-        elif model_name == "CombineFP":
+        elif method == "CombineFP":
             methods_list = ["ECFP4", "FCFP6", "AtomPairs", "TopologicalTorsion"]
-            encoders[model_name] = Fingerprint(methods_list)
+            encoders[method] = Fingerprint(methods_list)
         else:
-            methods_list = [model_name]
-            fingerprint_list += [model_name]
+            methods_list = [method]
+            fingerprint_list += [method]
     if len(fingerprint_list) > 0:
         encoders['Fingerprints'] = Fingerprint(fingerprint_list)
     encoders_list = list(encoders.values())
     target = str(target.split('/')[-1])
-    if os.path.exists(f"{model_name}"):
+    if os.path.exists(f"{product_model_name}"):
         QSAR_model = AutoQSAR(
-            f"{model_name}", 
+            f"{product_model_name}", 
             encoder_list = encoders_list, 
             standardize = True, 
             label_column = label_column, 
@@ -369,7 +369,7 @@ if __name__ == "__main__":
         )
     else:
         QSAR_model = AutoQSAR(
-            f"{model_name}", 
+            f"{product_model_name}", 
             encoder_list = encoders_list, 
             standardize = True, 
             label_column = label_column, 
@@ -388,11 +388,11 @@ if __name__ == "__main__":
     print(f'NOTE: testing all models on the validation set ...')
     val_res = QSAR_model.evaluate(val_data, model_list=QSAR_model.QSAR_Model.get_model_names(), metric_list=test_metrics)
     print(val_res)
-    val_res.to_csv(f"{model_name}/val_results.csv", index=True, header=True, sep=',')
+    val_res.to_csv(f"{product_model_name}/val_results.csv", index=True, header=True, sep=',')
     print(f'NOTE: testing all models on the test set ...')
     test_res = QSAR_model.evaluate(test_data, model_list=QSAR_model.QSAR_Model.get_model_names(), metric_list=test_metrics)
     print(test_res)
-    test_res.to_csv(f"{model_name}/test_results.csv", index=True, header=True, sep=',')
+    test_res.to_csv(f"{product_model_name}/test_results.csv", index=True, header=True, sep=',')
     test_res.sort_values(
         metric_function, 
         ascending=False, 
