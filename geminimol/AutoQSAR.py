@@ -310,10 +310,6 @@ if __name__ == "__main__":
     smiles_column = sys.argv[3]
     label_column = sys.argv[4]
     model_name = sys.argv[5]
-    if len(sys.argv) > 5:
-        extrnal_data = pd.read_csv(sys.argv[6])
-    else:
-        extrnal_data = None
     train_data = pd.read_csv(f'{target}/{target}_scaffold_train.csv')
     print(f"{target} Training Set: Number=", len(train_data), f", {len(train_data[train_data[label_column]==1])} rows is 1(pos).")
     if len(list(set(train_data[label_column].to_list()))) == 2:
@@ -409,9 +405,5 @@ if __name__ == "__main__":
         print(f"Warning: the best model on test set is {bestmodel_on_test}, not {bestmodel_on_val}.")
     else:
         print(f"NOTE: the best model on test set is {bestmodel_on_test}, same as best model on val set.")
-    if extrnal_data is not None:
-        predicted_res = QSAR_model.predict(extrnal_data)
-        predicted_res.to_csv(f"{model_name}_{QSAR_model.best_model_name}_prediction.csv", index=False, header=True, sep=',')
-
 
 
