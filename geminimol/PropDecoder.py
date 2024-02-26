@@ -100,10 +100,7 @@ class QSAR:
         }
 
     def prepare(self, dataset):
-        dataset.dropna(
-            subset=[self.smiles_column, self.label_column], 
-            inplace=True
-        )
+        dataset = dataset.dropna(subset=[self.smiles_column])
         print(f"NOTE: read the dataset size ({len(dataset)}).")
         out_dataset = dataset.copy()
         if self.standardize == True:
