@@ -211,7 +211,7 @@ class AutoQSAR():
             predicted_score = self.QSAR_Model.predict_proba(test_set, model=model)[[1]]
         else:
             predicted_score = self.QSAR_Model.predict(test_set, model=model)
-            predicted_score = pd.DataFrame(predicted_score, columns=[self.label_column])
+            predicted_score = pd.DataFrame(predicted_score)
         predicted_score.columns = ['pred']
         return test_set[orig_columns].join(predicted_score, how='left')
         
