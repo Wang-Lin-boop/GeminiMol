@@ -370,6 +370,18 @@ export label_column="Label" # Specify the column name in datasets
 CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" "${geminimol_lib}/GeminiMol:${fingerprints}" "${smiles_column}" "${label_column}" "" "${task}_GeminiMol"
 ```
 
+> Make predictions (only for AutoQSAR or fine-Tuned models)
+
+Next, we can load the model trained based on `AutoQSAR` and `FineTuning` to predict molecular properties in a new dataset.
+
+``` shell
+export model_path="QSAR_GeminiMol" # ${task}_GeminiMol when your build QSAR model
+export encoder_list="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
+export extrnal_data="dataset.csv" # must contain the ${smiles_column}
+export smiles_column="SMILES" # Specify the column name in datasets
+CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}"
+```
+
 ## ⭐ Citing This Work
 
 **Conformational Space Profile Enhances Generic Molecular Representation Learning**     
