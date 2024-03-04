@@ -176,11 +176,11 @@ To re-train the model or make predictions using the models we provide, follow th
 > Installing the dependency packages of GeminiMol    
 
 ``` shell
-    pip install scipy dgllife
+    pip install scipy==1.10.1 dgllife==0.3.2
     pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 \
         --extra-index-url https://download.pytorch.org/whl/cu116
-    pip install dgl -f https://data.dgl.ai/wheels/cu116/repo.html
-    pip install dglgo -f https://data.dgl.ai/wheels-test/repo.html
+    pip install dgl==1.1.1+cu116 -f https://data.dgl.ai/wheels/cu116/repo.html
+    pip install dglgo==0.0.2 -f https://data.dgl.ai/wheels-test/repo.html
 ```
 
 ## 👐 Reproducing
