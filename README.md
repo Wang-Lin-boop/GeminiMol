@@ -95,7 +95,7 @@ In this repository, we provide all the training, validation, and testing dataset
 
 ``` shell
     cd ${GeminiMol}/data
-    wget https://zenodo.org/api/records/10273480/files-archive 
+    wget https://zenodo.org/api/records/10273488/files-archive 
     for i in Benchmark*.zip css*.zip Chem*.zip;do
         mkdir ${i%%.zip}
         unzip -d ${i%%.zip}/ $i
