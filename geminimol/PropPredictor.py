@@ -3,6 +3,7 @@ import torch
 import sys
 import os
 from model.GeminiMol import GeminiMol
+from utils.fingerprint import Fingerprint
 
 if __name__ == "__main__":
     model_path = sys.argv[1]
