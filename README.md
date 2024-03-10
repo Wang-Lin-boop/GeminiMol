@@ -53,7 +53,7 @@ In this work, we proposed to incorporate the **conformational space profile** in
 
 ## 📕 Installation
 
-GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration.   
+GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration. If you encounter any problems with the installation, please feel free to post an issue or discussion it.    
 
 > Installing MiniConda (skip if conda was installed)   
 
@@ -90,7 +90,7 @@ GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomme
 
 In this repository, we provide all the training, validation, and testing datasets used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties.  
 
-> Download all datasets via Zenodo for training, benchmarking, and applications   
+> Download all datasets via Zenodo for training, benchmarking, and applications    
 
 ``` shell
     cd ${GeminiMol}/data
