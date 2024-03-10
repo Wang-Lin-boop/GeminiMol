@@ -280,7 +280,7 @@ The "Label" column signifies the weight assigned to the reference compound. Posi
 
 Typically, positive values are assigned to **active** compounds, whereas negative values are assigned to **inactive** compounds or those causing **side effects**.   
 
-The compound libraries are also stored in CSV format in the `${geminimol_data}/compound_library/` directory. When conducting screening, it is essential to specify the column name that represents the compound structures in the library. It is requried to maintain consistency between the SMILES column name in the `profile.csv` file and the compound library.    
+The compound libraries are also stored in CSV format in the `${geminimol_data}/compound_library/` directory. It is requried to maintain consistency between the SMILES column name in the `profile.csv` file and the compound library.    
 
 > Perform the PharmProfiler
 
