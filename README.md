@@ -50,6 +50,7 @@ In this work, we proposed to incorporate the **conformational space profile** in
 
 * 2023-12, our paper has been uploaded to BioRxiv, you can find it [here](https://www.biorxiv.org/content/10.1101/2023.12.14.571629).    
 * 2024-01, we have released `PharmProfiler.py`, which facilitates virtual screening and target identification.   
+* 2024-03, we have released `PropPredictor.py`, which facilitates the deployment and repurposing of QSAR and ADMET prediction models. 
 
 ## 📕 Installation
 
