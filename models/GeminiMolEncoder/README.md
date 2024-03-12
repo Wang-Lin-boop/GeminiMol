@@ -9,7 +9,7 @@ Download the model with the following command.
 wget https://zenodo.org/api/records/10807315/files-archive 
 ```
 
-This is a refined GeminiMol model that contains only the Encoder part, removing the projection header that was only used for the pre-training part but had a complex structure.   
+This is a refined GeminiMol model that contains only the Encoder part, removing the projection headers that were only used for the pre-training stage but had a complex structure.   
 
 ## Citing this work
 
