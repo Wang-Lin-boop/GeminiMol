@@ -859,8 +859,7 @@ class BinarySimilarity(nn.Module):
                     if batch_id <= num_warmup_steps:
                         # Apply warm-up learning rate schedule
                         for param_group in optimizer.param_groups:
-                            if warmup_factor < batch_id / num_warmup_steps:
-                                param_group['lr'] = learning_rate * ( batch_id / num_warmup_steps) 
+                            param_group['lr'] = learning_rate * ( warmup_factor + (1 - warmup_factor)* ( batch_id / num_warmup_steps) )
                     elif batch_id > num_warmup_steps:
                         # Apply cosine learning rate schedule
                         lr = learning_rate * ( warmup_factor + (1 - warmup_factor) * np.cos(float(batch_id % T_max)/T_max)) 
