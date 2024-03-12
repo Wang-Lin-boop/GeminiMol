@@ -2,7 +2,9 @@
 
 ![](../../imgs/geminimol.png)  
 
-This is a refined GeminiMol model that contains only the Encoder part, removing the projection header that was only used for the pre-training part but had a complex structure.
+## About this model  
+
+This is a refined GeminiMol model that contains only the Encoder part, removing the projection header that was only used for the pre-training part but had a complex structure.   
 
 ## Citing this work
 
