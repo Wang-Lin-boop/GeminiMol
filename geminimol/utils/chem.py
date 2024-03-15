@@ -5,8 +5,9 @@ from rdkit.Chem import SaltRemover
 from rdkit.Chem import Descriptors, rdMolDescriptors
 from rdkit.Chem.Scaffolds import MurckoScaffold
 
-def cal_MCS_score(smiles1, mol2, atom_mode="any"):
+def cal_MCS_score(smiles1, smiles2, atom_mode="any"):
     mol1 = Chem.MolFromSmiles(smiles1)
+    mol2 = Chem.MolFromSmiles(smiles2)
     mols = [mol1, mol2]
     min_bond_num = np.min([len(mol1.GetBonds()), len(mol2.GetBonds())])
     res = FMCS.FindMCS(mols, ringMatchesRingOnly=True, atomCompare=(FMCS.AtomCompare.CompareAny if atom_mode == "any" else FMCS.AtomCompare.CompareElements))
