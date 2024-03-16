@@ -836,10 +836,13 @@ class BinarySimilarity(nn.Module):
             start = time.time()
             for i in range(0, dataset_size, self.batch_size//2):
                 batch_id += 1
-                rows = pd.concat([
-                    pos_subset.iloc[i:i+self.batch_size//2], 
-                    neg_subset.iloc[i:i+self.batch_size//2]
-                    ], ignore_index=True)
+                rows = pd.concat(
+                    [
+                        pos_subset.iloc[i:i+self.batch_size//2], 
+                        neg_subset.iloc[i:i+self.batch_size//2]
+                    ], 
+                    ignore_index=True
+                )
                 sent1 = rows[self.feature_list[0]].to_list()
                 sent2 = rows[self.feature_list[1]].to_list()
                 assert len(sent1) == len(sent2), "The length of sent1 and sent2 must be the same."
