@@ -263,7 +263,7 @@ Here, we introduce the ``PharmProfiler.py``, a novel approach that employs the G
 
 To support experimentation, we have included a collection of diverse commercial compound libraries and drug-target relationship databases, conveniently located in the `${geminimol_data}/compound_library/` directory.     
 
-> Prepare the pharmacological profile and compound libraries
+> 1. Prepare the pharmacological profile and compound libraries
 
 To define a pharmacological profile, you will need to input a `profile.csv` file, which should have the following format:   
 
@@ -281,7 +281,7 @@ The "Label" column signifies the weight assigned to the reference compound. Posi
 
 The compound libraries are also stored in CSV format in the `${geminimol_data}/compound_library/` directory. It is requried to maintain consistency between the SMILES column name in the `profile.csv` file and the compound library.    
 
-> Perform the PharmProfiler
+> 2. Perform the PharmProfiler
 
 To perform virtual screening, the following command can be used.   
 
@@ -317,7 +317,7 @@ After the initial run of PharmProfiler, a extracted GeminiMol feature file will 
 
 #### Molecular Proptery Modeling (QSAR and ADMET)
 
-> Prepare your datasets
+> 1. Prepare your datasets
 
 Before conducting molecular property modeling, it is crucial to carefully prepare your data, which includes compound structure pre-processing and dataset splitting.     
 
@@ -336,11 +336,13 @@ mv ${dataset_name}_scaffold_*.csv ${dataset_name}/
 export task=${dataset_name}
 ```
 
+> 2. Training the molecular property prediction model
+
 We have presented three approaches for molecular property modeling, namely AutoQSAR (broad applicability, slow speed), PropDecoder (fast speed), and FineTuning (optimal performance, moderate speed).     
 
 In the majority of instances, the attainment of optimal performance can be accomplished through the utilization of the FineTuning script to invoke GeminiMol.     
 
-> Fine-Tuning on downstream task     
+> 2.1 Fine-Tuning on downstream task     
 
 ``` shell
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
@@ -351,7 +353,7 @@ CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/FineTuning.py "${task}
 
 If the integration of molecular fingerprints and a pre-trained GeminiMol model is desired for training a molecular property prediction model, either PropDecoder or AutoQSAR can be employed.   
 
-> PropDecoder    
+> 2.2 PropDecoder    
 
 ``` shell
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
@@ -361,7 +363,7 @@ export label_column="Label" # Specify the column name in datasets
 CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropDecoder.py "${task}" "${geminimol_lib}/GeminiMol:${fingerprints}" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
 ```
 
-> AutoQSAR (AutoGluon)    
+> 2.3 AutoQSAR (AutoGluon)    
 
 ``` shell
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
@@ -371,7 +373,7 @@ export label_column="Label" # Specify the column name in datasets
 CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" "${geminimol_lib}/GeminiMol:${fingerprints}" "${smiles_column}" "${label_column}" "" "${task}_GeminiMol"
 ```
 
-> Make predictions (only for AutoQSAR or fine-Tuned models)
+> 3. Make predictions (only for AutoQSAR or fine-Tuned models)
 
 Next, we can load the model trained based on `AutoQSAR` and `FineTuning` to predict molecular properties in a new dataset.
 
