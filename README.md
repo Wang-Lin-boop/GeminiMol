@@ -22,7 +22,7 @@
 - [💌 Get in Touch](#-get-in-touch)
 - [😃 Acknowledgements](#-acknowledgements)
 
-This repository provides the official implementation of the GeminiMol model, training data, and utitiles.     
+This repository provides the official implementation of the GeminiMol model, training data, and utitiles. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of **conformational space similarities**.           
 
 We also provide:   
 
@@ -34,7 +34,7 @@ Please also refer to our [paper](https://doi.org/10.1101/2023.12.14.571629) for 
 
 ## 💗 Motivation  
 
-The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. Inspired by the dynamics of small molecules in solution, introducing the **conformational space profile** into molecular representation models is a promising aim. The conformational space profile covers the heterogeneity of molecule properties, such as the recognition of different biomolecules, dynamics in cytoplasm and membrane, which may acilitate further downstream application and generalization capability of molecular representation model. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of conformational space similarities.       
+The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. Inspired by the dynamics of small molecules in solution, introducing the **conformational space profile** into molecular representation models is a promising aim. The conformational space profile covers the heterogeneity of molecule properties, such as the recognition of different biomolecules, dynamics in cytoplasm and membrane, which may acilitate further downstream application and generalization capability of molecular representation model.   
 
 ## 💡 Highlight
 
