@@ -4,8 +4,14 @@
   📃 <a href="https://www.biorxiv.org/content/10.1101/2023.12.14.571629" target="_blank">Paper</a> ·  🤗 <a href="https://huggingface.co/AlphaMWang/GeminiMol" target="_blank">Model</a> ·  📕 <a href="https://zenodo.org/records/10450788" target="_blank">Data</a><br>
 </p>
 
-![](imgs/geminimol.png)    
+<p align="right">
+  <img style="float: right" src="imgs/geminimol.png" alt="alt text" width="750px" align="right"/>
+</p>
 
+This repository provides the official implementation of the GeminiMol model, training data, and utitiles. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of **conformational space similarities**. Please also refer to our [paper](https://doi.org/10.1101/2023.12.14.571629) for a detailed description of GeminiMol.    
+
+## Table of Contents
+- [Table of Contents](#table-of-contents)
 - [💗 Motivation](#-motivation)
 - [💡 Highlight](#-highlight)
 - [🔔 News](#-news)
@@ -21,16 +27,6 @@
 - [✅ License](#-license)
 - [💌 Get in Touch](#-get-in-touch)
 - [😃 Acknowledgements](#-acknowledgements)
-
-This repository provides the official implementation of the GeminiMol model, training data, and utitiles. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of **conformational space similarities**.           
-
-We also provide:   
-
-1.  scripts for training, test, and application of GeminiMol models.   
-2.  scripts for features analysis, visualisation and similarity calculation.   
-3.  scripts, datasets and results for benchmarking molecular fingerprints and GeminiMol models on virtual screening, target identification, and QSAR (drug-target binding affinity, cellar activity, ADME, and toxicity).    
-
-Please also refer to our [paper](https://doi.org/10.1101/2023.12.14.571629) for a detailed description of GeminiMol.    
 
 ## 💗 Motivation  
 
