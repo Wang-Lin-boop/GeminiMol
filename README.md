@@ -8,7 +8,7 @@
   <img style="float: right" src="imgs/geminimol.png" alt="alt text" width="550px" align="right"/>
 </p>
 
-This repository provides the official implementation of the GeminiMol model, training data, and utitiles. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of **conformational space similarities**. Please also refer to our [paper](https://doi.org/10.1101/2023.12.14.571629) for a detailed description of GeminiMol.    
+This repository provides the official implementation of the GeminiMol model, training data, and utitiles. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of **conformational space similarities (CSS)**. Please also refer to our [paper](https://doi.org/10.1101/2023.12.14.571629) for a detailed description of GeminiMol.    
 
 ## Table of Contents
 - [Table of Contents](#table-of-contents)
@@ -22,8 +22,8 @@ This repository provides the official implementation of the GeminiMol model, tra
     - [Virtual Screening and Target Identification](#virtual-screening-and-target-identification)
     - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
 - [👐 Reproducing](#-reproducing)
-    - [retraining the models](#retraining-the-models)
-    - [benchmark the fingerprints and our models](#benchmark-the-fingerprints-and-our-models)
+    - [Re-training our models](#re-training-our-models)
+    - [Benchmarking the fingerprints and our models](#benchmarking-the-fingerprints-and-our-models)
 - [⭐ Citing This Work](#-citing-this-work)
 - [😫 Limitations](#-limitations)
 - [✅ License](#-license)
@@ -321,9 +321,9 @@ CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropPredictor.py "${mo
 
 ## 👐 Reproducing
 
-Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the conformational space similarity descriptors of 39,290 molecules described in the paper.     
+Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the CSS descriptors of 39,290 molecules described in the paper.     
 
-#### retraining the models
+#### Re-training our models
 
 > Training the Cross-Encoder
 
@@ -337,7 +337,7 @@ export label_list="MCMM1AM_MAX:LCMS2A1Q_MAX:MCMM1AM_MIN:LCMS2A1Q_MIN" # ShapeSco
 CUDA_VISIBLE_DEVICES=0,1,2,3 python ${geminimol_app}/CrossEncoder_Training.py  "${geminimol_data}/css_library/" "${geminimol_data}/Chem_SmELECTRA"  "${epoch}"  "${lr}"  "${batch_size_per_gpu}"  "${model_name}"  "${geminimol_data}/benchmark.json" "${label_list}"
 ```
 
-> Training the GeminiMol Encoder
+> Training the GeminiMol Encoder and Decoder of CSS descriptors
 
 ``` shell
 conda activate GeminiMol
@@ -351,11 +351,13 @@ export label_dict="ShapeScore:0.2,ShapeAggregation:0.2,ShapeOverlap:0.05,ShapeDi
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/GeminiMol_Training.py "${geminimol_data}/css_library/" "${epoch}" "${batch_size}" "${GNN}" "${network}" "${label_dict}" "${model_name}" "${patience}" "${geminimol_data}/benchmark.json" 
 ```
 
-#### benchmark the fingerprints and our models
+#### Benchmarking the fingerprints and our models
 
 Additionally, benchmark test scripts were provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, even incorporate additional molecular similarity data to further enhance the performance of the models.  
 
-It is worth noting that different decoders exhibit varying performance on different tasks and encodings. Therefore, it is essential to select the appropriate decoder for each specific molecular encoder and task. Consequently, all results should be merged using a data pivot table to analyze the optimal decoder for each encoder-task combination. In our work, the hyperparameters of the PropDecoder were chosen based on empirical experience and were not subjected to any hyperparameter tuning. Performing further hyperparameter tuning for each task may potentially yield improved performance.   
+It is worth noting that different decoders exhibit varying performance on different tasks and encodings. Therefore, it is essential to select the appropriate decoder for each specific molecular encoder and task. Consequently, all results should be merged using a data pivot table to analyze the optimal decoder for each encoder-task combination.    
+
+In our work, the hyperparameters of the PropDecoder were chosen based on empirical experience and were not subjected to any hyperparameter tuning. Performing further hyperparameter tuning for each task may potentially yield improved performance.     
 
 > Benchmarking molecular fingerprints and our models
 
