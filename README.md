@@ -5,7 +5,7 @@
 </p>
 
 <p align="right">
-  <img style="float: right" src="imgs/geminimol.png" alt="alt text" width="750px" align="right"/>
+  <img style="float: right" src="imgs/geminimol.png" alt="alt text" width="550px" align="right"/>
 </p>
 
 This repository provides the official implementation of the GeminiMol model, training data, and utitiles. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of **conformational space similarities**. Please also refer to our [paper](https://doi.org/10.1101/2023.12.14.571629) for a detailed description of GeminiMol.    
