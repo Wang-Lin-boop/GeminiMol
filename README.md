@@ -18,10 +18,12 @@ This repository provides the official implementation of the GeminiMol model, tra
 - [📕 Installation](#-installation)
     - [Download datasets and models](#download-datasets-and-models)
     - [Installing the dependency packages](#installing-the-dependency-packages)
-- [👐 Reproducing](#-reproducing)
 - [📓 Application](#-application)
     - [Virtual Screening and Target Identification](#virtual-screening-and-target-identification)
     - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
+- [👐 Reproducing](#-reproducing)
+    - [retraining the models](#retraining-the-models)
+    - [benchmark the fingerprints and our models](#benchmark-the-fingerprints-and-our-models)
 - [⭐ Citing This Work](#-citing-this-work)
 - [😫 Limitations](#-limitations)
 - [✅ License](#-license)
@@ -70,12 +72,10 @@ GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomme
     echo "# GeminiMol" >> ~/.bashrc
     echo "export PATH=\"${PWD}:\${PATH}\"" >> ~/.bashrc # optional, not required in the current version
     echo "export GeminiMol=\"${PWD}\"" >> ~/.bashrc
-    cd geminimol/
-    echo "export geminimol_app=\"${PWD}\"" >> ~/.bashrc    
-    cd ../models/   
-    echo "export geminimol_lib=\"${PWD}\"" >> ~/.bashrc  
-    cd ../data/
-    echo "export geminimol_data=\"${PWD}\"" >> ~/.bashrc
+    source ~/.bashrc
+    echo "export geminimol_app=\"${GeminiMol}/geminimol\"" >> ~/.bashrc # geminimol applications     
+    echo "export geminimol_lib=\"${GeminiMol}/models\"" >> ~/.bashrc # geminimol models 
+    echo "export geminimol_data=\"${GeminiMol}/data\"" >> ~/.bashrc # compound library
     source ~/.bashrc
 ```
 
@@ -83,11 +83,21 @@ GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomme
 
 In this repository, we provide all the training, validation, and testing datasets used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties.  
 
+> Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link) and [HuggingFace](https://huggingface.co/AlphaMWang)
+
+Here is an example of how to download a model from huggingface. Besides wget, you can also download the model directly to Google Cloud Drive or huggingface using your browser.   
+
+``` bash
+wget -P ${geminimol_lib} https://huggingface.co/AlphaMWang/GeminiMol/tree/main    
+```
+
+Then, we need place the models to the `${GeminiMol}/models`.   
+
 > Download all datasets via Zenodo for training, benchmarking, and applications    
 
 ``` shell
-    cd ${GeminiMol}/data
-    wget https://zenodo.org/api/records/10273488/files-archive 
+    cd ${geminimol_data}
+    wget https://zenodo.org/api/records/10273488/files-archive  
     for i in Benchmark*.zip css*.zip Chem*.zip;do
         mkdir ${i%%.zip}
         unzip -d ${i%%.zip}/ $i
@@ -96,9 +106,7 @@ In this repository, we provide all the training, validation, and testing dataset
     unzip -d compound_library/ DTIDB.zip 
 ```
 
-> Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link) and [HuggingFace](https://huggingface.co/AlphaMWang)
-
-Then, we need place the models to the `${GeminiMol}/models`.   
+If you merely want to apply GeminiMol to your own project, you don't need to download training and benchmarking datasets.     
 
 The expected structure of GeminiMol path is:
 
@@ -120,7 +128,7 @@ GeminiMol
 │   ├── CrossEncoder_Training.py         # scripts for training the CrossEncoders.
 │   ├── GeminiMol_Training.py            # scripts for training the GeminiMol models.                 
 │   ├── benchmark.py                     # benchmarking presentation methods on provide datasets
-├── data                                 # training and benchmark data in this work
+├── data                                 # training and benchmark datasets in this work
 │   ├── Benchmark_DUD-E                  # virtual screeening         
 │   ├── Benchmark_LIT-PCBA               # virtual screeening            
 │   ├── Benchmark_TIBD                   # target identification    
@@ -129,7 +137,7 @@ GeminiMol
 │   ├── css_library                      # CSS training data
 │   ├── benchmark.json                   # dataset index for benchmark tasks         
 │   ├── database.csv                     # molecular datasets in this work      
-│   ├── DTIDB.csv               # dataset used in target identification    
+│   ├── DTIDB.csv                        # dataset used in target identification    
 │   ├── ChemDiv.csv                      # library of common commercial compounds     
 │   ├── Specs.csv                        # library of common commercial compounds    
 ├── models                               # CrossEncoder and GeminiMol models
@@ -140,7 +148,7 @@ GeminiMol
 
 #### Installing the dependency packages
 
-If you intend to utilize molecular fingerprint baseline methods or conduct QSAR benchmarking, it is required to install RDKit and AutoGluon in advance.     
+Before running GeminiMol, you need to install the basic dependency packages.   
 
 > Installing the RDkit for generating fingerprints
 
@@ -148,93 +156,28 @@ If you intend to utilize molecular fingerprint baseline methods or conduct QSAR 
     pip install rdkit
 ```
 
-> Installing the AutoGluon for performing AutoQSAR
-
-``` shell
-    pip3 install -U pip
-    pip3 install -U setuptools wheel
-    pip3 install torch==1.13.1+cu116 torchvision==0.14.1+cu116 \
-        --extra-index-url https://download.pytorch.org/whl/cu116
-    pip3 install autogluon==0.8.1
-```
-
 > Installing the statatics and plot packages
 
 ``` shell
-    pip install oddt scikit-learn matplotlib
+    pip install oddt scikit-learn matplotlib 
+    pip install scipy==1.10.1
 ```
-
-To re-train the model or make predictions using the models we provide, follow the steps below to install the dependencies in advance.
 
 > Installing the dependency packages of GeminiMol    
 
 ``` shell
-    pip install scipy==1.10.1 dgllife==0.3.2
     pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 \
         --extra-index-url https://download.pytorch.org/whl/cu116
     pip install dgl==1.1.1+cu116 -f https://data.dgl.ai/wheels/cu116/repo.html
     pip install dglgo==0.0.2 -f https://data.dgl.ai/wheels-test/repo.html
+    pip install dgllife==0.3.2
 ```
 
-## 👐 Reproducing
-
-Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the conformational space similarity descriptors of 39,290 molecules described in the paper.    
-
-Additionally, benchmark test scripts were provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, even incorporate additional molecular similarity data to further enhance the performance of the models.   
-
-> Training the Cross-Encoder
+If you intend to reproduce the benchmark results in our work, it is required to install the AutoGluon.    
 
 ``` shell
-conda activate GeminiMol
-export model_name="CrossEncoder"
-export batch_size_per_gpu=200 # batch size = 200 (batch_size_per_gpu) * 4 (gpu number)
-export epoch=20 # max epochs
-export lr="1.0e-3" # learning rate
-export label_list="MCMM1AM_MAX:LCMS2A1Q_MAX:MCMM1AM_MIN:LCMS2A1Q_MIN" # ShapeScore:ShapeAggregation:ShapeOverlap:CrossSim:CrossAggregation:CrossOverlap
-CUDA_VISIBLE_DEVICES=0,1,2,3 python ${geminimol_app}/CrossEncoder_Training.py  "${geminimol_data}/css_library/" "${geminimol_data}/Chem_SmELECTRA"  "${epoch}"  "${lr}"  "${batch_size_per_gpu}"  "${model_name}"  "${geminimol_data}/benchmark.json" "${label_list}"
+    pip install autogluon==0.8.1  # requried for AutoQSAR
 ```
-
-> Training the GeminiMol Encoder
-
-``` shell
-conda activate GeminiMol
-export model_name="GeminiMol"
-export batch_size=512
-export epoch=20 # max epochs
-export patience=50 # for early stoping
-export GNN='WLN' # Weisfeiler-Lehman Network (WLN)
-export network="MeanMLP:2048:4:2048:None:0:5:0" # "Weighted:1024:12:2048:None:0:5:0" for GeminiMol-MOD
-export label_dict="ShapeScore:0.2,ShapeAggregation:0.2,ShapeOverlap:0.05,ShapeDistance:0.05,CrossSim:0.15,CrossAggregation:0.15,CrossDist:0.05,CrossOverlap:0.05,MCS:0.1"
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/GeminiMol_Training.py "${geminimol_data}/css_library/" "${epoch}" "${batch_size}" "${GNN}" "${network}" "${label_dict}" "${model_name}" "${patience}" "${geminimol_data}/benchmark.json" 
-```
-
-> Benchmarking molecular fingerprints and our models
-
-``` shell
-conda activate GeminiMol
-# benchmarking Fixed GeminiMol models and Fingerprints
-for task in "DUDE" "LIT-PCBA" "TIBD" \
-    "ADMET-C" "ADMET-R" \ 
-    "LIT-QSAR" "CELLS-QSAR" "ST-QSAR" "PW-QSAR" \ 
-    "PropDecoder-ADMET" "PropDecoder-QSAR"
-    do
-for model_name in "CombineFP" \
-    "FCFP6" "MACCS" "RDK" "ECFP6" "FCFP4" "TopologicalTorsion" "AtomPairs" "ECFP4" \
-    "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"
-    do
-mkdir -p ${model_name}
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
-done
-done
-# benchmarking with FineTuning GeminiMol models for PropDecoder 
-for task in "FineTuning-ADMET" "FineTuning-QSAR"; do
-for model_name in "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"; do
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
-done
-done
-```
-
-It is worth noting that different decoders exhibit varying performance on different tasks and encodings. Therefore, it is essential to select the appropriate decoder for each specific molecular encoder and task. Consequently, all results should be merged using a data pivot table to analyze the optimal decoder for each encoder-task combination. In our work, the hyperparameters of the PropDecoder were chosen based on empirical experience and were not subjected to any hyperparameter tuning. Performing further hyperparameter tuning for each task may potentially yield improved performance.    
 
 ## 📓 Application
 
@@ -375,6 +318,70 @@ export extrnal_data="dataset.csv" # must contain the ${smiles_column}
 export smiles_column="SMILES" # Specify the column name in datasets
 CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}"
 ```
+
+## 👐 Reproducing
+
+Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the conformational space similarity descriptors of 39,290 molecules described in the paper.     
+
+#### retraining the models
+
+> Training the Cross-Encoder
+
+``` shell
+conda activate GeminiMol
+export model_name="CrossEncoder"
+export batch_size_per_gpu=200 # batch size = 200 (batch_size_per_gpu) * 4 (gpu number)
+export epoch=20 # max epochs
+export lr="1.0e-3" # learning rate
+export label_list="MCMM1AM_MAX:LCMS2A1Q_MAX:MCMM1AM_MIN:LCMS2A1Q_MIN" # ShapeScore:ShapeAggregation:ShapeOverlap:CrossSim:CrossAggregation:CrossOverlap
+CUDA_VISIBLE_DEVICES=0,1,2,3 python ${geminimol_app}/CrossEncoder_Training.py  "${geminimol_data}/css_library/" "${geminimol_data}/Chem_SmELECTRA"  "${epoch}"  "${lr}"  "${batch_size_per_gpu}"  "${model_name}"  "${geminimol_data}/benchmark.json" "${label_list}"
+```
+
+> Training the GeminiMol Encoder
+
+``` shell
+conda activate GeminiMol
+export model_name="GeminiMol"
+export batch_size=512
+export epoch=20 # max epochs
+export patience=50 # for early stoping
+export GNN='WLN' # Weisfeiler-Lehman Network (WLN)
+export network="MeanMLP:2048:4:2048:None:0:5:0" # "Weighted:1024:12:2048:None:0:5:0" for GeminiMol-MOD
+export label_dict="ShapeScore:0.2,ShapeAggregation:0.2,ShapeOverlap:0.05,ShapeDistance:0.05,CrossSim:0.15,CrossAggregation:0.15,CrossDist:0.05,CrossOverlap:0.05,MCS:0.1"
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/GeminiMol_Training.py "${geminimol_data}/css_library/" "${epoch}" "${batch_size}" "${GNN}" "${network}" "${label_dict}" "${model_name}" "${patience}" "${geminimol_data}/benchmark.json" 
+```
+
+#### benchmark the fingerprints and our models
+
+Additionally, benchmark test scripts were provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, even incorporate additional molecular similarity data to further enhance the performance of the models.  
+
+It is worth noting that different decoders exhibit varying performance on different tasks and encodings. Therefore, it is essential to select the appropriate decoder for each specific molecular encoder and task. Consequently, all results should be merged using a data pivot table to analyze the optimal decoder for each encoder-task combination. In our work, the hyperparameters of the PropDecoder were chosen based on empirical experience and were not subjected to any hyperparameter tuning. Performing further hyperparameter tuning for each task may potentially yield improved performance.   
+
+> Benchmarking molecular fingerprints and our models
+
+``` shell
+conda activate GeminiMol
+# benchmarking Fixed GeminiMol models and Fingerprints
+for task in "DUDE" "LIT-PCBA" "TIBD" \
+    "ADMET-C" "ADMET-R" \ 
+    "LIT-QSAR" "CELLS-QSAR" "ST-QSAR" "PW-QSAR" \ 
+    "PropDecoder-ADMET" "PropDecoder-QSAR"
+    do
+for model_name in "CombineFP" \
+    "FCFP6" "MACCS" "RDK" "ECFP6" "FCFP4" "TopologicalTorsion" "AtomPairs" "ECFP4" \
+    "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"
+    do
+mkdir -p ${model_name}
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
+done
+done
+# benchmarking with FineTuning GeminiMol models for PropDecoder 
+for task in "FineTuning-ADMET" "FineTuning-QSAR"; do
+for model_name in "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"; do
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
+done
+done
+```   
 
 ## ⭐ Citing This Work
 
