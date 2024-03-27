@@ -151,7 +151,7 @@ if __name__ == '__main__':
     # job_name
     job_name = sys.argv[2]
     smiles_col = sys.argv[3]
-    library_path = sys.argv[4].split('.')[0]
+    library_path = f'{os.path.dirname(sys.argv[4])}/{os.path.basename(sys.argv[4])}'
     # update profiles
     if ':' in sys.argv[5]:
         ref_smiles_table = pd.read_csv(sys.argv[5].split(':')[0])
