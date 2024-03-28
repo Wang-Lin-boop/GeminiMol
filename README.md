@@ -85,7 +85,7 @@ In this repository, we provide all the training, validation, and testing dataset
 
 > Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link) and [HuggingFace](https://huggingface.co/AlphaMWang)
 
-Here is an example of how to download a model from huggingface. Besides wget, you can also download the model directly to Google Cloud Drive or huggingface using your browser.   
+Here is an example of how to download a model from huggingface. Besides wget, you can also download the model directly from Google Cloud Drive or huggingface using your browser.   
 
 ``` bash
 wget -P ${geminimol_lib} https://huggingface.co/AlphaMWang/GeminiMol/tree/main    
