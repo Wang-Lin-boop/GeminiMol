@@ -93,7 +93,9 @@ wget -P ${geminimol_lib} https://huggingface.co/AlphaMWang/GeminiMol/tree/main
 
 Then, we need place the models to the `${GeminiMol}/models`.   
 
-> Download all datasets via Zenodo for training, benchmarking, and applications    
+> Download all datasets via Zenodo for training, benchmarking, and applications 
+
+If you merely want to apply GeminiMol to your own project, you don't need to download training and benchmarking datasets.   
 
 ``` shell
     cd ${geminimol_data}
@@ -105,8 +107,6 @@ Then, we need place the models to the `${GeminiMol}/models`.
     unzip -d compound_library/ ChemDiv.zip 
     unzip -d compound_library/ DTIDB.zip 
 ```
-
-If you merely want to apply GeminiMol to your own project, you don't need to download training and benchmarking datasets.     
 
 The expected structure of GeminiMol path is:
 
@@ -129,21 +129,21 @@ GeminiMol
 │   ├── GeminiMol_Training.py            # scripts for training the GeminiMol models.                 
 │   ├── benchmark.py                     # benchmarking presentation methods on provide datasets
 ├── data                                 # training and benchmark datasets in this work
-│   ├── Benchmark_DUD-E                  # virtual screeening         
-│   ├── Benchmark_LIT-PCBA               # virtual screeening            
-│   ├── Benchmark_TIBD                   # target identification    
-│   ├── Benchmark_QSAR                   # QSAR and ADMET        
-│   ├── Chem_SmELECTRA                   # text backbone of chemical language 
-│   ├── css_library                      # CSS training data
-│   ├── benchmark.json                   # dataset index for benchmark tasks         
-│   ├── database.csv                     # molecular datasets in this work      
+│   ├── Benchmark_DUD-E                  # virtual screeening, optional         
+│   ├── Benchmark_LIT-PCBA               # virtual screeening, optional               
+│   ├── Benchmark_TIBD                   # target identification, optional       
+│   ├── Benchmark_QSAR                   # QSAR and ADMET, optional           
+│   ├── Chem_SmELECTRA                   # text backbone of chemical language, optional    
+│   ├── css_library                      # CSS training data, optional   
+│   ├── benchmark.json                   # dataset index for benchmark tasks, optional            
+│   ├── database.csv                     # molecular datasets in this work, optional         
 │   ├── DTIDB.csv                        # dataset used in target identification    
 │   ├── ChemDiv.csv                      # library of common commercial compounds     
 │   ├── Specs.csv                        # library of common commercial compounds    
 ├── models                               # CrossEncoder and GeminiMol models
-│   ├── CrossEncoder                     # CrossEncoder                            
+│   ├── CrossEncoder                     # CrossEncoder, optional                               
 │   ├── GeminiMol                        # GeminiMol, recommended for zero-shot tasks   
-│   ├── GeminiMol-MOD                    # GeminiMol-MOD, recommended for QSAR tasks    
+│   ├── GeminiMol-MOD                    # GeminiMol-MOD, recommended for QSAR tasks, optional       
 ``` 
 
 #### Installing the dependency packages
