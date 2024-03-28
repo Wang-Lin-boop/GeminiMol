@@ -32,13 +32,13 @@ This repository provides the official implementation of the GeminiMol model, tra
 
 ## 💗 Motivation  
 
-The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. Inspired by the dynamics of small molecules in solution, introducing the **conformational space profile** into molecular representation models is a promising aim. The conformational space profile covers the heterogeneity of molecule properties, such as the recognition of different biomolecules, dynamics in cytoplasm and membrane, which may acilitate further downstream application and generalization capability of molecular representation model.   
+The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. Inspired by the dynamics of small molecules in solution, introducing the **conformational space profile** into molecular representation models is a promising aim. The conformational space profile covers the heterogeneity of molecule properties, such as the multi-target mechanism of drug action, recognition of different biomolecules, dynamics in cytoplasm and membrane, which may facilitate further downstream application and generalization capability of molecular representation model.   
 
 ## 💡 Highlight
 
 * GeminiMol exhibits the capability to **identify molecular pairs with similar 3D active conformers**, even in scenarios where their 2D structures exhibit significant differences.     
 * GeminiMol was pre-trained on only 37,336 molecular structures, yet it can **generalize** to zero-shot and QSAR tasks involving millions of molecules.    
-* By capturing the intricate interactions between molecular structure and conformational space, our training strategy empowers GeminiMol with **balanced performance across various downstream tasks** in drug discovery, including virtual screening, target identification, QSAR, and ADMET property modeling.       
+* GeminiMol shown the **balanced performance** across various applications, including virtual screening, target identification, and cellular phenotype-based property modeling.        
 
 ## 🔔 News    
 
