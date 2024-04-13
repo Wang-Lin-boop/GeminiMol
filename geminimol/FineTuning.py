@@ -285,15 +285,10 @@ class GeminiMolQSAR(nn.Module):
                 self.eval_metric = 'AUPRC'
             else:
                 self.eval_metric = 'AUROC'
-            self.loss_function = [
-                nn.BCEWithLogitsLoss(
-                    pos_weight = torch.tensor([neg_num/pos_num]).cuda()
-                ),
-                nn.MSELoss()
-            ]
+            self.loss_function = 'BCE'
         else:
             self.eval_metric = 'SPEARMANR'
-            self.loss_function = [nn.MSELoss()]
+            self.loss_function = 'MSE'
         # model
         self.batch_size, train_batch_size = self.params['batch_size'] * 4, self.params['batch_size']
         # Set up the optimizer
@@ -319,9 +314,16 @@ class GeminiMolQSAR(nn.Module):
                 label_tensor = torch.tensor(
                     rows[self.label_column].to_list(), dtype=torch.float32
                 ).cuda()
-                loss = torch.tensor(0.0, requires_grad=True).cuda()
-                for loss_func in self.loss_function:
-                    loss = torch.add(loss, loss_func(pred, label_tensor)) 
+                if self.loss_function == 'BCE':
+                    loss = nn.BCELoss(
+                            reduction = 'none',
+                        )(
+                            pred, label_tensor
+                        ) * torch.tensor([1 - rows[self.label_column].mean()]).cuda()
+                elif self.loss_function == 'MSE':
+                    loss = nn.MSELoss()(
+                        pred, label_tensor
+                    )
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
