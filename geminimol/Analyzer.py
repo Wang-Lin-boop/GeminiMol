@@ -236,8 +236,10 @@ if __name__ == "__main__":
     elif running_mode == 'cluster':
         cluster_num = sys.argv[5].split(':')[1]
         for cluster_algorithm in analyzer.cluster_algorithm_list:
-            labels = analyzer.cluster_features(dataset, cluster_algorithm, cluster_num)
+            labels = analyzer.cluster_features(dataset[features_columns], cluster_algorithm, cluster_num)
             dataset = dataset.join(labels, how='left')
+        for feat in features_columns:
+            del dataset[feat]
         dataset.to_csv(f"{output_fn}_clusters.csv", index=False, header=True, sep=',')
     elif running_mode == 'visualise':
         print(dataset.head())
