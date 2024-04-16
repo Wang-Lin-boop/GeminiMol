@@ -315,11 +315,13 @@ class GeminiMolQSAR(nn.Module):
                     rows[self.label_column].to_list(), dtype=torch.float32
                 ).cuda()
                 if self.loss_function == 'BCE':
-                    loss = nn.BCELoss(
+                    loss = torch.mean(
+                        nn.BCELoss(
                             reduction = 'none',
                         )(
                             pred, label_tensor
                         ) * torch.tensor([1 - rows[self.label_column].mean()]).cuda()
+                    )
                 elif self.loss_function == 'MSE':
                     loss = nn.MSELoss()(
                         pred, label_tensor
