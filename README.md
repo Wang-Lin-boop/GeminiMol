@@ -93,7 +93,7 @@ wget -P ${geminimol_lib} https://huggingface.co/AlphaMWang/GeminiMol/tree/main
 
 Then, we need place the models to the `${GeminiMol}/models`.   
 
-> Download all datasets via Zenodo for training, benchmarking, and applications 
+> Download all datasets via [Zenodo](https://zenodo.org/records/10450788) for training, benchmarking, and applications 
 
 If you merely want to apply GeminiMol to your own project, you don't need to download training and benchmarking datasets.   
 
