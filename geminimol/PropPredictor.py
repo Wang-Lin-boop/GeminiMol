@@ -11,6 +11,10 @@ if __name__ == "__main__":
     encoder_method = sys.argv[2]
     extrnal_data = pd.read_csv(sys.argv[3])
     smiles_column = sys.argv[4]
+    if len(sys.argv) > 5:
+        model_type = sys.argv[5]
+    else:
+        model_type = None
     ## read the encoder models
     fingerprint_list = []
     encoders = {}
@@ -44,7 +48,19 @@ if __name__ == "__main__":
     encoders_list = list(encoders.values())
     ## load the model
     print('NOTE: loading models...')
-    if os.path.exists(f"{model_path}/predictor.pt"): # FineTuning
+    if os.path.exists(f"{model_path}/predictor.pt") and model_type == 'PropDecoder': # PropDecoder
+        from PropDecoder import QSAR
+        if len(encoders_list) == 1 and isinstance(encoders_list[0], GeminiMol):
+            QSAR_model = QSAR(
+                model_name = model_path,
+                encoder_list = encoders_list,
+                standardize = False, 
+                smiles_column = smiles_column, 
+            )
+            predicted_res = QSAR_model.predict(extrnal_data)
+        else:
+            raise RuntimeError('NOTE: PropDecoder only supports one GeminiMol encoder!')
+    elif os.path.exists(f"{model_path}/predictor.pt"): # FineTuning
         from FineTuning import GeminiMolQSAR
         if len(encoders_list) == 1 and isinstance(encoders_list[0], GeminiMol):
             encoder = encoders_list[0]
