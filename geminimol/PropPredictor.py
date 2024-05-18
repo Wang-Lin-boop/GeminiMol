@@ -14,7 +14,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 5:
         model_type = sys.argv[5]
     else:
-        model_type = None
+        model_type = 'FineTuning'
     ## read the encoder models
     fingerprint_list = []
     encoders = {}
@@ -48,6 +48,7 @@ if __name__ == "__main__":
     encoders_list = list(encoders.values())
     ## load the model
     print('NOTE: loading models...')
+    task_name = model_path.split('/')[-1]
     if os.path.exists(f"{model_path}/predictor.pt") and model_type == 'PropDecoder': # PropDecoder
         from PropDecoder import QSAR
         if len(encoders_list) == 1 and isinstance(encoders_list[0], GeminiMol):
@@ -56,11 +57,12 @@ if __name__ == "__main__":
                 encoder_list = encoders_list,
                 standardize = False, 
                 smiles_column = smiles_column, 
+                label_column = task_name
             )
             predicted_res = QSAR_model.predict(extrnal_data)
         else:
             raise RuntimeError('NOTE: PropDecoder only supports one GeminiMol encoder!')
-    elif os.path.exists(f"{model_path}/predictor.pt"): # FineTuning
+    elif os.path.exists(f"{model_path}/predictor.pt") and model_type == 'FineTuning': # FineTuning
         from FineTuning import GeminiMolQSAR
         if len(encoders_list) == 1 and isinstance(encoders_list[0], GeminiMol):
             encoder = encoders_list[0]
@@ -69,21 +71,25 @@ if __name__ == "__main__":
                 model_name = model_path,
                 standardize = False, 
                 smiles_column = smiles_column, 
+                label_column = task_name
             )
             predicted_res = QSAR_model.predict(extrnal_data)
         else:
             raise RuntimeError('NOTE: FineTuning only supports one GeminiMol encoder!')
-    elif os.path.exists(f"{model_path}/predictor.pkl"): # AutoQSAR
+    elif os.path.exists(f"{model_path}/predictor.pkl") and model_type in [
+        'LightGBM', 'LightGBMLarge', 'LightGBMXT', 'NeuralNetTorch' 
+    ]: # AutoQSAR
         from AutoQSAR import AutoQSAR
         from utils.fingerprint import Fingerprint
         encoders_list = list(encoders.values())
         QSAR_model = AutoQSAR(
-            model_name = model_path, 
-            encoder_list = encoders_list,
-            standardize = True, 
-            smiles_column = smiles_column,
+                model_name = model_path, 
+                encoder_list = encoders_list,
+                standardize = True, 
+                smiles_column = smiles_column,
+                label_column = task_name
             )
-        predicted_res = QSAR_model.predict(extrnal_data, model="WeightedEnsemble_L2_FULL")
+        predicted_res = QSAR_model.predict(extrnal_data, model=model_type)
     ## output the results
     predicted_res.to_csv(f"{model_basename}_prediction.csv", index=False, header=True, sep=',')
     print(f'NOTE: job completed! check {model_basename}_prediction.csv for results!')
