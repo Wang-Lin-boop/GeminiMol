@@ -187,7 +187,7 @@ As a molecular representation model, GeminiMol finds applications in **ligand-ba
 
 We have provided Cross-Encoder and GeminiMol models that can be used directly for inference. Here, we demonstrate the utilization of GeminiMol for virtual screening, target identification, and molecular property modeling.      
 
-Please note that while molecular fingerprints are considered simple molecular representation methods, they are an indispensable baseline (see our [paper](https://www.biorxiv.org/content/10.1101/2023.12.14.571629)). When conducting your drug development project, we recommend using ECFP4, CombineFP, and GeminiMol simultaneously as molecular representation methods, as they are provided in our `PharmProfiler.py` and various molecular property modeling scripts.     
+Please note that while molecular fingerprints are considered simple molecular representation methods, they are an indispensable baseline (see our [paper](https://www.biorxiv.org/content/10.1101/2023.12.14.571629)). When conducting your drug development project, we recommend exploring ECFP4, CombineFP, and GeminiMol that are provided simultaneously in our `PharmProfiler.py` and various molecular property modeling scripts.     
 
 #### Virtual Screening and Target Identification
 
