@@ -9,8 +9,8 @@ export label_col="Label"
 export smiles_column="SMILES" # Specify the column name in the compound_library
 export keep_top=3000
 export probe_cluster="Yes" # Yes or No
-for library in "HY-QA" "HY-QS" "MCE-BioActive" ;do  # "DTIDB" "LifeChemicalAdvanced" "LifeChemicalStock" "specs" "ChemDiv" "MCE"
-for decoy_set in "profile.csv" ;do #  "L689.csv" "comb.csv"
+for library in "LifeChemicalAdvanced" "LifeChemicalStock" "specs" "ChemDiv" "MCE";do  # "DTIDB" "LifeChemicalAdvanced" "LifeChemicalStock" "specs" "ChemDiv" "MCE"
+for decoy_set in "profile.csv" ;do # 
 export basename=${decoy_set%%.csv}
 cat<<EOF > ${basename}_${library}_PVS.pbs
 #PBS -N ${basename}_${library}
