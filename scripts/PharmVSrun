@@ -3,12 +3,6 @@
 echo "SMILES,Label
 <SMILES>,1.0" > "profile.csv"
 
-echo "SMILES,Label
-Nc1ncnc(c12)n(cn2)[C@@H]([C@@H]3O)O[C@@H]([C@H]34)COP([O-])(=O)O[C@@H]5[C@H](O)[C@@H](COP([O-])(=O)O4)O[C@H]5n(cn6)c(c67)nc(N)[nH]c7=O,1.0
-[nH]1c([O-])nc(c12)[nH]c(=O)[nH]c2=O,1.0
-[nH]1c(=O)[nH]c(c12)[nH]c(=O)[n-]c2=O,1.0
-" > "profile.csv"
-
 export gpu_id=0
 export max_gpu_id=0
 export label_col="Label"
