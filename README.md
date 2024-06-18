@@ -88,7 +88,7 @@ In this repository, we provide all the training, validation, and testing dataset
 Here is an example of how to download a model from huggingface. Besides wget, you can also download the model directly from Google Cloud Drive or huggingface using your browser.   
 
 ``` bash
-wget -P ${geminimol_lib} https://huggingface.co/AlphaMWang/GeminiMol/tree/main    
+git clone https://huggingface.co/AlphaMWang/GeminiMol    
 ```
 
 Then, we need place the models to the `${GeminiMol}/models`.   
@@ -99,7 +99,14 @@ If you merely want to apply GeminiMol to your own project, you don't need to dow
 
 ``` shell
     cd ${geminimol_data}
-    wget https://zenodo.org/api/records/10273488/files-archive  
+    wget https://zenodo.org/records/10450788/files/css_library.zip # only for reproducing CSS data collection
+    wget https://zenodo.org/records/10450788/files/Benchmark_DUD-E.zip # only for reproducing benchmark
+    wget https://zenodo.org/records/10450788/files/Benchmark_LIT-PCBA.zip # only for reproducing benchmark
+    wget https://zenodo.org/records/10450788/files/Benchmark_QSAR.zip # only for reproducing benchmark
+    wget https://zenodo.org/records/10450788/files/Benchmark_TIBD.zip # only for reproducing benchmark
+    wget https://zenodo.org/records/10450788/files/Chem_SmELECTRA.zip # only for reproducing cross-encoder baseline
+    wget https://zenodo.org/records/10450788/files/ChemDiv.zip # compound library for virtual screening
+    wget https://zenodo.org/records/10450788/files/DTIDB.zip # DTI database for target identification 
     for i in Benchmark*.zip css*.zip Chem*.zip;do
         mkdir ${i%%.zip}
         unzip -d ${i%%.zip}/ $i
@@ -366,10 +373,19 @@ In our work, the hyperparameters of the PropDecoder were chosen based on empiric
 ``` shell
 conda activate GeminiMol
 # benchmarking Fixed GeminiMol models and Fingerprints
-for task in "DUDE" "LIT-PCBA" "TIBD" \
-    "ADMET-C" "ADMET-R" \ 
-    "LIT-QSAR" "CELLS-QSAR" "ST-QSAR" "PW-QSAR" \ 
-    "PropDecoder-ADMET" "PropDecoder-QSAR"
+for task in "DUDE" "LIT-PCBA" "TIBD" # zero-shot tasks
+    do
+for model_name in "FCFP6" "MACCS" "RDK" "ECFP6" "FCFP4" \
+    "TopologicalTorsion" "AtomPairs" "ECFP4" \
+    "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"
+    do
+mkdir -p ${model_name}
+CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
+done
+done
+for task in "ADMET-C" "ADMET-R" \
+    "LIT-QSAR" "CELLS-QSAR" "ST-QSAR" "PW-QSAR" \
+    "PropDecoder-ADMET" "PropDecoder-QSAR" # property modeling
     do
 for model_name in "CombineFP" \
     "FCFP6" "MACCS" "RDK" "ECFP6" "FCFP4" "TopologicalTorsion" "AtomPairs" "ECFP4" \

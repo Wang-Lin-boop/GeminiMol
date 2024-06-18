@@ -4,7 +4,7 @@ echo "SMILES,Label
 <SMILES>,1.0" > "profile.csv"
 
 export gpu_id=0
-export max_gpu_id=0
+export max_gpu_id=3
 export label_col="Label"
 export smiles_column="SMILES" # Specify the column name in the compound_library
 export keep_top=3000
