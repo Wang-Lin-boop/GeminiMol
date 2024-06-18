@@ -99,7 +99,7 @@ If you merely want to apply GeminiMol to your own project, you don't need to dow
 
 ``` shell
     cd ${geminimol_data}
-    wget https://zenodo.org/records/10450788/files/css_library.zip # only for reproducing CSS data collection
+    wget https://zenodo.org/records/10450788/files/css_library.zip # only for reproducing GeminiMol training
     wget https://zenodo.org/records/10450788/files/Benchmark_DUD-E.zip # only for reproducing benchmark
     wget https://zenodo.org/records/10450788/files/Benchmark_LIT-PCBA.zip # only for reproducing benchmark
     wget https://zenodo.org/records/10450788/files/Benchmark_QSAR.zip # only for reproducing benchmark
