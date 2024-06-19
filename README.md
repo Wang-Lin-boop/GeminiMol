@@ -150,7 +150,6 @@ GeminiMol
 ├── models                               # CrossEncoder and GeminiMol models
 │   ├── CrossEncoder                     # CrossEncoder, optional                               
 │   ├── GeminiMol                        # GeminiMol, recommended for zero-shot tasks   
-│   ├── GeminiMol-MOD                    # GeminiMol-MOD, recommended for QSAR tasks, optional       
 ``` 
 
 #### Installing the dependency packages
@@ -355,7 +354,7 @@ export batch_size=512
 export epoch=20 # max epochs
 export patience=50 # for early stoping
 export GNN='WLN' # Weisfeiler-Lehman Network (WLN)
-export network="MeanMLP:2048:4:2048:None:0:5:0" # "Weighted:1024:12:2048:None:0:5:0" for GeminiMol-MOD
+export network="MeanMLP:2048:4:2048:None:0:5:0"
 export label_dict="ShapeScore:0.2,ShapeAggregation:0.2,ShapeOverlap:0.05,ShapeDistance:0.05,CrossSim:0.15,CrossAggregation:0.15,CrossDist:0.05,CrossOverlap:0.05,MCS:0.1"
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/GeminiMol_Training.py "${geminimol_data}/css_library/" "${epoch}" "${batch_size}" "${GNN}" "${network}" "${label_dict}" "${model_name}" "${patience}" "${geminimol_data}/benchmark.json" 
 ```
@@ -377,7 +376,7 @@ for task in "DUDE" "LIT-PCBA" "TIBD" # zero-shot tasks
     do
 for model_name in "FCFP6" "MACCS" "RDK" "ECFP6" "FCFP4" \
     "TopologicalTorsion" "AtomPairs" "ECFP4" \
-    "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"
+    "${geminimol_lib}/GeminiMol"
     do
 mkdir -p ${model_name}
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
@@ -389,7 +388,7 @@ for task in "ADMET-C" "ADMET-R" \
     do
 for model_name in "CombineFP" \
     "FCFP6" "MACCS" "RDK" "ECFP6" "FCFP4" "TopologicalTorsion" "AtomPairs" "ECFP4" \
-    "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"
+    "${geminimol_lib}/GeminiMol"
     do
 mkdir -p ${model_name}
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
@@ -397,7 +396,7 @@ done
 done
 # benchmarking with FineTuning GeminiMol models for PropDecoder 
 for task in "FineTuning-ADMET" "FineTuning-QSAR"; do
-for model_name in "${geminimol_lib}/GeminiMol" "${geminimol_lib}/GeminiMol-MOD"; do
+for model_name in "${geminimol_lib}/GeminiMol"; do
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
 done
 done
