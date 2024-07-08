@@ -165,8 +165,8 @@ Before running GeminiMol, you need to install the basic dependency packages.
 > Installing the statatics and plot packages
 
 ``` shell
-    pip install six oddt scikit-learn matplotlib 
-    pip install scipy==1.10.1
+    pip install six
+    pip install oddt scikit-learn matplotlib scipy==1.10.1
 ```
 
 > Installing the dependency packages of GeminiMol    
