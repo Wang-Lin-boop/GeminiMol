@@ -144,9 +144,10 @@ GeminiMol
 │   ├── css_library                      # CSS training data, optional   
 │   ├── benchmark.json                   # dataset index for benchmark tasks, optional            
 │   ├── database.csv                     # molecular datasets in this work, optional         
-│   ├── DTIDB.csv                        # dataset used in target identification    
-│   ├── ChemDiv.csv                      # library of common commercial compounds     
-│   ├── Specs.csv                        # library of common commercial compounds    
+│   ├── compound_library                 # the compound librarys
+│   │   ├── DTIDB.csv                    # dataset used in target identification    
+│   │   ├── ChemDiv.csv                  # library of common commercial compounds     
+│   │   ├── Specs.csv                    # library of common commercial compounds    
 ├── models                               # CrossEncoder and GeminiMol models
 │   ├── CrossEncoder                     # CrossEncoder, optional                               
 │   ├── GeminiMol                        # GeminiMol, recommended for zero-shot tasks   
