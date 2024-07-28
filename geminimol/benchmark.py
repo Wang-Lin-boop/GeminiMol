@@ -519,8 +519,6 @@ class Benchmark():
                     label_column = candidate_label_column
                     break
             label_set = list(set(training_data[label_column].to_list()))
-            pos_num = len(training_data[training_data[label_column]==label_set[0]]) 
-            neg_num = len(training_data[training_data[label_column]==label_set[1]])
             if len(label_set) == 2:
                 task_type = 'binary'
                 test_metrics = 'AUROC'
