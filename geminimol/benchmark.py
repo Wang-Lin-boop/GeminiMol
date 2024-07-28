@@ -443,7 +443,7 @@ class Benchmark():
                     expand_ratio, hidden_dim, num_layers = 0, 1024, 3
                 else:
                     batch_size, learning_rate, patience = 24, 1.0e-5, 100
-                    expand_ratio, hidden_dim, num_layers = 0, 1204, 3
+                    expand_ratio, hidden_dim, num_layers = 0, 1024, 3
                 if task_type == 'binary':
                     dropout_rate = 0.3
                     dense_dropout = 0.1
@@ -553,7 +553,7 @@ class Benchmark():
                     expand_ratio, hidden_dim, num_layers = 0, 1024, 3
                 else:
                     batch_size, learning_rate, patience = 24, 1.0e-5, 100
-                    expand_ratio, hidden_dim, num_layers = 0, 1204, 3
+                    expand_ratio, hidden_dim, num_layers = 0, 1024, 3
                 if task_type == 'binary':
                     dropout_rate = 0.3 
                     dense_dropout = 0.1 
