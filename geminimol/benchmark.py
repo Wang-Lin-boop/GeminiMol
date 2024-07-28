@@ -87,7 +87,6 @@ class Benchmark():
             > data_record (bool): whether to record the prediction data.
 
         '''
-        self.predictor = load_molecular_representation(model_name)
         self.model_name = model_name
         self.record = record
         self.data_record = data_record
@@ -238,6 +237,7 @@ class Benchmark():
             benchmark_task_type="ranking", 
             standardize=False
         ):
+        self.predictor = load_molecular_representation(self.model_name)
         self.standardize = standardize
         self.data_table = pd.read_csv(f"{self.data_path}/DUDE-smiles.csv")
         self.target_dict = dict(zip(self.data_table['Title'], self.data_table['SMILES']))
@@ -268,6 +268,7 @@ class Benchmark():
             benchmark_task_type="ranking", 
             standardize=False
         ):
+        self.predictor = load_molecular_representation(self.model_name)
         self.target_list = target_list
         self.standardize = standardize
         # statistic_tables { target : statistic_table (score_types/similarity_metrics, metrics)}
@@ -292,6 +293,7 @@ class Benchmark():
             benchmark_task_type="ranking", 
             standardize=False
         ):
+        self.predictor = load_molecular_representation(self.model_name)
         self.data_table = pd.read_csv(f"{self.data_path}/{index}_Benchmark_Decoys.csv", dtype={'SMILES':str, 'Title':str, 'Number_of_Target':int})
         self.standardize = standardize  ## if you wanna to use new decoys, please standardize the decoy smiles
         self.data_table = self.prepare(self.data_table, smiles_column='SMILES')
@@ -321,6 +323,7 @@ class Benchmark():
             benchmark_task_type="classification"
         ):
         from AutoQSAR import AutoQSAR
+        self.predictor = load_molecular_representation(self.model_name)
         self.target_list = target_list
         # statistic_tables { target : statistic_table (models, metrics)}
         self.statistic_tables = {key:pd.DataFrame() for key in self.target_list}
@@ -389,6 +392,7 @@ class Benchmark():
             standardize=False, 
         ):
         from PropDecoder import QSAR
+        self.predictor = load_molecular_representation(self.model_name)
         self.target_list = target_list
         # benchmark_results (targets, metrics)
         benchmark_results = pd.DataFrame(columns=['model', 'model_score', 'test_metrics'], index=self.target_list)
