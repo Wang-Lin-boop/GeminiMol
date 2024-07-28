@@ -384,122 +384,6 @@ class Benchmark():
         benchmark_results.to_csv(f"{self.model_name}/{self.benchmark_name}_each_target.csv", index=True, header=True, sep=',')
         return self.reporting_benchmark(self.statistic_tables)
 
-    def PropDecoder(
-            self,
-            target_list=None, 
-            candidate_smiles_columns=['SMILES', 'Drug', 'smiles', 'compound', 'molecule'], 
-            candidate_label_columns=['Label', 'label', 'Y', 'Target', 'target'], 
-            standardize=False, 
-        ):
-        from PropDecoder import QSAR
-        self.predictor = load_molecular_representation(self.model_name)
-        self.target_list = target_list
-        # benchmark_results (targets, metrics)
-        benchmark_results = pd.DataFrame(columns=['model', 'model_score', 'test_metrics'], index=self.target_list)
-        for target in self.target_list:
-            print(f'NOTE: benchmarking on the {target}....')
-            training_data = pd.read_csv(f'{self.data_path}/{target}/{target}_scaffold_train.csv')
-            for candidate_smiles_column in candidate_smiles_columns:
-                if candidate_smiles_column in training_data.columns:
-                    smiles_column = candidate_smiles_column
-                    break
-            for candidate_label_column in candidate_label_columns:
-                if candidate_label_column in training_data.columns:
-                    label_column = candidate_label_column
-                    break
-            label_set = list(set(training_data[label_column].to_list()))
-            if len(label_set) == 2:
-                task_type = 'binary'
-                test_metrics = 'AUROC'
-                benchmark_task_type = 'classification'
-            else:
-                task_type = 'regression'
-                test_metrics = 'SPEARMANR'
-                benchmark_task_type = 'regression'
-            training_data.dropna(subset=[smiles_column, label_column], inplace=True)
-            training_data[label_column] = training_data[label_column].replace(self.label_map)
-            val_data = pd.read_csv(f'{self.data_path}/{target}/{target}_scaffold_valid.csv')
-            val_data.dropna(subset=[smiles_column, label_column], inplace=True)
-            val_data[label_column] = val_data[label_column].replace(self.label_map)
-            test_data = pd.read_csv(f'{self.data_path}/{target}/{target}_scaffold_test.csv')
-            test_data.dropna(subset=[smiles_column, label_column], inplace=True)
-            test_data[label_column] = test_data[label_column].replace(self.label_map)
-            QSAR_model = QSAR(  
-                f"{self.model_name}/{self.benchmark_name}/{target}", 
-                encoder_list = [self.predictor], 
-                standardize = standardize, 
-                label_column = label_column, 
-                smiles_column = smiles_column, 
-            )
-            if not os.path.exists(f"{self.model_name}/{self.benchmark_name}/{target}/predictor.pt"):
-                epochs = ( 300000 // len(training_data) ) + 1
-                if len(training_data) > 30000:
-                    batch_size, learning_rate, patience = 256, 1.0e-3, 50
-                    expand_ratio, hidden_dim, num_layers = 3, 2048, 5
-                elif len(training_data) > 10000:
-                    batch_size, learning_rate, patience = 128, 5.0e-4, 60
-                    expand_ratio, hidden_dim, num_layers = 2, 2048, 4
-                elif len(training_data) > 5000:
-                    batch_size, learning_rate, patience = 64, 1.0e-4, 80
-                    expand_ratio, hidden_dim, num_layers = 1, 1024, 3
-                elif len(training_data) > 2000:
-                    batch_size, learning_rate, patience = 32, 5.0e-5, 100
-                    expand_ratio, hidden_dim, num_layers = 0, 1024, 3
-                else:
-                    batch_size, learning_rate, patience = 24, 1.0e-5, 100
-                    expand_ratio, hidden_dim, num_layers = 0, 1024, 3
-                if task_type == 'binary':
-                    dropout_rate = 0.3
-                    dense_dropout = 0.1
-                    dense_activation = 'Softplus' # GELU
-                    projection_activation = 'Softplus' # GELU
-                    projection_transform = 'Sigmoid'
-                elif task_type == 'regression':
-                    dropout_rate = 0.1
-                    dense_dropout = 0.0
-                    dense_activation = 'ELU' # ELU
-                    projection_activation = 'Identity' # ELU
-                    if training_data[label_column].max() <= 1.0 and training_data[label_column].min() >= 0.0:
-                        projection_transform = 'Sigmoid'
-                    else:
-                        projection_transform = 'Identity'
-                QSAR_model.trianing_models(
-                    training_data,
-                    val_set = val_data,
-                    epochs = epochs,
-                    learning_rate = learning_rate,
-                    params = {
-                        'task_type': task_type,
-                        'hidden_dim': hidden_dim,
-                        'expand_ratio': expand_ratio,
-                        'dense_dropout': dense_dropout,
-                        'dropout_rate': dropout_rate,
-                        'num_layers': num_layers,
-                        'rectifier_activation': 'SiLU',
-                        'concentrate_activation': 'SiLU',
-                        'dense_activation': dense_activation,
-                        'projection_activation': projection_activation,
-                        'projection_transform': projection_transform,
-                        'linear_projection': False,
-                        'batch_size': batch_size
-                    },
-                    patience = patience
-                )
-            result = QSAR_model.evaluate(
-                test_data, 
-                smiles_name = smiles_column, 
-                label_name = label_column,
-                metrics = self.statistics_metrics_dict[benchmark_task_type],
-                as_pandas= False
-                )
-            benchmark_results.loc[[target],['model']] = 'PropDecoder'
-            benchmark_results.loc[[target],['model_score']] = result[test_metrics]
-            benchmark_results.loc[[target],['test_metrics']] = test_metrics
-            target_res = pd.DataFrame(result, index=['Test'])
-            target_res.to_csv(f"{self.model_name}/{self.benchmark_name}/{target}_statistics.csv", index=True, header=True, sep=',')
-        benchmark_results.to_csv(f"{self.model_name}/{self.benchmark_name}_each_target.csv", index=True, header=True, sep=',')
-        return benchmark_results
-
     def FineTuning(
             self,
             target_list=None, 
@@ -542,19 +426,19 @@ class Benchmark():
             if not os.path.exists(f"{self.model_name}/{self.benchmark_name}/{target}/predictor.pt"):
                 epochs = ( 300000 // len(training_data) ) + 1
                 if len(training_data) > 30000:
-                    batch_size, learning_rate, patience = 256, 1.0e-3, 50
+                    batch_size, learning_rate, patience, temperature, weight_decay = 256, 1.0e-3, 50, 0.3, 0.01
                     expand_ratio, hidden_dim, num_layers = 3, 2048, 5
                 elif len(training_data) > 10000:
-                    batch_size, learning_rate, patience = 128, 5.0e-4, 60
+                    batch_size, learning_rate, patience, temperature, weight_decay = 128, 5.0e-4, 60, 0.2, 0.01
                     expand_ratio, hidden_dim, num_layers = 2, 2048, 4
                 elif len(training_data) > 5000:
-                    batch_size, learning_rate, patience = 64, 1.0e-4, 80
+                    batch_size, learning_rate, patience, temperature, weight_decay = 64, 1.0e-4, 80, 0.1, 0.01
                     expand_ratio, hidden_dim, num_layers = 1, 1024, 3
                 elif len(training_data) > 2000:
-                    batch_size, learning_rate, patience = 32, 5.0e-5, 100
+                    batch_size, learning_rate, patience, temperature, weight_decay = 32, 5.0e-5, 100, 0.1, 0.01
                     expand_ratio, hidden_dim, num_layers = 0, 1024, 3
                 else:
-                    batch_size, learning_rate, patience = 24, 1.0e-5, 100
+                    batch_size, learning_rate, patience, temperature, weight_decay = 24, 1.0e-5, 100, 0.1, 0.04
                     expand_ratio, hidden_dim, num_layers = 0, 1024, 3
                 if task_type == 'binary':
                     dropout_rate = 0.3 
@@ -598,7 +482,9 @@ class Benchmark():
                     val_set = val_data,
                     epochs = epochs,
                     learning_rate = learning_rate,
-                    patience = patience
+                    patience = patience,
+                    temperature = temperature,
+                    weight_decay = weight_decay,
                 )
             else:
                 QSAR_model = GeminiMolQSAR(

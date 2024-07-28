@@ -276,15 +276,7 @@ class GeminiMolQSAR(nn.Module):
         val_set = self.prepare(val_set)
         # setup task type
         if self.params['task_type'] == 'binary':
-            ## processing datasets
-            training_set[self.label_column] = training_set[self.label_column].replace(self.label_map)
-            val_set[self.label_column] = val_set[self.label_column].replace(self.label_map)
-            pos_num = len(training_set[training_set[self.label_column]==1])
-            neg_num = len(training_set[training_set[self.label_column]==0])
-            if pos_num/neg_num > 3.0 or neg_num/pos_num > 3.0:
-                self.eval_metric = 'AUPRC'
-            else:
-                self.eval_metric = 'AUROC'
+            self.eval_metric = 'AUROC'
             self.loss_function = 'BCE'
         else:
             self.eval_metric = 'SPEARMANR'
