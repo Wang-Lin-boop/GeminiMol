@@ -429,7 +429,7 @@ We welcome community contributions of extension tools based on the GeminiMol mod
 
 We appreciate the technical support provided by the engineers of the high-performance computing cluster of ShanghaiTech University.  Lin Wang also thanks Jianxin Duan, Gaokeng Xiao, Quanwei Yu, Zheyuan Shen, Shenghao Dong, Huiqiong Li, Zongquan Li, and Fenglei Li for providing technical support, inspiration and help for this work. We express our gratitude to Dr. Zhongji Pu, Dr. Quanwei Yu for their invaluable assistance in third-party testing for model installation, reproducibility and application.       
 
-We appreciate the developers of AutoGluon and Deep Graph Library (DGL). We also thank the developers and maintainers of MarcoModel and PhaseShape modules in the Schrödinger package. Besides, GeminiMol communicates with and/or references the following separate libraries and packages, we thank all their contributors and maintainers!    
+We also thank the developers and maintainers of MarcoModel and PhaseShape modules in the Schrödinger package. Besides, GeminiMol communicates with and/or references the following separate libraries and packages, we thank all their contributors and maintainers!    
 
 *  [_RDKit_](https://www.rdkit.org/)
 *  [_PyTorch_](https://pytorch.org/)
