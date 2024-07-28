@@ -10,12 +10,52 @@ from sklearn.metrics import roc_auc_score, mean_squared_error, accuracy_score, f
 from scipy.stats import pearsonr, spearmanr
 from utils.chem import gen_standardize_smiles, check_smiles_validity, is_valid_smiles
 
+def load_molecular_representation(model_name):
+    # load model
+    if ':' in model_name:
+        custom_label_list = model_name.split(':')[1].split(',')
+        model_name = model_name.split(':')[0]
+    else:
+        custom_label_list = None
+    if os.path.exists(f'{model_name}/GeminiMol.pt'):
+        from model.GeminiMol import GeminiMol
+        predictor = GeminiMol(
+            model_name, 
+            custom_label = custom_label_list, 
+            extrnal_label_list = [
+                'RMSE', 'Cosine', 'Manhattan', 'Minkowski', 'Euclidean', 'KLDiv', 'Pearson'
+            ]
+            )
+        model_name = str(model_name.split('/')[-1])
+    elif os.path.exists(f'{model_name}/backbone'):
+        from model.CrossEncoder import CrossEncoder
+        if custom_label_list is None:
+            candidate_labels = [
+                    'LCMS2A1Q_MAX', 'LCMS2A1Q_MIN', 'MCMM1AM_MAX', 'MCMM1AM_MIN', 
+                    'ShapeScore', 'ShapeOverlap', 'ShapeAggregation', 'CrossSim', 'CrossAggregation', 'CrossOverlap', 
+                ]
+        else:
+            candidate_labels = custom_label_list
+        predictor = CrossEncoder(
+            model_name,
+            candidate_labels = candidate_labels
+        )
+        model_name = str(model_name.split('/')[-1])
+    elif model_name == "CombineFP":
+        model_name = "CombineFP"
+        method_list = ["ECFP4", "FCFP6", "AtomPairs", "TopologicalTorsion"]
+        from utils.fingerprint import Fingerprint
+        predictor = Fingerprint(method_list)
+    else:
+        from utils.fingerprint import Fingerprint
+        predictor = Fingerprint([model_name])
+    return predictor
+
 class Benchmark():
     '''
     Benchmark for virtual screening, target identification, and QSAR.
 
     Parameters:
-        > predictor (object): the predictor for virtual screening, target identification, and QSAR.
         > model_name (str): the name of the predictor.
         > record (bool): whether to record the prediction results.
         > data_record (bool): whether to record the prediction data.
@@ -37,7 +77,7 @@ class Benchmark():
         > ```reporting_benchmark(statistic_tables)```: reporting the benchmark for virtual screening, target identification, and QSAR.
 
     '''
-    def __init__(self, predictor, model_name, record = True, data_record = False):
+    def __init__(self, model_name, record = True, data_record = False):
         '''
         Parameters:
             > predictor (object): 
@@ -47,7 +87,7 @@ class Benchmark():
             > data_record (bool): whether to record the prediction data.
 
         '''
-        self.predictor = predictor
+        self.predictor = load_molecular_representation(model_name)
         self.model_name = model_name
         self.record = record
         self.data_record = data_record
@@ -364,19 +404,10 @@ class Benchmark():
                     label_column = candidate_label_column
                     break
             label_set = list(set(training_data[label_column].to_list()))
-            pos_num = len(training_data[training_data[label_column]==label_set[0]]) 
-            neg_num = len(training_data[training_data[label_column]==label_set[1]])
             if len(label_set) == 2:
                 task_type = 'binary'
-                if pos_num/neg_num > 100.0 or neg_num/pos_num > 100.0:
-                    test_metrics = 'BEDROC'
-                    benchmark_task_type = 'ranking'
-                elif pos_num/neg_num > 3.0 or neg_num/pos_num > 3.0:
-                    test_metrics = 'AUPRC'
-                    benchmark_task_type = 'ranking'
-                else:
-                    test_metrics = 'AUROC'
-                    benchmark_task_type = 'classification'
+                test_metrics = 'AUROC'
+                benchmark_task_type = 'classification'
             else:
                 task_type = 'regression'
                 test_metrics = 'SPEARMANR'
@@ -492,15 +523,8 @@ class Benchmark():
             neg_num = len(training_data[training_data[label_column]==label_set[1]])
             if len(label_set) == 2:
                 task_type = 'binary'
-                if pos_num/neg_num > 100.0 or neg_num/pos_num > 100.0:
-                    test_metrics = 'BEDROC'
-                    benchmark_task_type = 'ranking'
-                elif pos_num/neg_num > 3.0 or neg_num/pos_num > 3.0:
-                    test_metrics = 'AUPRC'
-                    benchmark_task_type = 'ranking'
-                else:
-                    test_metrics = 'AUROC'
-                    benchmark_task_type = 'classification'
+                test_metrics = 'AUROC'
+                benchmark_task_type = 'classification'
             else:
                 task_type = 'regression'
                 test_metrics = 'SPEARMANR'
@@ -547,7 +571,7 @@ class Benchmark():
                         projection_transform = 'Identity'
                 QSAR_model = GeminiMolQSAR(  
                     model_name = f"{self.model_name}/{self.benchmark_name}/{target}", 
-                    geminimol_encoder = self.predictor, 
+                    geminimol_encoder = load_molecular_representation(self.model_name), 
                     standardize = standardize, 
                     label_column = label_column, 
                     smiles_column = smiles_column, 
@@ -577,7 +601,7 @@ class Benchmark():
             else:
                 QSAR_model = GeminiMolQSAR(
                     model_name = f"{self.model_name}/{self.benchmark_name}/{target}",
-                    geminimol_encoder = self.predictor,
+                    geminimol_encoder = load_molecular_representation(self.model_name),
                     standardize = False, 
                     label_column = label_column, 
                     smiles_column = smiles_column, 
@@ -737,50 +761,7 @@ if __name__ == '__main__':
     with open(benchmark_index_file, 'r', encoding='utf-8') as f:
         benchmark_index_dict = json.load(f)
     benchmark_task = sys.argv[3]
-    # load model
-    if ':' in model_name:
-        custom_label_list = model_name.split(':')[1].split(',')
-        model_name = model_name.split(':')[0]
-    else:
-        custom_label_list = None
-    if os.path.exists(f'{model_name}/GeminiMol.pt'):
-        from model.GeminiMol import GeminiMol
-        if len(sys.argv) > 4:
-            depth = int(sys.argv[4])
-        else:
-            depth = 0
-        predictor = GeminiMol(
-            model_name, 
-            depth = depth, 
-            custom_label = custom_label_list, 
-            extrnal_label_list = [
-                'RMSE', 'Cosine', 'Manhattan', 'Minkowski', 'Euclidean', 'KLDiv', 'Pearson'
-            ]
-            )
-        model_name = str(model_name.split('/')[-1])
-    elif os.path.exists(f'{model_name}/backbone'):
-        from model.CrossEncoder import CrossEncoder
-        if custom_label_list is None:
-            candidate_labels = [
-                    'LCMS2A1Q_MAX', 'LCMS2A1Q_MIN', 'MCMM1AM_MAX', 'MCMM1AM_MIN', 
-                    'ShapeScore', 'ShapeOverlap', 'ShapeAggregation', 'CrossSim', 'CrossAggregation', 'CrossOverlap', 
-                ]
-        else:
-            candidate_labels = custom_label_list
-        predictor = CrossEncoder(
-            model_name,
-            candidate_labels = candidate_labels
-        )
-        model_name = str(model_name.split('/')[-1])
-    elif model_name == "CombineFP":
-        model_name = "CombineFP"
-        method_list = ["ECFP4", "FCFP6", "AtomPairs", "TopologicalTorsion"]
-        from utils.fingerprint import Fingerprint
-        predictor = Fingerprint(method_list)
-    else:
-        from utils.fingerprint import Fingerprint
-        predictor = Fingerprint([model_name])
-    Benchmark_Protocol = Benchmark(predictor=predictor, model_name=model_name, data_record=True)
+    Benchmark_Protocol = Benchmark(model_name=model_name, data_record=True)
     # benchmarking
     Benchmark_Protocol(benchmark_task, f"{benchmark_file_basepath}/{benchmark_index_dict[benchmark_task]}", standardize=True)
 
