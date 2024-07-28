@@ -1,5 +1,5 @@
 <h1 align="left">  GeminiMol  </h1>
-<h3 align="left"> Conformational Space Profile Enhanced Molecular Representation Model </h3>
+<h3 align="left"> Molecular Representation Model Enhanced by Conformational Space Profile </h3>
 <p align="left">
   📃 <a href="https://www.biorxiv.org/content/10.1101/2023.12.14.571629" target="_blank">Paper</a> ·  🤗 <a href="https://huggingface.co/AlphaMWang/GeminiMol" target="_blank">Model</a> ·  📕 <a href="https://zenodo.org/records/10450788" target="_blank">Data</a><br>
 </p>
