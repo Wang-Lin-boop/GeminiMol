@@ -298,7 +298,7 @@ class QSAR:
                             reduction = 'none',
                         )(
                             pred, label_tensor
-                        )
+                        ) * torch.tensor([1 - rows[self.label_column].mean()]).cuda()
                     )
                 elif self.loss_function == 'MSE':
                     loss = nn.MSELoss()(

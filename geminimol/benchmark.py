@@ -542,19 +542,19 @@ class Benchmark():
             if not os.path.exists(f"{self.model_name}/{self.benchmark_name}/{target}/predictor.pt"):
                 epochs = ( 300000 // len(training_data) ) + 1
                 if len(training_data) > 30000:
-                    batch_size, learning_rate, patience, temperature, weight_decay = 256, 1.0e-3, 50, 0.3, 0.01
+                    batch_size, learning_rate, patience, temperature, weight_decay = 256, 1.0e-3, 50, 0.1, 0.01
                     expand_ratio, hidden_dim, num_layers = 3, 2048, 5
                 elif len(training_data) > 10000:
-                    batch_size, learning_rate, patience, temperature, weight_decay = 128, 5.0e-4, 60, 0.2, 0.01
+                    batch_size, learning_rate, patience, temperature, weight_decay = 128, 5.0e-4, 60, 0.1, 0.01
                     expand_ratio, hidden_dim, num_layers = 2, 2048, 4
                 elif len(training_data) > 5000:
-                    batch_size, learning_rate, patience, temperature, weight_decay = 64, 1.0e-4, 80, 0.1, 0.01
+                    batch_size, learning_rate, patience, temperature, weight_decay = 64, 1.0e-4, 80, 0.05, 0.01
                     expand_ratio, hidden_dim, num_layers = 1, 1024, 3
                 elif len(training_data) > 2000:
-                    batch_size, learning_rate, patience, temperature, weight_decay = 32, 5.0e-5, 100, 0.1, 0.01
+                    batch_size, learning_rate, patience, temperature, weight_decay = 32, 5.0e-5, 100, 0.05, 0.01
                     expand_ratio, hidden_dim, num_layers = 0, 1024, 3
                 else:
-                    batch_size, learning_rate, patience, temperature, weight_decay = 24, 1.0e-5, 100, 0.1, 0.04
+                    batch_size, learning_rate, patience, temperature, weight_decay = 24, 1.0e-5, 100, 0.01, 0.04
                     expand_ratio, hidden_dim, num_layers = 0, 1024, 3
                 if task_type == 'binary':
                     dropout_rate = 0.3 
