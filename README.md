@@ -362,13 +362,11 @@ CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/GeminiMol_Training.py "${gemin
 
 #### Benchmarking the fingerprints and our models
 
-Additionally, benchmark test scripts were provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, even incorporate additional molecular similarity data to further enhance the performance of the models.  
+Additionally, benchmark test scripts were provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, even incorporate additional molecular similarity data to further enhance the performance of the models. 
 
-It is worth noting that different decoders exhibit varying performance on different tasks and encodings. Therefore, it is essential to select the appropriate decoder for each specific molecular encoder and task. Consequently, all results should be merged using a data pivot table to analyze the optimal decoder for each encoder-task combination.    
+> Benchmarking molecular fingerprints and GeminiMol on virutual screening and target identification
 
-In our work, the hyperparameters of the PropDecoder were chosen based on empirical experience and were not subjected to any hyperparameter tuning. Performing further hyperparameter tuning for each task may potentially yield improved performance.     
-
-> Benchmarking molecular fingerprints and our models
+For each molecular fingerprint, we used all supported similarity metrics, including Tanimoto, Cosine, and Tversky. For the GeminiMol model, in addition to the projected heads used in pre-training, we introduced similarities between molecular representation vectors, including Cosine and Pearson. It is worth noting that in practice we cannot be sure which combination of molecular fingerprints and similarity metrics is optimal, and therefore each combination is considered an independent method in benchmarking.    
 
 ``` shell
 conda activate GeminiMol
@@ -383,9 +381,16 @@ mkdir -p ${model_name}
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
 done
 done
+```
+
+> Benchmarking molecular fingerprints and GeminiMol on molecular property modeling
+
+It is worth noting that different decoders exhibit varying performance on different tasks and encodings. Therefore, it is essential to select the appropriate decoder for each specific molecular encoder and task. In practice, we can determine when the model should stop-training and choose the optimal decoder architecture by dividing the training, validation and test sets. Consequently, all results should be merged using a data pivot table to analyze the optimal decoder for each encoder-task combination. In our work, the hyperparameters of the PropDecoder were chosen based on empirical experience and were not subjected to any hyperparameter tuning. Performing further hyperparameter tuning for each task may potentially yield improved performance.     
+
+``` shell
 for task in "ADMET-C" "ADMET-R" \
     "LIT-QSAR" "CELLS-QSAR" "ST-QSAR" "PW-QSAR" \
-    "PropDecoder-ADMET" "PropDecoder-QSAR" # property modeling
+    "PropDecoder-ADMET" "PropDecoder-QSAR" # fixed the molecular encoder
     do
 for model_name in "CombineFP" \
     "FCFP6" "MACCS" "RDK" "ECFP6" "FCFP4" "TopologicalTorsion" "AtomPairs" "ECFP4" \
@@ -395,8 +400,7 @@ mkdir -p ${model_name}
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
 done
 done
-# benchmarking with FineTuning GeminiMol models for PropDecoder 
-for task in "FineTuning-ADMET" "FineTuning-QSAR"; do
+for task in "FineTuning-ADMET" "FineTuning-QSAR"; do # benchmarking with FineTuning GeminiMol models
 for model_name in "${geminimol_lib}/GeminiMol"; do
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
 done
