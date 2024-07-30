@@ -244,8 +244,10 @@ class QSAR:
         )
         # setup task type
         if self.params['task_type'] == 'binary':
+            pos_num = len(training_set[training_set[label_column]==label_set[0]]) 
+            neg_num = len(training_set[training_set[label_column]==label_set[1]])
             self.eval_metric = 'AUROC'
-            self.loss_function = 'BCE'
+            self.loss_function = 'Focal' if pos_num/neg_num > 10 or neg_num/pos_num > 10 else 'BCE'
         else:
             self.eval_metric = 'SPEARMANR'
             self.loss_function = 'MSE'
@@ -300,6 +302,16 @@ class QSAR:
                             pred, label_tensor
                         ) * torch.tensor([1 - rows[self.label_column].mean()]).cuda()
                     )
+                elif self.loss_function == 'Focal':
+                    (alpha, gamma) = (0.25, 5)
+                    bce_loss = nn.BCELoss(
+                            reduction = 'none',
+                        )(
+                            pred, 
+                            label_tensor
+                        )
+                    focal_loss = alpha * (1 - torch.exp(-bce_loss)) ** gamma * bce_loss
+                    loss = torch.mean(focal_loss)
                 elif self.loss_function == 'MSE':
                     loss = nn.MSELoss()(
                         pred, label_tensor
