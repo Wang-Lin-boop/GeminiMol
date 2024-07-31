@@ -1,8 +1,12 @@
-# Virtual Screening
+# define a profile
 
 echo "SMILES,Label
-<SMILES>,1.0" > "profile.csv"
+<SMILES>,1.0
+<SMILES>,0.5
+<SMILES>,-0.5
+" > "profile.csv"
 
+# Virtual Screening
 export gpu_id=0
 export max_gpu_id=3
 export label_col="Label"
@@ -37,14 +41,14 @@ fi
 done
 done
 
-
+# Target Identification
 export gpu_id=0
 export max_gpu_id=3
 export label_col="Label"
 export smiles_column="SMILES" # Specify the column name in the compound_library
 export keep_top=3000
 export probe_cluster="No" # Yes or No
-for library in "HMDB-Endo";do #
+for library in "DTIDB";do # "DTIDB" "HMDB-Endo"
 for decoy_set in "profile.csv" ;do #
 export basename=${decoy_set%%.csv}
 cat<<EOF > ${basename}_${library}_PVS.pbs
@@ -72,44 +76,6 @@ fi
 done
 done
 
-
-
-export gpu_id=0
-export max_gpu_id=3
-export label_col="Label"
-export smiles_column="SMILES" # Specify the column name in the compound_library
-export keep_top=3000
-export probe_cluster="Yes" # Yes or No
-export database_path="/public/home/wanglin3/software/GeminiMol/data/compound_library/Enamine"
-for library in `ls ${database_path}`;do # 
-for decoy_set in "profile.csv" ;do
-export basename=${decoy_set%%.csv}
-cat<<EOF > ${basename}_${library}_PVS.pbs
-#PBS -N ${basename}_${library}
-#PBS -l nodes=1:ppn=4:gpus=1:p40
-#PBS -S /bin/bash
-#PBS -j oe
-#PBS -l walltime=720:00:00
-#PBS -q sias_pub
-
-cd \$PBS_O_WORKDIR
-module remove cuda/7/11.0
-source activate GeminiMol
-export PATH=/public/home/wanglin3/software/miniconda3/envs/GeminiMol/bin:\${PATH}
-module load 7/compiler/gnu_8.3.0 cuda/7/11.6
-hostname
-nvidia-smi
-
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${basename}_${library}" "${smiles_column}" "${database_path}/${library}.csv" "${decoy_set}:${label_col}" ${keep_top} "${probe_cluster}"
-EOF
-qsub ${basename}_${library}_PVS.pbs
-if [ ${gpu_id} == ${max_gpu_id} ];then
-    export gpu_id=0
-else
-    ((gpu_id+=1))
-fi
-done
-done
 
 
 
