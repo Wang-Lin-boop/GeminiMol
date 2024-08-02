@@ -7,8 +7,6 @@ echo "SMILES,Label
 " > "profile.csv"
 
 # Virtual Screening
-export gpu_id=0
-export max_gpu_id=3
 export label_col="Label"
 export smiles_column="SMILES" # Specify the column name in the compound_library
 export keep_top=3000
@@ -30,20 +28,13 @@ export PATH=/public/home/wanglin3/software/miniconda3/envs/GeminiMol/bin:\${PATH
 module load 7/compiler/gnu_8.3.0 cuda/7/11.6
 hostname
 nvidia-smi
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${basename}_${library}" "${smiles_column}" "${geminimol_data}/compound_library/${library}.csv" "${decoy_set}:${label_col}" ${keep_top} "${probe_cluster}"
+python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${basename}_${library}" "${smiles_column}" "${geminimol_data}/compound_library/${library}.csv" "${decoy_set}:${label_col}" ${keep_top} "${probe_cluster}"
 EOF
 qsub ${basename}_${library}_PVS.pbs
-if [ ${gpu_id} == ${max_gpu_id} ];then
-    export gpu_id=0
-else
-    ((gpu_id+=1))
-fi
 done
 done
 
 # Target Identification
-export gpu_id=0
-export max_gpu_id=3
 export label_col="Label"
 export smiles_column="SMILES" # Specify the column name in the compound_library
 export keep_top=3000
@@ -65,14 +56,9 @@ export PATH=/public/home/wanglin3/software/miniconda3/envs/GeminiMol/bin:\${PATH
 module load 7/compiler/gnu_8.3.0 cuda/7/11.6
 hostname
 nvidia-smi
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${basename}_${library}" "${smiles_column}" "${geminimol_data}/compound_library/${library}.csv" "${decoy_set}:${label_col}" ${keep_top} "${probe_cluster}"
+python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${basename}_${library}" "${smiles_column}" "${geminimol_data}/compound_library/${library}.csv" "${decoy_set}:${label_col}" ${keep_top} "${probe_cluster}"
 EOF
 qsub ${basename}_${library}_PVS.pbs
-if [ ${gpu_id} == ${max_gpu_id} ];then
-    export gpu_id=0
-else
-    ((gpu_id+=1))
-fi
 done
 done
 
