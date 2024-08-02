@@ -435,28 +435,31 @@ class Benchmark():
                 epochs = ( 300000 // len(training_data) ) + 1
                 if len(training_data) > 30000:
                     batch_size, learning_rate, patience = 256, 1.0e-3, 50
-                    expand_ratio, hidden_dim, num_layers = 3, 2048, 5
                 elif len(training_data) > 10000:
                     batch_size, learning_rate, patience = 128, 5.0e-4, 60
-                    expand_ratio, hidden_dim, num_layers = 2, 2048, 4
                 elif len(training_data) > 5000:
                     batch_size, learning_rate, patience = 64, 1.0e-4, 80
-                    expand_ratio, hidden_dim, num_layers = 1, 1024, 3
                 elif len(training_data) > 2000:
                     batch_size, learning_rate, patience = 32, 5.0e-5, 100
-                    expand_ratio, hidden_dim, num_layers = 0, 1024, 3
                 else:
                     batch_size, learning_rate, patience = 24, 1.0e-5, 100
-                    expand_ratio, hidden_dim, num_layers = 0, 1024, 3
                 if task_type == 'binary':
-                    dropout_rate = 0.3
-                    dense_dropout = 0.1
+                    if len(training_data) > 10000:
+                        dropout_rate = 0.0 
+                        dense_dropout = 0.0 
+                    else:
+                        dropout_rate = 0.3
+                        dense_dropout = 0.1
                     dense_activation = 'Softplus' # GELU
                     projection_activation = 'Softplus' # GELU
                     projection_transform = 'Sigmoid'
                 elif task_type == 'regression':
-                    dropout_rate = 0.1
-                    dense_dropout = 0.0
+                    if len(training_data) > 10000:
+                        dropout_rate = 0.0
+                        dense_dropout = 0.0
+                    else:
+                        dropout_rate = 0.1
+                        dense_dropout = 0.0
                     dense_activation = 'ELU' # ELU
                     projection_activation = 'Identity' # ELU
                     if training_data[label_column].max() <= 1.0 and training_data[label_column].min() >= 0.0:
@@ -470,11 +473,11 @@ class Benchmark():
                     learning_rate = learning_rate,
                     params = {
                         'task_type': task_type,
-                        'hidden_dim': hidden_dim,
-                        'expand_ratio': expand_ratio,
+                        'hidden_dim': 1024,
+                        'expand_ratio': 3,
                         'dense_dropout': dense_dropout,
                         'dropout_rate': dropout_rate,
-                        'num_layers': num_layers,
+                        'num_layers': 3,
                         'rectifier_activation': 'SiLU',
                         'concentrate_activation': 'SiLU',
                         'dense_activation': dense_activation,
@@ -542,31 +545,28 @@ class Benchmark():
             if not os.path.exists(f"{self.model_name}/{self.benchmark_name}/{target}/predictor.pt"):
                 epochs = ( 300000 // len(training_data) ) + 1
                 if len(training_data) > 30000:
-                    batch_size, learning_rate, patience, temperature, weight_decay = 256, 1.0e-3, 50, 0.1, 0.01
-                    expand_ratio, hidden_dim, num_layers = 3, 2048, 5
+                    batch_size, learning_rate, temperature, weight_decay, expand_ratio, frozen_steps = 512, 5.0e-4, 0.1, 0.01, 0, 0
                 elif len(training_data) > 10000:
-                    batch_size, learning_rate, patience, temperature, weight_decay = 128, 5.0e-4, 60, 0.1, 0.01
-                    expand_ratio, hidden_dim, num_layers = 2, 2048, 4
+                    batch_size, learning_rate, temperature, weight_decay, expand_ratio, frozen_steps = 256, 1.0e-4, 0.15, 0.01, 0, 0
                 elif len(training_data) > 5000:
-                    batch_size, learning_rate, patience, temperature, weight_decay = 64, 1.0e-4, 80, 0.05, 0.01
-                    expand_ratio, hidden_dim, num_layers = 1, 1024, 3
+                    batch_size, learning_rate, temperature, weight_decay, expand_ratio, frozen_steps = 128, 1.0e-4, 0.15, 0.01, 0, 0
                 elif len(training_data) > 2000:
-                    batch_size, learning_rate, patience, temperature, weight_decay = 32, 5.0e-5, 100, 0.05, 0.01
-                    expand_ratio, hidden_dim, num_layers = 0, 1024, 3
+                    batch_size, learning_rate, temperature, weight_decay, expand_ratio, frozen_steps = 64, 5.0e-5, 0.4, 0.01, 0, 0
                 else:
-                    batch_size, learning_rate, patience, temperature, weight_decay = 24, 1.0e-5, 100, 0.01, 0.04
-                    expand_ratio, hidden_dim, num_layers = 0, 1024, 3
+                    batch_size, learning_rate, temperature, weight_decay, expand_ratio, frozen_steps = 24, 5.0e-5, 0.4, 0.01, 0, 0
                 if task_type == 'binary':
-                    dropout_rate = 0.3 
-                    dense_dropout = 0.1 
-                    dense_activation = 'Softplus' # GELU
-                    projection_activation = 'Softplus' # GELU
+                    if len(training_data) > 10000:
+                        dropout_rate = 0.0 
+                    else:
+                        dropout_rate = 0.3
+                    projection_activation = 'Softplus'
                     projection_transform = 'Sigmoid'
                 elif task_type == 'regression':
-                    dropout_rate = 0.1
-                    dense_dropout = 0.0
-                    dense_activation = 'ELU' # ELU
-                    projection_activation = 'Identity' # ELU
+                    if len(training_data) > 10000:
+                        dropout_rate = 0.0
+                    else:
+                        dropout_rate = 0.1
+                    projection_activation = 'Identity'
                     if training_data[label_column].max() <= 1.0 and training_data[label_column].min() >= 0.0:
                         projection_transform = 'Sigmoid'
                     else:
@@ -579,14 +579,14 @@ class Benchmark():
                     smiles_column = smiles_column, 
                     params = {
                         'task_type': task_type,
-                        'hidden_dim': hidden_dim,
+                        'hidden_dim': 1024,
                         'expand_ratio': expand_ratio,
-                        'dense_dropout': dense_dropout,
+                        'dense_dropout': 0.0,
                         'dropout_rate': dropout_rate,
-                        'num_layers': num_layers,
+                        'num_layers': 3,
                         'rectifier_activation': 'SiLU',
                         'concentrate_activation': 'SiLU',
-                        'dense_activation': dense_activation,
+                        'dense_activation': 'SiLU',
                         'projection_activation': projection_activation,
                         'projection_transform': projection_transform,
                         'linear_projection': False,
@@ -598,9 +598,11 @@ class Benchmark():
                     val_set = val_data,
                     epochs = epochs,
                     learning_rate = learning_rate,
-                    patience = patience,
+                    patience = 100,
                     temperature = temperature,
                     weight_decay = weight_decay,
+                    mini_epoch = 100,
+                    frozen_steps = frozen_steps
                 )
             else:
                 QSAR_model = GeminiMolQSAR(

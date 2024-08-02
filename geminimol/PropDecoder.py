@@ -183,6 +183,7 @@ class QSAR:
                 'linear_projection': True,
                 'batch_size': 128
             },
+            mini_epoch = 200
         ):
         self.params = params
         # Load the models and optimizers
@@ -234,6 +235,18 @@ class QSAR:
         if optim_type not in models:
             print(f"Invalid optimizer type {optim_type}. Defaulting to AdamW.")
             optim_type = 'AdamW'
+        # setup task type
+        if self.params['task_type'] == 'binary':
+            training_set[self.label_column] = training_set[self.label_column].replace(self.label_map)
+            val_set[self.label_column] = val_set[self.label_column].replace(self.label_map)
+            label_set = list(set(training_set[self.label_column].to_list()))
+            pos_num = len(training_set[training_set[self.label_column]==label_set[0]]) 
+            neg_num = len(training_set[training_set[self.label_column]==label_set[1]])
+            self.eval_metric = 'AUROC'
+            self.loss_function = 'Focal' if pos_num/neg_num > 25 or neg_num/pos_num > 25 else 'BCE'
+        else:
+            self.eval_metric = 'SPEARMANR'
+            self.loss_function = 'MSE'
         train_features, features_columns = self.parallel_encode(
             training_set, 
             smiles_name = self.smiles_column
@@ -242,15 +255,6 @@ class QSAR:
             val_set, 
             smiles_name = self.smiles_column
         )
-        # setup task type
-        if self.params['task_type'] == 'binary':
-            pos_num = len(training_set[training_set[label_column]==label_set[0]]) 
-            neg_num = len(training_set[training_set[label_column]==label_set[1]])
-            self.eval_metric = 'AUROC'
-            self.loss_function = 'Focal' if pos_num/neg_num > 10 or neg_num/pos_num > 10 else 'BCE'
-        else:
-            self.eval_metric = 'SPEARMANR'
-            self.loss_function = 'MSE'
         # model
         self.params['feature_dim'] = len(features_columns)
         self.predictor = PropDecoder(
@@ -274,8 +278,6 @@ class QSAR:
         optimizer = models[optim_type](self.predictor.parameters())
         batch_id = 0
         best_score = -1.0
-        mini_epoch = 10 if len(train_features) // train_batch_size > 200 else ( len(train_features) // (train_batch_size * 5 )) + 1
-        scheduler = StepLR(optimizer, step_size=3, gamma=0.8)
         val_features = val_features.reset_index(drop=True)
         patience_pool = 0 
         for _ in range(epochs):
@@ -328,13 +330,10 @@ class QSAR:
                         )
                     self.predictor.train()
                     print(f"Epoch {_+1}, evaluate {self.eval_metric} on the validation set: {val_res[self.eval_metric]}")
-                    scheduler.step()
                     if np.isnan(val_res[self.eval_metric]) and os.path.exists(f'{self.model_name}/predictor.pt'):
                         print("NOTE: The parameters don't converge, back to previous optimal model.")
                         self.predictor.load_state_dict(torch.load(f'{self.model_name}/predictor.pt'))
                         patience -= 2
-                        for param_group in optimizer.param_groups:
-                            param_group['lr'] = learning_rate
                     elif best_score < val_res[self.eval_metric]:
                         patience += 1
                         patience_pool = 0
@@ -343,22 +342,30 @@ class QSAR:
                     else:
                         patience_pool += 1
                         patience -= 1
-                        if patience_pool >= 10:
-                            for param_group in optimizer.param_groups:
-                                param_group['lr'] = learning_rate
                 if patience <= 0:
                     print("NOTE: The parameters was converged, stop training!")
                     break
-            if patience <= 0:
-                break
             val_res = self._evaluate( 
                     val_features, features_columns,
                     label_name = self.label_column,
                     metrics = [self.eval_metric]
                 )
+            self.predictor.train()
             print(f"Epoch {_+1}, evaluate {self.eval_metric} on the validation set: {val_res[self.eval_metric]}")
-            if best_score < val_res[self.eval_metric]:
+            if np.isnan(val_res[self.eval_metric]) and os.path.exists(f'{self.model_name}/predictor.pt'):
+                print("NOTE: The parameters don't converge, back to previous optimal model.")
+                self.predictor.load_state_dict(torch.load(f'{self.model_name}/predictor.pt'))
+                patience -= 2
+            elif best_score < val_res[self.eval_metric]:
+                patience += 1
+                patience_pool = 0
+                best_score = val_res[self.eval_metric]
                 torch.save(self.predictor.state_dict(), f'{self.model_name}/predictor.pt')
+            else:
+                patience_pool += 1
+                patience -= 1
+            if patience <= 0:
+                break
         self.predictor.load_state_dict(torch.load(f'{self.model_name}/predictor.pt'))
         val_res = self._evaluate(
                 val_features, features_columns, 

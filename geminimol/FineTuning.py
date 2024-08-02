@@ -229,7 +229,9 @@ class GeminiMolQSAR(nn.Module):
             weight_decay = 0.001,
             patience = 50,
             optim_type = 'AdamW',
-            temperature = 0.1
+            temperature = 0.1,
+            mini_epoch = 200,
+            frozen_steps = 0
         ):
         # Load the models and optimizers
         models = {
@@ -276,10 +278,13 @@ class GeminiMolQSAR(nn.Module):
         val_set = self.prepare(val_set)
         # setup task type
         if self.params['task_type'] == 'binary':
-            pos_num = len(training_set[training_set[label_column]==label_set[0]]) 
-            neg_num = len(training_set[training_set[label_column]==label_set[1]])
+            training_set[self.label_column] = training_set[self.label_column].replace(self.label_map)
+            val_set[self.label_column] = val_set[self.label_column].replace(self.label_map)
+            label_set = list(set(training_set[self.label_column].to_list()))
+            pos_num = len(training_set[training_set[self.label_column]==label_set[0]]) 
+            neg_num = len(training_set[training_set[self.label_column]==label_set[1]])
             self.eval_metric = 'AUROC'
-            self.loss_function = 'Focal' if pos_num/neg_num > 10 or neg_num/pos_num > 10 else 'BCE'
+            self.loss_function = 'Focal' if pos_num/neg_num > 25 or neg_num/pos_num > 25 else 'BCE'
         else:
             self.eval_metric = 'SPEARMANR'
             self.loss_function = 'MSE'
@@ -288,17 +293,18 @@ class GeminiMolQSAR(nn.Module):
         # Set up the optimizer
         optimizer = models[optim_type]([
                 {'params': self.predictor.parameters(), 'lr': learning_rate},
-                {'params': self.encoder.parameters(), 'lr': learning_rate*temperature},
             ])
         batch_id = 0
         best_score = -1.0
-        mini_epoch = 10 if len(training_set) // train_batch_size > 200 else ( len(training_set) // (train_batch_size * 5 )) + 1
-        scheduler = StepLR(optimizer, step_size=5, gamma=0.9)
         val_set = val_set.reset_index(drop=True)
         for _ in range(epochs):
             self.train()
             training_set = training_set.sample(frac=1).reset_index(drop=True)
             for i in range(0, len(training_set), train_batch_size):
+                if batch_id == frozen_steps:
+                    optimizer.add_param_group(
+                        {'params': self.encoder.parameters(), 'lr': learning_rate*temperature},
+                    )
                 batch_id += 1
                 rows = training_set.iloc[i:i+train_batch_size]
                 if len(rows) <= 8:
@@ -316,7 +322,7 @@ class GeminiMolQSAR(nn.Module):
                             pred, label_tensor
                         ) * torch.tensor([1 - rows[self.label_column].mean()]).cuda()
                     )
-                elif self.loss_function == 'FocalLoss':
+                elif self.loss_function == 'Focal':
                     (alpha, gamma) = (0.25, 5)
                     bce_loss = nn.BCELoss(
                             reduction = 'none',
@@ -344,7 +350,6 @@ class GeminiMolQSAR(nn.Module):
                         )
                     self.train()
                     print(f"Epoch {_+1}, evaluate {self.eval_metric} on the validation set: {val_res[self.eval_metric]}")
-                    scheduler.step()
                     if np.isnan(val_res[self.eval_metric]) and os.path.exists(f'{self.model_name}/predictor.pt'):
                         print("NOTE: The parameters don't converge, back to previous optimal model.")
                         self.load_state_dict(torch.load(f'{self.model_name}/predictor.pt'))
@@ -358,18 +363,27 @@ class GeminiMolQSAR(nn.Module):
                 if patience <= 0:
                     print("NOTE: The parameters was converged, stop training!")
                     break
+            val_res = self.evaluate( 
+                val_set,
+                smiles_name = self.smiles_column,
+                label_name = self.label_column,
+                metrics = [self.eval_metric],
+                as_pandas = False
+            )
+            self.train()
+            print(f"Epoch {_+1}, evaluate {self.eval_metric} on the validation set: {val_res[self.eval_metric]}")
+            if np.isnan(val_res[self.eval_metric]) and os.path.exists(f'{self.model_name}/predictor.pt'):
+                print("NOTE: The parameters don't converge, back to previous optimal model.")
+                self.load_state_dict(torch.load(f'{self.model_name}/predictor.pt'))
+                patience -= 2
+            elif best_score < val_res[self.eval_metric]:
+                patience += 1
+                best_score = val_res[self.eval_metric]
+                torch.save(self.state_dict(), f'{self.model_name}/predictor.pt')
+            else:
+                patience -= 1
             if patience <= 0:
                 break
-            val_res = self.evaluate( 
-                    val_set,
-                    smiles_name = self.smiles_column,
-                    label_name = self.label_column,
-                    metrics = [self.eval_metric],
-                    as_pandas = False
-                )
-            print(f"Epoch {_+1}, evaluate {self.eval_metric} on the validation set: {val_res[self.eval_metric]}")
-            if best_score < val_res[self.eval_metric]:
-                torch.save(self.state_dict(), f'{self.model_name}/predictor.pt')
         self.load_state_dict(torch.load(f'{self.model_name}/predictor.pt'))
         val_res = self.evaluate( 
             val_set,
