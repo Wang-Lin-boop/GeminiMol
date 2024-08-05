@@ -325,7 +325,8 @@ export model_path="QSAR_GeminiMol" # ${task}_GeminiMol when your build QSAR mode
 export encoder_list="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
 export extrnal_data="dataset.csv" # must contain the ${smiles_column}
 export smiles_column="SMILES" # Specify the column name in datasets
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}"
+export model_type="FineTuning" # FineTuning, PropDecoder, and ['LightGBM', 'LightGBMLarge', 'LightGBMXT', 'NeuralNetTorch'] for AutoQSAR
+CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}" "${model_type}"
 ```
 
 ## 👐 Reproducing
