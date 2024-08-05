@@ -231,18 +231,19 @@ class GeminiMolQSAR(nn.Module):
             optim_type = 'AdamW',
             temperature = 0.1,
             mini_epoch = 200,
+            betas = (0.9, 0.98),
             frozen_steps = 0
         ):
         # Load the models and optimizers
         models = {
             'AdamW': partial(
                 torch.optim.AdamW, 
-                betas = (0.9, 0.98),
+                betas = betas,
                 weight_decay = weight_decay
             ),
             'Adam': partial(
                 torch.optim.Adam,
-                betas = (0.9, 0.98),
+                betas = betas,
                 weight_decay = weight_decay
             ),
             'SGD': partial(
