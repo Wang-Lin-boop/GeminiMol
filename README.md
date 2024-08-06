@@ -294,12 +294,7 @@ export label_column="Label" # Specify the column name in datasets
 CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/FineTuning.py "${task}" "${geminimol_lib}/GeminiMol" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
 ```
 
-If the integration of molecular fingerprints and a pre-trained GeminiMol model is desired for training a molecular property prediction model, either PropDecoder or AutoQSAR can be employed.   
-
-``` shell
-export fingerprints="ECFP4:AtomPairs:TopologicalTorsion:FCFP6:MACCS" # CombineFP+MACCS
-export encoder_method="${geminimol_lib}/GeminiMol:${fingerprints}" # CombineFP+MACCS+GeminiMol
-```
+> 2.2 AutoQSAR (AutoGluon)   
 
 It is recommended to try using AutoQSAR to call CombineFP or GeminiMol when you lack deep learning experience, which usually produces a model with good performance.     
 
@@ -307,26 +302,39 @@ It is recommended to try using AutoQSAR to call CombineFP or GeminiMol when you 
 export encoder_method="${geminimol_lib}/GeminiMol" # only GeminiMol
 ```
 
+In our paper, we introduced a powerful joint molecular fingerprint baseline method named CombineFP.In our experiments, the performance of CombineFP in molecular property modeling is very superior and we highly recommend trying CombineFP along with GeminiMol.   
+
 ``` shell
 export encoder_method="ECFP4:AtomPairs:TopologicalTorsion:FCFP6" # CombineFP
 ```
-
-> 2.2 PropDecoder    
-
-``` shell
-export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
-export smiles_column="SMILES" # Specify the column name in datasets
-export label_column="Label" # Specify the column name in datasets
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropDecoder.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
-```
-
-> 2.3 AutoQSAR (AutoGluon)    
 
 ``` shell
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
 export smiles_column="SMILES" # Specify the column name in datasets
 export label_column="Label" # Specify the column name in datasets
 CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "" "${task}_GeminiMol"
+```
+
+If the integration of molecular fingerprints and a pre-trained GeminiMol model is desired for training a molecular property prediction model, either PropDecoder or AutoQSAR can be employed.   
+
+``` shell
+export fingerprints="ECFP4:AtomPairs:TopologicalTorsion:FCFP6:MACCS" # CombineFP+MACCS
+export encoder_method="${geminimol_lib}/GeminiMol:${fingerprints}" # CombineFP+MACCS+GeminiMol
+export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
+export smiles_column="SMILES" # Specify the column name in datasets
+export label_column="Label" # Specify the column name in datasets
+CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "" "${task}_GMFP"
+```
+
+> 2.3 PropDecoder    
+
+For the most tasks, performing fine-tuning or using AutoQSAR will give pretty good performance in molecular property modeling, so you don't need to try PropDecoder unless the first two give poor performance.
+
+``` shell
+export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
+export smiles_column="SMILES" # Specify the column name in datasets
+export label_column="Label" # Specify the column name in datasets
+CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropDecoder.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
 ```
 
 > 3. Make predictions (only for AutoQSAR or fine-Tuned models)
@@ -338,8 +346,20 @@ export model_path="QSAR_GeminiMol" # ${task}_GeminiMol when your build QSAR mode
 export encoder_list="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
 export extrnal_data="dataset.csv" # must contain the ${smiles_column}
 export smiles_column="SMILES" # Specify the column name in datasets
-export model_type="FineTuning" # FineTuning, PropDecoder, and ['LightGBM', 'LightGBMLarge', 'LightGBMXT', 'NeuralNetTorch'] for AutoQSAR
+export model_type="FineTuning" # FineTuning, PropDecoder, ['LightGBM', 'LightGBMLarge', 'LightGBMXT', 'NeuralNetTorch'] for AutoQSAR
 CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}" "${model_type}"
+```
+
+If you have constructed a regression model using AutoQSAR, refer to the following command.   
+
+``` shell
+export model_path="QSAR_GeminiMol" # ${task}_GeminiMol when your build QSAR model
+export encoder_list="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
+export extrnal_data="dataset.csv" # must contain the ${smiles_column}
+export smiles_column="SMILES" # Specify the column name in datasets
+export model_type="NeuralNetTorch" # ['LightGBM', 'LightGBMLarge', 'LightGBMXT', 'NeuralNetTorch'] for AutoQSAR
+export task_type="regression"
+CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}" "${model_type}" "${task_type}"
 ```
 
 ## 👐 Reproducing
