@@ -308,6 +308,8 @@ In our paper, we introduced a powerful joint molecular fingerprint baseline meth
 export encoder_method="ECFP4:AtomPairs:TopologicalTorsion:FCFP6" # CombineFP
 ```
 
+Having defined the encoder, you can train the model to convert the encoding of the molecule into properties using AutoQSAR. In fact, a potential advantage of this over FineTuning is that it can decode diverse molecular properties based on the fixed encoding, which will speed up the efficiency of chemical space searching.    
+
 ``` shell
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
 export smiles_column="SMILES" # Specify the column name in datasets
