@@ -240,7 +240,7 @@ export smiles_column="SMILES" # Specify the column name in the compound_library
 export weight_column="Label" # weights for profiles
 export keep_top=1000
 export probe_cluster="Yes"
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}:${weight_column}" "${keep_top}"  "${probe_cluster}"
+python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}:${weight_column}" "${keep_top}"  "${probe_cluster}"
 ```
 
 To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/DTIDB.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris.     
@@ -253,7 +253,7 @@ export smiles_column="SMILES" # Specify the column name in the compound_library
 export weight_column="Label" # weights for profiles
 export keep_top=2000
 export probe_cluster="No"
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}:${weight_column}" "${keep_top}"  "${probe_cluster}"
+python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}:${weight_column}" "${keep_top}"  "${probe_cluster}"
 ```
 
 After the initial run of PharmProfiler, a extracted GeminiMol feature file will be generated in the `${geminimol_data}/compound_library/`. Subsequent screening tasks on the same compound library can benefit from PharmProfiler automatically reading the feature file, which helps to accelerate the running speed.    
@@ -291,7 +291,7 @@ Given that you have enough experience with hyperparameter tuning, the attainment
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
 export smiles_column="SMILES" # Specify the column name in datasets
 export label_column="Label" # Specify the column name in datasets
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/FineTuning.py "${task}" "${geminimol_lib}/GeminiMol" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
+python -u ${geminimol_app}/FineTuning.py "${task}" "${geminimol_lib}/GeminiMol" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
 ```
 
 > 2.2 AutoQSAR (AutoGluon)   
@@ -314,7 +314,7 @@ Having defined the encoder, you can train the model to convert the encoding of t
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
 export smiles_column="SMILES" # Specify the column name in datasets
 export label_column="Label" # Specify the column name in datasets
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "" "${task}_GeminiMol"
+python -u ${geminimol_app}/AutoQSAR.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "" "${task}_GeminiMol"
 ```
 
 If the integration of molecular fingerprints and a pre-trained GeminiMol model is desired for training a molecular property prediction model, either PropDecoder or AutoQSAR can be employed.   
@@ -325,7 +325,7 @@ export encoder_method="${geminimol_lib}/GeminiMol:${fingerprints}" # CombineFP+M
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
 export smiles_column="SMILES" # Specify the column name in datasets
 export label_column="Label" # Specify the column name in datasets
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "" "${task}_GMFP"
+python -u ${geminimol_app}/AutoQSAR.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "" "${task}_GMFP"
 ```
 
 > 2.3 PropDecoder    
@@ -336,7 +336,7 @@ For the most tasks, performing fine-tuning or using AutoQSAR will give pretty go
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
 export smiles_column="SMILES" # Specify the column name in datasets
 export label_column="Label" # Specify the column name in datasets
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropDecoder.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
+python -u ${geminimol_app}/PropDecoder.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
 ```
 
 > 3. Make predictions (only for AutoQSAR or fine-Tuned models)
@@ -349,7 +349,7 @@ export encoder_list="${geminimol_lib}/GeminiMol" # Match to the encoders selecte
 export extrnal_data="dataset.csv" # must contain the ${smiles_column}
 export smiles_column="SMILES" # Specify the column name in datasets
 export model_type="FineTuning" # FineTuning, PropDecoder, ['LightGBM', 'LightGBMLarge', 'LightGBMXT', 'NeuralNetTorch'] for AutoQSAR
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}" "${model_type}"
+python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}" "${model_type}"
 ```
 
 If you have constructed a regression model using AutoQSAR, refer to the following command.   
@@ -361,7 +361,20 @@ export extrnal_data="dataset.csv" # must contain the ${smiles_column}
 export smiles_column="SMILES" # Specify the column name in datasets
 export model_type="NeuralNetTorch" # ['LightGBM', 'LightGBMLarge', 'LightGBMXT', 'NeuralNetTorch'] for AutoQSAR
 export task_type="regression"
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}" "${model_type}" "${task_type}"
+python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}" "${model_type}" "${task_type}"
+```
+
+#### Molecular Clustering
+
+You can use GeminiMol to cluster molecules just like molecular fingerprints!    
+
+``` shell
+export encoder_list="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
+export data_table="dataset.csv" # must contain the ${smiles_column}
+export smiles_column="SMILES" # Specify the column name in datasets
+export output_fn="Cluster"
+export cluster_num=10 # only for supervised clustering algorithm, such as K-Means
+python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_list}" "${smiles_column}" "${output_fn}" "cluster:${cluster_num}"
 ```
 
 ## 👐 Reproducing

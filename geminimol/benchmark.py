@@ -545,27 +545,21 @@ class Benchmark():
             if not os.path.exists(f"{self.model_name}/{self.benchmark_name}/{target}/predictor.pt"):
                 epochs = ( 300000 // len(training_data) ) + 1
                 if len(training_data) > 30000:
-                    batch_size, learning_rate, temperature, weight_decay, expand_ratio, frozen_steps = 512, 5.0e-4, 0.1, 0.01, 0, 0
+                    batch_size, learning_rate, temperature, weight_decay, frozen_steps = 512, 1.0e-4, 0.6, 0.04, 0
                 elif len(training_data) > 10000:
-                    batch_size, learning_rate, temperature, weight_decay, expand_ratio, frozen_steps = 256, 1.0e-4, 0.15, 0.01, 0, 0
+                    batch_size, learning_rate, temperature, weight_decay, frozen_steps = 256, 8.0e-5, 0.5, 0.04, 0
                 elif len(training_data) > 5000:
-                    batch_size, learning_rate, temperature, weight_decay, expand_ratio, frozen_steps = 128, 1.0e-4, 0.15, 0.01, 0, 0
+                    batch_size, learning_rate, temperature, weight_decay, frozen_steps = 128, 5.0e-5, 0.4, 0.01, 0
                 elif len(training_data) > 2000:
-                    batch_size, learning_rate, temperature, weight_decay, expand_ratio, frozen_steps = 64, 5.0e-5, 0.4, 0.01, 0, 0
+                    batch_size, learning_rate, temperature, weight_decay, frozen_steps = 64, 3.0e-5, 0.2, 0.01, 0
                 else:
-                    batch_size, learning_rate, temperature, weight_decay, expand_ratio, frozen_steps = 24, 5.0e-5, 0.4, 0.01, 0, 0
+                    batch_size, learning_rate, temperature, weight_decay, frozen_steps = 24, 1.0e-5, 0.1, 0.01, 100
                 if task_type == 'binary':
-                    if len(training_data) > 10000:
-                        dropout_rate = 0.0 
-                    else:
-                        dropout_rate = 0.3
+                    dropout_rate = 0.3
                     projection_activation = 'Softplus'
                     projection_transform = 'Sigmoid'
                 elif task_type == 'regression':
-                    if len(training_data) > 10000:
-                        dropout_rate = 0.0
-                    else:
-                        dropout_rate = 0.1
+                    dropout_rate = 0.0
                     projection_activation = 'Identity'
                     if training_data[label_column].max() <= 1.0 and training_data[label_column].min() >= 0.0:
                         projection_transform = 'Sigmoid'
@@ -580,10 +574,10 @@ class Benchmark():
                     params = {
                         'task_type': task_type,
                         'hidden_dim': 1024,
-                        'expand_ratio': expand_ratio,
+                        'expand_ratio': 0,
                         'dense_dropout': 0.0,
                         'dropout_rate': dropout_rate,
-                        'num_layers': 3,
+                        'num_layers': 1,
                         'rectifier_activation': 'SiLU',
                         'concentrate_activation': 'SiLU',
                         'dense_activation': 'SiLU',
@@ -598,7 +592,7 @@ class Benchmark():
                     val_set = val_data,
                     epochs = epochs,
                     learning_rate = learning_rate,
-                    patience = 100,
+                    patience = 150,
                     temperature = temperature,
                     weight_decay = weight_decay,
                     mini_epoch = 100,
