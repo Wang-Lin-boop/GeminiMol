@@ -21,6 +21,7 @@ This repository provides the official implementation of the GeminiMol model, tra
 - [📓 Application](#-application)
     - [Virtual Screening and Target Identification](#virtual-screening-and-target-identification)
     - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
+    - [Molecular Clustering](#molecular-clustering)
 - [👐 Reproducing](#-reproducing)
     - [Re-training our models](#re-training-our-models)
     - [Benchmarking the fingerprints and our models](#benchmarking-the-fingerprints-and-our-models)
