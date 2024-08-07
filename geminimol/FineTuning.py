@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
-from torch.optim.lr_scheduler import StepLR
 from sklearn.metrics import roc_auc_score, mean_squared_error, accuracy_score, f1_score, recall_score, precision_score, mean_absolute_error, average_precision_score
 from scipy.stats import pearsonr, spearmanr
 import oddt.metrics as vsmetrics

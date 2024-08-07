@@ -1,5 +1,4 @@
 import pandas as pd
-import torch
 import sys
 import os
 from model.GeminiMol import GeminiMol

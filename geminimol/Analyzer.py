@@ -2,7 +2,6 @@ import os
 import sys
 import numpy as np
 import pandas as pd
-import math
 import torch
 from utils.fingerprint import Fingerprint
 import matplotlib.pyplot as plt

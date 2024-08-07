@@ -1,18 +1,15 @@
 # base
 import os
-import sys
 import time
 import json
 import math
 import torch
 import torch.nn as nn
-import random
 import numpy as np
 import pandas as pd
 from functools import partial
 # for GraphEncoder (MolecularEncoder)
 from sklearn.metrics import mean_squared_error
-from sklearn.utils import shuffle
 from scipy.stats import pearsonr, spearmanr
 from dgl import batch
 from dgllife.utils import atom_type_one_hot, atom_formal_charge, atom_hybridization_one_hot, atom_chiral_tag_one_hot, atom_is_in_ring, atom_is_aromatic, ConcatFeaturizer, BaseAtomFeaturizer, CanonicalBondFeaturizer, smiles_to_bigraph

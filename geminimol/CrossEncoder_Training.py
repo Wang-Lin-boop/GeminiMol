@@ -1,9 +1,7 @@
 import os
 import sys
-import time
 import json
 import torch
-import numpy as np
 import pandas as pd
 from sklearn.utils import shuffle
 from model.CrossEncoder import CrossSimilarity, CrossEncoder
