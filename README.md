@@ -487,7 +487,7 @@ GeminiMol prohibits unauthorised commercial use, including commercial training a
 
 ## 💌 Get in Touch
 
-We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the GeminiMol Developer Team at wangl@alumni.shanghaitech.edu.cn. We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wangl@alumni.shanghaitech.edu.cn or baifang@shanghaitech.edu.cn.       
+We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the [GeminiMol Developer Team](Wanglin1102@outlook.com). We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with [us](Wanglin1102@outlook.com).       
 
 ## 😃 Acknowledgements
 
