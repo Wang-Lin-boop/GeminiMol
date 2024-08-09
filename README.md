@@ -24,6 +24,7 @@ This repository provides the official implementation of the GeminiMol model, tra
     - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
     - [Molecular Clustering](#molecular-clustering)
 - [👐 Reproducing](#-reproducing)
+    - [Download Training and Benchmark Datasets](#download-training-and-benchmark-datasets)
     - [Re-training our models](#re-training-our-models)
     - [Benchmarking the fingerprints and our models](#benchmarking-the-fingerprints-and-our-models)
 - [⭐ Citing This Work](#-citing-this-work)
@@ -107,12 +108,6 @@ If you merely want to apply GeminiMol to your own project, you don't need to dow
 
 ``` shell
     cd ${geminimol_data}
-    wget https://zenodo.org/records/10450788/files/css_library.zip # only for reproducing GeminiMol training
-    wget https://zenodo.org/records/10450788/files/Benchmark_DUD-E.zip # only for reproducing benchmark
-    wget https://zenodo.org/records/10450788/files/Benchmark_LIT-PCBA.zip # only for reproducing benchmark
-    wget https://zenodo.org/records/10450788/files/Benchmark_QSAR.zip # only for reproducing benchmark
-    wget https://zenodo.org/records/10450788/files/Benchmark_TIBD.zip # only for reproducing benchmark
-    wget https://zenodo.org/records/10450788/files/Chem_SmELECTRA.zip # only for reproducing cross-encoder baseline
     wget https://zenodo.org/records/10450788/files/ChemDiv.zip # compound library for virtual screening
     wget https://zenodo.org/records/10450788/files/DTIDB.zip # DTI database for target identification 
     for i in Benchmark*.zip css*.zip Chem*.zip;do
@@ -388,6 +383,20 @@ python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_list}" "${smil
 ## 👐 Reproducing
 
 Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the CSS descriptors of 39,290 molecules described in the paper.     
+
+#### Download Training and Benchmark Datasets
+
+> Download all datasets via [Zenodo](https://zenodo.org/records/10450788) for training, test and benchmark 
+
+``` shell
+    cd ${geminimol_data}
+    wget https://zenodo.org/records/10450788/files/css_library.zip # only for reproducing GeminiMol training
+    wget https://zenodo.org/records/10450788/files/Benchmark_DUD-E.zip # only for reproducing benchmark
+    wget https://zenodo.org/records/10450788/files/Benchmark_LIT-PCBA.zip # only for reproducing benchmark
+    wget https://zenodo.org/records/10450788/files/Benchmark_QSAR.zip # only for reproducing benchmark
+    wget https://zenodo.org/records/10450788/files/Benchmark_TIBD.zip # only for reproducing benchmark
+    wget https://zenodo.org/records/10450788/files/Chem_SmELECTRA.zip # only for reproducing cross-encoder baseline
+```
 
 #### Re-training our models
 
