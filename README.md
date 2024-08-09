@@ -15,6 +15,7 @@ This repository provides the official implementation of the GeminiMol model, tra
 - [💗 Motivation](#-motivation)
 - [💡 Highlight](#-highlight)
 - [🔔 News](#-news)
+- [😫 Limitations](#-limitations)
 - [📕 Installation](#-installation)
     - [Download datasets and models](#download-datasets-and-models)
     - [Installing the dependency packages](#installing-the-dependency-packages)
@@ -26,10 +27,10 @@ This repository provides the official implementation of the GeminiMol model, tra
     - [Re-training our models](#re-training-our-models)
     - [Benchmarking the fingerprints and our models](#benchmarking-the-fingerprints-and-our-models)
 - [⭐ Citing This Work](#-citing-this-work)
-- [😫 Limitations](#-limitations)
 - [✅ License](#-license)
 - [💌 Get in Touch](#-get-in-touch)
 - [😃 Acknowledgements](#-acknowledgements)
+
 
 ## 💗 Motivation  
 
@@ -46,6 +47,12 @@ The **molecular representation model** is an emerging artificial intelligence te
 * 2023-12, our paper has been uploaded to BioRxiv, you can find it [here](https://www.biorxiv.org/content/10.1101/2023.12.14.571629).    
 * 2024-01, we have released `PharmProfiler.py`, which facilitates virtual screening and target identification.   
 * 2024-03, we have released `PropPredictor.py`, which facilitates the deployment and repurposing of QSAR and ADMET prediction models. 
+
+## 😫 Limitations
+
+* Note that, the conformational space profile is **not a panacea** for drug discovery. For a portion of tasks, the 2D structure of a compound already contains sufficient information to establish structure-activity relationships, rendering the introduction of the conformational space profile inconsequential for these tasks.       
+* The evaluation of intermolecular similarity is not limited to pharmacophore similarity in 3D conformational space and maximum common substructure similarity in 2D structures. By incorporating **additional intermolecular similarity metrics** during pre-training, we can further enrich the knowledge that the model can learn, such as molecular fingerprints and molecular surface potentials.   
+* Due to computational resource limitations, we only included 39,290 molecules in our pre-training. It is foreseeable that incorporating **more molecular structures** during pre-training could further enhance the performance of GeminiMol, particularly when guided by drug-target relationships to obtain high-quality data.    
 
 ## 📕 Installation
 
@@ -463,12 +470,6 @@ done
 Lin Wang, Shihang Wang, Hao Yang, Shiwei Li, Xinyu Wang, Yongqi Zhou, Siyuan Tian, Lu Liu, Fang Bai    
 bioRxiv 2023.12.14.571629; doi: https://doi.org/10.1101/2023.12.14.571629    
 
-## 😫 Limitations
-
-* Note that, the conformational space profile is **not a panacea** for drug discovery. For a portion of tasks, the 2D structure of a compound already contains sufficient information to establish structure-activity relationships, rendering the introduction of the conformational space profile inconsequential for these tasks.       
-* The evaluation of intermolecular similarity is not limited to pharmacophore similarity in 3D conformational space and maximum common substructure similarity in 2D structures. By incorporating **additional intermolecular similarity metrics** during pre-training, we can further enrich the knowledge that the model can learn, such as molecular fingerprints and molecular surface potentials.   
-* Due to computational resource limitations, we only included 39,290 molecules in our pre-training. It is foreseeable that incorporating **more molecular structures** during pre-training could further enhance the performance of GeminiMol, particularly when guided by drug-target relationships to obtain high-quality data.    
-
 ## ✅ License
 
 GeminiMol is released under the Academic Free Licence, which permits academic use, modification and distribution free of charge. GeminiMol can be utilized in academic publications, open-source software projects, and open-source competitions (e.g. Kaggle competitions under the MIT Open Source license). 
@@ -477,7 +478,7 @@ GeminiMol prohibits unauthorised commercial use, including commercial training a
 
 ## 💌 Get in Touch
 
-We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the GeminiMol Developer Team at wangl@shanghaitech.edu.cn. We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wangl@shanghaitech.edu.cn or baifang@shanghaitech.edu.cn.       
+We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the GeminiMol Developer Team at wangl@alumni.shanghaitech.edu.cn. We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wangl@alumni.shanghaitech.edu.cn or baifang@shanghaitech.edu.cn.       
 
 ## 😃 Acknowledgements
 
