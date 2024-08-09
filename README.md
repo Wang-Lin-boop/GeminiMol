@@ -139,10 +139,10 @@ GeminiMol
 │   ├── GeminiMol_Training.py            # scripts for training the GeminiMol models.                 
 │   ├── benchmark.py                     # benchmarking presentation methods on provide datasets
 ├── data                                 # training and benchmark datasets in this work
-│   ├── Benchmark_DUD-E                  # virtual screeening, optional         
-│   ├── Benchmark_LIT-PCBA               # virtual screeening, optional               
-│   ├── Benchmark_TIBD                   # target identification, optional       
-│   ├── Benchmark_QSAR                   # QSAR and ADMET, optional           
+│   ├── Benchmark_DUD-E                  # virtual screeening benchmark, optional         
+│   ├── Benchmark_LIT-PCBA               # virtual screeening benchmark, optional               
+│   ├── Benchmark_TIBD                   # target identification benchmark, optional       
+│   ├── Benchmark_QSAR                   # QSAR and ADMET benchmarks, optional           
 │   ├── Chem_SmELECTRA                   # text backbone of chemical language, optional    
 │   ├── css_library                      # CSS training data, optional   
 │   ├── benchmark.json                   # dataset index for benchmark tasks, optional            
