@@ -91,7 +91,7 @@ GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomme
 
 #### Download datasets and models
 
-In this repository, we provide all the training, validation, and testing datasets used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties.  
+In this repository, we provide the pre-trained GeminiMol and CrossEncoder models.  
 
 > Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link) and [HuggingFace](https://huggingface.co/AlphaMWang)
 
@@ -103,9 +103,7 @@ git clone https://huggingface.co/AlphaMWang/GeminiMol
 
 Then, we need place the models to the `${GeminiMol}/models`.   
 
-> Download all datasets via [Zenodo](https://zenodo.org/records/10450788) for training, benchmarking, and applications 
-
-If you merely want to apply GeminiMol to your own project, you don't need to download training and benchmarking datasets.   
+> Download all chemical datasets via [Zenodo](https://zenodo.org/records/10450788) for applications 
 
 ``` shell
     cd ${geminimol_data}
