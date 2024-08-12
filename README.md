@@ -23,6 +23,7 @@ This repository provides the official implementation of the GeminiMol model, tra
     - [Virtual Screening and Target Identification](#virtual-screening-and-target-identification)
     - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
     - [Molecular Clustering](#molecular-clustering)
+    - [Extract Molecular Features (GeminiMol Encoding)](#extract-molecular-features-geminimol-encoding)
 - [👐 Reproducing](#-reproducing)
     - [Download Training and Benchmark Datasets](#download-training-and-benchmark-datasets)
     - [Re-training our models](#re-training-our-models)
@@ -378,6 +379,18 @@ export smiles_column="SMILES" # Specify the column name in datasets
 export output_fn="Cluster"
 export cluster_num=10 # only for supervised clustering algorithm, such as K-Means
 python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_method}" "${smiles_column}" "${output_fn}" "cluster:${cluster_num}"
+```
+
+#### Extract Molecular Features (GeminiMol Encoding)
+
+You can use GeminiMol or molecular fingerprints to extract molecular features for further analysis.    
+
+``` shell
+export encoder_method="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
+export data_table="dataset.csv" # must contain the ${smiles_column}
+export smiles_column="SMILES" # Specify the column name in datasets
+export output_fn="${data_table%%.*}_Encoding"
+python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_method}" "${smiles_column}" "${output_fn}" "encode"
 ```
 
 ## 👐 Reproducing
