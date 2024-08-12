@@ -348,23 +348,23 @@ Next, we can load the model trained based on `AutoQSAR` and `FineTuning` to pred
 
 ``` shell
 export model_path="QSAR_GeminiMol" # ${task}_GeminiMol when your build QSAR model
-export encoder_list="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
+export encoder_method="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
 export extrnal_data="dataset.csv" # must contain the ${smiles_column}
 export smiles_column="SMILES" # Specify the column name in datasets
 export model_type="FineTuning" # FineTuning, PropDecoder, ['LightGBM', 'LightGBMLarge', 'LightGBMXT', 'NeuralNetTorch'] for AutoQSAR
-python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}" "${model_type}"
+python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_method}" "${extrnal_data}" "${smiles_column}" "${model_type}"
 ```
 
 If you have constructed a regression model using AutoQSAR, refer to the following command.   
 
 ``` shell
 export model_path="QSAR_GeminiMol" # ${task}_GeminiMol when your build QSAR model
-export encoder_list="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
+export encoder_method="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
 export extrnal_data="dataset.csv" # must contain the ${smiles_column}
 export smiles_column="SMILES" # Specify the column name in datasets
 export model_type="NeuralNetTorch" # ['LightGBM', 'LightGBMLarge', 'LightGBMXT', 'NeuralNetTorch'] for AutoQSAR
 export task_type="regression"
-python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}" "${model_type}" "${task_type}"
+python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_method}" "${extrnal_data}" "${smiles_column}" "${model_type}" "${task_type}"
 ```
 
 #### Molecular Clustering
@@ -372,12 +372,12 @@ python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "$
 You can use GeminiMol to cluster molecules just like molecular fingerprints!    
 
 ``` shell
-export encoder_list="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
+export encoder_method="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
 export data_table="dataset.csv" # must contain the ${smiles_column}
 export smiles_column="SMILES" # Specify the column name in datasets
 export output_fn="Cluster"
 export cluster_num=10 # only for supervised clustering algorithm, such as K-Means
-python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_list}" "${smiles_column}" "${output_fn}" "cluster:${cluster_num}"
+python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_method}" "${smiles_column}" "${output_fn}" "cluster:${cluster_num}"
 ```
 
 ## 👐 Reproducing

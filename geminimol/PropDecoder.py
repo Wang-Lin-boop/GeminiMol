@@ -548,62 +548,27 @@ if __name__ == "__main__":
     )
     # training QSAR models
     if not os.path.exists(f"{product_model_name}/predictor.pt"):
-        epochs = ( 300000 // len(train_data) ) + 1
-        if len(train_data) > 30000:
-            batch_size, learning_rate, patience = 256, 1.0e-3, 50
-            expand_ratio, hidden_dim, num_layers = 3, 2048, 5
-        elif len(train_data) > 10000:
-            batch_size, learning_rate, patience = 128, 5.0e-4, 60
-            expand_ratio, hidden_dim, num_layers = 2, 2048, 4
-        elif len(train_data) > 5000:
-            batch_size, learning_rate, patience = 64, 1.0e-4, 80
-            expand_ratio, hidden_dim, num_layers = 1, 1024, 3
-        elif len(train_data) > 2000:
-            batch_size, learning_rate, patience = 32, 5.0e-5, 100
-            expand_ratio, hidden_dim, num_layers = 0, 1024, 3
-        else:
-            batch_size, learning_rate, patience = 24, 1.0e-5, 100
-            expand_ratio, hidden_dim, num_layers = 0, 1204, 3
-        if task_type == 'binary':
-            rectifier_activation = 'SiLU'
-            dropout_rate = 0.3
-            concentrate_activation = 'SiLU' # GELU, SiLU
-            dense_dropout = 0.1
-            dense_activation = 'Softplus' # GELU
-            projection_activation = 'Softplus' # GELU
-            projection_transform = 'Sigmoid'
-        elif task_type == 'regression':
-            rectifier_activation = 'SiLU'
-            dropout_rate = 0.1
-            concentrate_activation = 'SiLU' # GELU, SiLU
-            dense_dropout = 0.0
-            dense_activation = 'ELU' # ELU
-            projection_activation = 'Identity' # ELU
-            if train_data[label_column].max() <= 1.0 and train_data[label_column].min() >= 0.0:
-                projection_transform = 'Sigmoid'
-            else:
-                projection_transform = 'Identity'
         QSAR_model.trianing_models(
             train_data,
             val_set=val_data,
-            epochs = epochs,
-            learning_rate = learning_rate,
+            epochs = ( 300000 // len(train_data) ) + 1,
+            learning_rate = 1.0e-4,
             params = {
                 'task_type': task_type,
-                'hidden_dim': hidden_dim,
-                'expand_ratio': expand_ratio,
-                'dense_dropout': dense_dropout,
-                'dropout_rate': dropout_rate,
-                'num_layers': num_layers,
-                'rectifier_activation': rectifier_activation,
-                'concentrate_activation': concentrate_activation,
-                'dense_activation': dense_activation,
-                'projection_activation': projection_activation,
-                'projection_transform': projection_transform,
+                'hidden_dim': 1024,
+                'expand_ratio': 3,
+                'dense_dropout': 0.0,
+                'dropout_rate': 0.3 if task_type == 'binary' else 0.0,
+                'num_layers': 3,
+                'rectifier_activation': 'SiLU',
+                'concentrate_activation': 'SiLU',
+                'dense_activation': 'SiLU',
+                'projection_activation': 'Softplus' if task_type == 'binary' else 'Identity',
+                'projection_transform': 'Sigmoid' if train_data[label_column].max() <= 1.0 and train_data[label_column].min() >= 0.0 else 'Identity',
                 'linear_projection': False,
-                'batch_size': batch_size
+                'batch_size': 32
             },
-            patience = patience
+            patience = 120
         )
     val_res = QSAR_model.evaluate(
         val_data, 
