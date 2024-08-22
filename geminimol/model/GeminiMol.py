@@ -809,7 +809,7 @@ class BinarySimilarity(nn.Module):
         # set up the early stop params
         best_score = self.evaluate(val_set)["SPEARMANR"].mean() * self.evaluate(calibration_set)["SPEARMANR"].mean()
         print(f"NOTE: The initial model score is {round(best_score, 4)}.")
-        bacth_group = 50
+        batch_group = 50
         mini_epoch = 500
         batch_id = 0
         # setup warm up params
@@ -853,7 +853,7 @@ class BinarySimilarity(nn.Module):
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-                if batch_id % bacth_group == 0:
+                if batch_id % batch_group == 0:
                     print(f"Epoch {epoch+1}, batch {batch_id}, time {round(time.time()-start, 2)}, train loss: {loss.item()}")
                     # Set up the learning rate scheduler
                     if batch_id <= num_warmup_steps:
