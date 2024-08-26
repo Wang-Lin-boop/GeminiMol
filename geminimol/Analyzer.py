@@ -310,9 +310,9 @@ if __name__ == "__main__":
             features_dataset = dataset[std_top]
         else:
             features_dataset = dataset[features_columns]
-        for method in analyzer.reduce_dimension_algorithm_list:
-            features_table = analyzer.reduce_dimension_plot(features_dataset, dataset[label_column], output_fn = f"{output_fn}_{method}", method=method, dim_num=2).join(dataset[smiles_column], how='left')
-            features_table.to_csv(f"{output_fn}_{method}.csv", index=False)
+        for rd_method in analyzer.reduce_dimension_algorithm_list:
+            features_table = analyzer.reduce_dimension_plot(features_dataset, dataset[label_column], output_fn = f"{output_fn}_{rd_method}", method=rd_method, dim_num=2).join(dataset[smiles_column], how='left')
+            features_table.to_csv(f"{output_fn}_{rd_method}.csv", index=False)
     elif running_mode == 'heatmap':
         id_column = sys.argv[5].split(':')[1]
         smiles_list = dataset[smiles_column].to_list()
