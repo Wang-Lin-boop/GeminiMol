@@ -49,7 +49,7 @@ The **molecular representation model** is an emerging artificial intelligence te
 * 2023-12, our paper has been uploaded to BioRxiv, you can find it [here](https://www.biorxiv.org/content/10.1101/2023.12.14.571629).    
 * 2024-01, we have released `PharmProfiler.py`, which facilitates virtual screening and target identification.   
 * 2024-03, we have released `PropPredictor.py`, which facilitates the deployment and repurposing of QSAR and ADMET prediction models. 
-* 2024-08, our paper was published in [Advanced Science](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998) after a long peer-review process.
+* 2024-08, our paper was published in [_Advanced Science_](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998).
 
 ## 😫 Limitations
 
