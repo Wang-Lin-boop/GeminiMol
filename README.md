@@ -1,7 +1,7 @@
 <h1 align="left">  GeminiMol  </h1>
 <h3 align="left"> Molecular Representation Model Enhanced by Conformational Space Profile </h3>
 <p align="left">
-  📃 <a href="https://www.biorxiv.org/content/10.1101/2023.12.14.571629" target="_blank">Paper</a> ·  🤗 <a href="https://huggingface.co/AlphaMWang/GeminiMol" target="_blank">Model</a> ·  📕 <a href="https://zenodo.org/records/10450788" target="_blank">Data</a><br>
+  📃 <a href="https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998" target="_blank">Paper</a> ·  🤗 <a href="https://huggingface.co/AlphaMWang/GeminiMol" target="_blank">Model</a> ·  📕 <a href="https://zenodo.org/records/10450788" target="_blank">Data</a><br>
 </p>
 
 <p align="right">
@@ -49,6 +49,7 @@ The **molecular representation model** is an emerging artificial intelligence te
 * 2023-12, our paper has been uploaded to BioRxiv, you can find it [here](https://www.biorxiv.org/content/10.1101/2023.12.14.571629).    
 * 2024-01, we have released `PharmProfiler.py`, which facilitates virtual screening and target identification.   
 * 2024-03, we have released `PropPredictor.py`, which facilitates the deployment and repurposing of QSAR and ADMET prediction models. 
+* 2024-08, our paper was published in [Advanced Science](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998) after a long peer-review process.
 
 ## 😫 Limitations
 
@@ -196,7 +197,7 @@ As a molecular representation model, GeminiMol finds applications in **ligand-ba
 
 We have provided Cross-Encoder and GeminiMol models that can be used directly for inference. Here, we demonstrate the utilization of GeminiMol for virtual screening, target identification, and molecular property modeling.      
 
-Please note that while molecular fingerprints are considered simple molecular representation methods, they are an indispensable baseline (see our [paper](https://www.biorxiv.org/content/10.1101/2023.12.14.571629)). When conducting your drug development project, we recommend exploring ECFP4, CombineFP, and GeminiMol that are provided simultaneously in our `PharmProfiler.py` and various molecular property modeling scripts.     
+Please note that while molecular fingerprints are considered simple molecular representation methods, they are an indispensable baseline (see our [paper](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998)). When conducting your drug development project, we recommend exploring ECFP4, CombineFP, and GeminiMol that are provided simultaneously in our `PharmProfiler.py` and various molecular property modeling scripts.     
 
 #### Virtual Screening and Target Identification
 
@@ -486,9 +487,9 @@ done
 
 ## ⭐ Citing This Work
 
-**Conformational Space Profile Enhances Generic Molecular Representation Learning**     
+**Conformational Space Profiling Enhances Generic Molecular Representation for AI-Powered Ligand-Based Drug Discovery**     
 Lin Wang, Shihang Wang, Hao Yang, Shiwei Li, Xinyu Wang, Yongqi Zhou, Siyuan Tian, Lu Liu, Fang Bai    
-bioRxiv 2023.12.14.571629; doi: https://doi.org/10.1101/2023.12.14.571629    
+*Advanced Science*, 2024; doi: 10.1002/advs.202403998    
 
 ## ✅ License
 
