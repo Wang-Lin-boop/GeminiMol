@@ -41,8 +41,8 @@ The **molecular representation model** is an emerging artificial intelligence te
 ## 💡 Highlight
 
 * GeminiMol exhibits the capability to **identify molecular pairs with similar 3D active conformers**, even in scenarios where their 2D structures exhibit significant differences.     
-* GeminiMol was pre-trained on only 37,336 molecular structures, yet it can **generalize** to zero-shot and QSAR tasks involving millions of molecules.    
-* GeminiMol shown the **balanced performance** across various applications, including virtual screening, target identification, and cellular phenotype-based property modeling.        
+* GeminiMol was pre-trained on only 37,336 molecular structures, yet it can **generalize** to zero-shot and few-shot tasks involving millions of molecules.    
+* GeminiMol shown the **balanced performance** across various applications, including virtual screening, target identification, and molecular property modeling.        
 
 ## 🔔 News    
 
