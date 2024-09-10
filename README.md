@@ -10,30 +10,6 @@
 
 This repository provides the official implementation of the GeminiMol model, training data, and utilities. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of **conformational space similarities (CSS)**. Please also refer to our [paper](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998) for a detailed description of GeminiMol.    
 
-## Table of Contents
-- [Table of Contents](#table-of-contents)
-- [💗 Motivation](#-motivation)
-- [💡 Highlight](#-highlight)
-- [🔔 News](#-news)
-- [😫 Limitations](#-limitations)
-- [📕 Installation](#-installation)
-    - [Download datasets and models](#download-datasets-and-models)
-    - [Installing the dependency packages](#installing-the-dependency-packages)
-- [📓 Application](#-application)
-    - [Virtual Screening and Target Identification](#virtual-screening-and-target-identification)
-    - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
-    - [Molecular Clustering](#molecular-clustering)
-    - [Extract Molecular Features (GeminiMol Encoding)](#extract-molecular-features-geminimol-encoding)
-- [👐 Reproducing](#-reproducing)
-    - [Download Training and Benchmark Datasets](#download-training-and-benchmark-datasets)
-    - [Re-training our models](#re-training-our-models)
-    - [Benchmarking the fingerprints and our models](#benchmarking-the-fingerprints-and-our-models)
-- [⭐ Citing This Work](#-citing-this-work)
-- [✅ License](#-license)
-- [💌 Get in Touch](#-get-in-touch)
-- [😃 Acknowledgements](#-acknowledgements)
-
-
 ## 💗 Motivation  
 
 The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. Inspired by the dynamics of small molecules in solution, introducing the **conformational space profile** into molecular representation models is a promising aim. The conformational space profile covers the heterogeneity of molecule properties, such as the multi-target mechanism of drug action, recognition of different biomolecules, dynamics in cytoplasm and membrane, which may facilitate further downstream application and generalization capability of molecular representation model.   
