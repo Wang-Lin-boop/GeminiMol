@@ -1,6 +1,6 @@
-<h1 align="left">  GeminiMol  </h1>
-<h3 align="left"> Molecular Representation Model Enhanced by Conformational Space Profile </h3>
-<p align="left">
+<h1 align="center">  GeminiMol  </h1>
+<h3 align="center"> Molecular Representation Model Enhanced by Conformational Space Profile </h3>
+<p align="center">
   📃 <a href="https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998" target="_blank">Paper</a> ·  🤗 <a href="https://huggingface.co/AlphaMWang/GeminiMol" target="_blank">Model</a> ·  📕 <a href="https://zenodo.org/records/10450788" target="_blank">Data</a><br>
 </p>
 
