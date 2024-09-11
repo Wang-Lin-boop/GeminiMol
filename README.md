@@ -4,8 +4,8 @@
   📃 <a href="https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998" target="_blank">Paper</a> ·  🤗 <a href="https://huggingface.co/AlphaMWang/GeminiMol" target="_blank">Model</a> ·  📕 <a href="https://zenodo.org/records/10450788" target="_blank">Data</a><br>
 </p>
 
-<p align="right">
-  <img style="float: right" src="imgs/geminimol.png" alt="alt text" width="550px" align="right"/>
+<p align="center">
+  <img style="float: center" src="imgs/geminimol.png" alt="alt text" width="650px" align="center"/>
 </p>
 
 This repository provides the official implementation of the GeminiMol model, training data, and utilities. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of **conformational space similarities (CSS)**. Please also refer to our [paper](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998) for a detailed description of GeminiMol.    
