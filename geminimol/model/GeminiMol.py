@@ -1,18 +1,15 @@
 # base
 import os
-import sys
 import time
 import json
 import math
 import torch
 import torch.nn as nn
-import random
 import numpy as np
 import pandas as pd
 from functools import partial
 # for GraphEncoder (MolecularEncoder)
 from sklearn.metrics import mean_squared_error
-from sklearn.utils import shuffle
 from scipy.stats import pearsonr, spearmanr
 from dgl import batch
 from dgllife.utils import atom_type_one_hot, atom_formal_charge, atom_hybridization_one_hot, atom_chiral_tag_one_hot, atom_is_in_ring, atom_is_aromatic, ConcatFeaturizer, BaseAtomFeaturizer, CanonicalBondFeaturizer, smiles_to_bigraph
@@ -812,7 +809,7 @@ class BinarySimilarity(nn.Module):
         # set up the early stop params
         best_score = self.evaluate(val_set)["SPEARMANR"].mean() * self.evaluate(calibration_set)["SPEARMANR"].mean()
         print(f"NOTE: The initial model score is {round(best_score, 4)}.")
-        bacth_group = 50
+        batch_group = 50
         mini_epoch = 500
         batch_id = 0
         # setup warm up params
@@ -856,7 +853,7 @@ class BinarySimilarity(nn.Module):
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-                if batch_id % bacth_group == 0:
+                if batch_id % batch_group == 0:
                     print(f"Epoch {epoch+1}, batch {batch_id}, time {round(time.time()-start, 2)}, train loss: {loss.item()}")
                     # Set up the learning rate scheduler
                     if batch_id <= num_warmup_steps:
@@ -951,35 +948,31 @@ class PropDecoder(nn.Module):
                 activation_dict[rectifier_activation],
                 nn.BatchNorm1d(feature_dim * expand_ratio),
                 nn.Dropout(p=dropout_rate, inplace=False), 
-                nn.Linear(feature_dim * expand_ratio, hidden_dim, bias=True),
+                nn.Linear(feature_dim * expand_ratio, feature_dim, bias=True),
                 activation_dict[rectifier_activation],
-                nn.BatchNorm1d(hidden_dim),
+                nn.BatchNorm1d(feature_dim),
             )
         else:
-            self.features_rectifier = nn.Sequential(
-                nn.Linear(feature_dim, hidden_dim, bias=True),
-                activation_dict[rectifier_activation],
-                nn.BatchNorm1d(hidden_dim),
-            )
+            self.features_rectifier = nn.Identity()
         self.concentrate = nn.Sequential(
             nn.Dropout(p=dropout_rate, inplace=False),
-            nn.Linear(hidden_dim, 128, bias=True), 
+            nn.Linear(feature_dim, hidden_dim, bias=True), 
             activation_dict[concentrate_activation],
-            nn.BatchNorm1d(128)
+            nn.BatchNorm1d(hidden_dim)
         )
         self.dense_layers =  nn.ModuleList([
             nn.Sequential(
-                nn.Linear(128, 128, bias=True),
+                nn.Linear(hidden_dim, hidden_dim, bias=True),
                 activation_dict[dense_activation],
-                nn.BatchNorm1d(128),
+                nn.BatchNorm1d(hidden_dim),
                 nn.Dropout(p=dense_dropout, inplace=False)
             )
             for _ in range(num_layers)
         ])
         self.projection = nn.Sequential(
-            nn.Linear(128, 128, bias=True), 
+            nn.Linear(feature_dim+hidden_dim, hidden_dim, bias=True), 
             activation_dict[projection_activation],
-            nn.Linear(128, 1, bias=True),
+            nn.Linear(hidden_dim, 1, bias=True),
             activation_dict[projection_transform],
             nn.Linear(1, 1, bias=True) if linear_projection else nn.Identity(),
         )
@@ -988,12 +981,15 @@ class PropDecoder(nn.Module):
         self.dense_layers.cuda()
         self.projection.cuda()
     
-    def forward(self, features):
-        features = self.features_rectifier(features)
+    def forward(self, raw_features):
+        features = self.features_rectifier(raw_features)
         features = self.concentrate(features)
         for layer in self.dense_layers:
             features = layer(features)
-        return self.projection(features).squeeze(-1)
+        combined_features = torch.cat(
+                (raw_features, features), dim = -1
+            )
+        return self.projection(combined_features).squeeze(-1)
 
 class GeminiMol(BinarySimilarity):
     def __init__(self, 

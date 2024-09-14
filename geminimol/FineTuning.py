@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
-from torch.optim.lr_scheduler import StepLR
 from sklearn.metrics import roc_auc_score, mean_squared_error, accuracy_score, f1_score, recall_score, precision_score, mean_absolute_error, average_precision_score
 from scipy.stats import pearsonr, spearmanr
 import oddt.metrics as vsmetrics
@@ -229,18 +228,21 @@ class GeminiMolQSAR(nn.Module):
             weight_decay = 0.001,
             patience = 50,
             optim_type = 'AdamW',
-            temperature = 0.1
+            temperature = 0.1,
+            mini_epoch = 200,
+            betas = (0.9, 0.98),
+            frozen_steps = 0
         ):
         # Load the models and optimizers
         models = {
             'AdamW': partial(
                 torch.optim.AdamW, 
-                betas = (0.9, 0.98),
+                betas = betas,
                 weight_decay = weight_decay
             ),
             'Adam': partial(
                 torch.optim.Adam,
-                betas = (0.9, 0.98),
+                betas = betas,
                 weight_decay = weight_decay
             ),
             'SGD': partial(
@@ -276,16 +278,13 @@ class GeminiMolQSAR(nn.Module):
         val_set = self.prepare(val_set)
         # setup task type
         if self.params['task_type'] == 'binary':
-            ## processing datasets
             training_set[self.label_column] = training_set[self.label_column].replace(self.label_map)
             val_set[self.label_column] = val_set[self.label_column].replace(self.label_map)
-            pos_num = len(training_set[training_set[self.label_column]==1])
-            neg_num = len(training_set[training_set[self.label_column]==0])
-            if pos_num/neg_num > 3.0 or neg_num/pos_num > 3.0:
-                self.eval_metric = 'AUPRC'
-            else:
-                self.eval_metric = 'AUROC'
-            self.loss_function = 'BCE'
+            label_set = list(set(training_set[self.label_column].to_list()))
+            pos_num = len(training_set[training_set[self.label_column]==label_set[0]]) 
+            neg_num = len(training_set[training_set[self.label_column]==label_set[1]])
+            self.eval_metric = 'AUROC'
+            self.loss_function = 'Focal' if pos_num/neg_num > 25 or neg_num/pos_num > 25 else 'BCE'
         else:
             self.eval_metric = 'SPEARMANR'
             self.loss_function = 'MSE'
@@ -294,17 +293,18 @@ class GeminiMolQSAR(nn.Module):
         # Set up the optimizer
         optimizer = models[optim_type]([
                 {'params': self.predictor.parameters(), 'lr': learning_rate},
-                {'params': self.encoder.parameters(), 'lr': learning_rate*temperature},
             ])
         batch_id = 0
         best_score = -1.0
-        mini_epoch = 10 if len(training_set) // train_batch_size > 200 else ( len(training_set) // (train_batch_size * 5 )) + 1
-        scheduler = StepLR(optimizer, step_size=5, gamma=0.9)
         val_set = val_set.reset_index(drop=True)
         for _ in range(epochs):
             self.train()
             training_set = training_set.sample(frac=1).reset_index(drop=True)
             for i in range(0, len(training_set), train_batch_size):
+                if batch_id == frozen_steps:
+                    optimizer.add_param_group(
+                        {'params': self.encoder.parameters(), 'lr': learning_rate*temperature},
+                    )
                 batch_id += 1
                 rows = training_set.iloc[i:i+train_batch_size]
                 if len(rows) <= 8:
@@ -322,6 +322,16 @@ class GeminiMolQSAR(nn.Module):
                             pred, label_tensor
                         ) * torch.tensor([1 - rows[self.label_column].mean()]).cuda()
                     )
+                elif self.loss_function == 'Focal':
+                    (alpha, gamma) = (0.25, 5)
+                    bce_loss = nn.BCELoss(
+                            reduction = 'none',
+                        )(
+                            pred, 
+                            label_tensor
+                        )
+                    focal_loss = alpha * (1 - torch.exp(-bce_loss)) ** gamma * bce_loss
+                    loss = torch.mean(focal_loss)
                 elif self.loss_function == 'MSE':
                     loss = nn.MSELoss()(
                         pred, label_tensor
@@ -340,7 +350,6 @@ class GeminiMolQSAR(nn.Module):
                         )
                     self.train()
                     print(f"Epoch {_+1}, evaluate {self.eval_metric} on the validation set: {val_res[self.eval_metric]}")
-                    scheduler.step()
                     if np.isnan(val_res[self.eval_metric]) and os.path.exists(f'{self.model_name}/predictor.pt'):
                         print("NOTE: The parameters don't converge, back to previous optimal model.")
                         self.load_state_dict(torch.load(f'{self.model_name}/predictor.pt'))
@@ -354,18 +363,27 @@ class GeminiMolQSAR(nn.Module):
                 if patience <= 0:
                     print("NOTE: The parameters was converged, stop training!")
                     break
+            val_res = self.evaluate( 
+                val_set,
+                smiles_name = self.smiles_column,
+                label_name = self.label_column,
+                metrics = [self.eval_metric],
+                as_pandas = False
+            )
+            self.train()
+            print(f"Epoch {_+1}, evaluate {self.eval_metric} on the validation set: {val_res[self.eval_metric]}")
+            if np.isnan(val_res[self.eval_metric]) and os.path.exists(f'{self.model_name}/predictor.pt'):
+                print("NOTE: The parameters don't converge, back to previous optimal model.")
+                self.load_state_dict(torch.load(f'{self.model_name}/predictor.pt'))
+                patience -= 2
+            elif best_score < val_res[self.eval_metric]:
+                patience += 1
+                best_score = val_res[self.eval_metric]
+                torch.save(self.state_dict(), f'{self.model_name}/predictor.pt')
+            else:
+                patience -= 1
             if patience <= 0:
                 break
-            val_res = self.evaluate( 
-                    val_set,
-                    smiles_name = self.smiles_column,
-                    label_name = self.label_column,
-                    metrics = [self.eval_metric],
-                    as_pandas = False
-                )
-            print(f"Epoch {_+1}, evaluate {self.eval_metric} on the validation set: {val_res[self.eval_metric]}")
-            if best_score < val_res[self.eval_metric]:
-                torch.save(self.state_dict(), f'{self.model_name}/predictor.pt')
         self.load_state_dict(torch.load(f'{self.model_name}/predictor.pt'))
         val_res = self.evaluate( 
             val_set,
@@ -430,41 +448,6 @@ if __name__ == "__main__":
         raise RuntimeError(f"ERROR: the encoder model {encoding_method} isn't exist.")
     # setup QSAR models
     if not os.path.exists(f"{product_model_name}/predictor.pt"):
-        epochs = ( 300000 // len(train_data) ) + 1
-        if len(train_data) > 30000:
-            batch_size, learning_rate, patience = 128, 1.0e-3, 50
-            expand_ratio, hidden_dim, num_layers = 3, 2048, 5
-        elif len(train_data) > 10000:
-            batch_size, learning_rate, patience = 64, 5.0e-4, 60
-            expand_ratio, hidden_dim, num_layers = 2, 2048, 4
-        elif len(train_data) > 5000:
-            batch_size, learning_rate, patience = 64, 1.0e-4, 80
-            expand_ratio, hidden_dim, num_layers = 1, 1024, 3
-        elif len(train_data) > 2000:
-            batch_size, learning_rate, patience = 32, 5.0e-5, 100
-            expand_ratio, hidden_dim, num_layers = 0, 1024, 3
-        else:
-            batch_size, learning_rate, patience = 24, 1.0e-5, 100
-            expand_ratio, hidden_dim, num_layers = 0, 1204, 3
-        if task_type == 'binary':
-            rectifier_activation = 'SiLU'
-            dropout_rate = 0.3
-            concentrate_activation = 'SiLU' # GELU, SiLU
-            dense_dropout = 0.1
-            dense_activation = 'Softplus' # GELU
-            projection_activation = 'Softplus' # GELU
-            projection_transform = 'Sigmoid'
-        elif task_type == 'regression':
-            rectifier_activation = 'SiLU'
-            dropout_rate = 0.1
-            concentrate_activation = 'SiLU' # GELU, SiLU
-            dense_dropout = 0.0
-            dense_activation = 'ELU' # ELU
-            projection_activation = 'Identity' # ELU
-            if train_data[label_column].max() <= 1.0 and train_data[label_column].min() >= 0.0:
-                projection_transform = 'Sigmoid'
-            else:
-                projection_transform = 'Identity'
         QSAR_model = GeminiMolQSAR(
             model_name = product_model_name,
             geminimol_encoder = encoder,
@@ -473,26 +456,31 @@ if __name__ == "__main__":
             smiles_column = smiles_column, 
             params = {
                 'task_type': task_type,
-                'hidden_dim': hidden_dim,
-                'expand_ratio': expand_ratio,
-                'dense_dropout': dense_dropout,
-                'dropout_rate': dropout_rate,
-                'num_layers': num_layers,
-                'rectifier_activation': rectifier_activation,
-                'concentrate_activation': concentrate_activation,
-                'dense_activation': dense_activation,
-                'projection_activation': projection_activation,
-                'projection_transform': projection_transform,
+                'hidden_dim': 1024,
+                'expand_ratio': 0,
+                'dense_dropout': 0.0,
+                'dropout_rate': 0.3 if task_type == 'binary' else 0.0,
+                'num_layers': 3,
+                'rectifier_activation': 'SiLU',
+                'concentrate_activation': 'SiLU',
+                'dense_activation': 'SiLU',
+                'projection_activation': 'Softplus' if task_type == 'binary' else 'Identity',
+                'projection_transform': 'Sigmoid' if train_data[label_column].max() <= 1.0 and train_data[label_column].min() >= 0.0 else 'Identity',
                 'linear_projection': False,
-                'batch_size': batch_size
+                'batch_size': 64
             }
         )
         QSAR_model.trianing_models(
             train_data,
             val_set = val_data,
-            epochs = epochs,
-            learning_rate = learning_rate,
-            patience = patience
+            epochs = ( 300000 // len(train_data) ) + 1,
+            learning_rate = 5.0e-5,
+            patience = 150,
+            temperature = 0.3,
+            weight_decay = 0.01,
+            mini_epoch = 100,
+            betas = (0.9, 0.96),
+            frozen_steps = 0
         )
     else:
         QSAR_model = GeminiMolQSAR(

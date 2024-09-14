@@ -1,34 +1,14 @@
-<h1 align="left">  GeminiMol  </h1>
-<h3 align="left"> Conformational Space Profile Enhanced Molecular Representation Model </h3>
-<p align="left">
-  📃 <a href="https://www.biorxiv.org/content/10.1101/2023.12.14.571629" target="_blank">Paper</a> ·  🤗 <a href="https://huggingface.co/AlphaMWang/GeminiMol" target="_blank">Model</a> ·  📕 <a href="https://zenodo.org/records/10450788" target="_blank">Data</a><br>
+<h1 align="center">  GeminiMol  </h1>
+<h3 align="center"> Molecular Representation Model Enhanced by Conformational Space Profile </h3>
+<p align="center">
+  📃 <a href="https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998" target="_blank">Paper</a> ·  🤗 <a href="https://huggingface.co/AlphaMWang/GeminiMol" target="_blank">Model</a> ·  📕 <a href="https://zenodo.org/records/10450788" target="_blank">Data</a><br>
 </p>
 
-<p align="right">
-  <img style="float: right" src="imgs/geminimol.png" alt="alt text" width="550px" align="right"/>
+<p align="center">
+  <img style="float: center" src="imgs/geminimol.png" alt="alt text" width="650px" align="center"/>
 </p>
 
-This repository provides the official implementation of the GeminiMol model, training data, and utitiles. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of **conformational space similarities (CSS)**. Please also refer to our [paper](https://doi.org/10.1101/2023.12.14.571629) for a detailed description of GeminiMol.    
-
-## Table of Contents
-- [Table of Contents](#table-of-contents)
-- [💗 Motivation](#-motivation)
-- [💡 Highlight](#-highlight)
-- [🔔 News](#-news)
-- [📕 Installation](#-installation)
-    - [Download datasets and models](#download-datasets-and-models)
-    - [Installing the dependency packages](#installing-the-dependency-packages)
-- [📓 Application](#-application)
-    - [Virtual Screening and Target Identification](#virtual-screening-and-target-identification)
-    - [Molecular Proptery Modeling (QSAR and ADMET)](#molecular-proptery-modeling-qsar-and-admet)
-- [👐 Reproducing](#-reproducing)
-    - [Re-training our models](#re-training-our-models)
-    - [Benchmarking the fingerprints and our models](#benchmarking-the-fingerprints-and-our-models)
-- [⭐ Citing This Work](#-citing-this-work)
-- [😫 Limitations](#-limitations)
-- [✅ License](#-license)
-- [💌 Get in Touch](#-get-in-touch)
-- [😃 Acknowledgements](#-acknowledgements)
+This repository provides the official implementation of the GeminiMol model, training data, and utilities. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of **conformational space similarities (CSS)**. Please also refer to our [paper](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998) for a detailed description of GeminiMol.    
 
 ## 💗 Motivation  
 
@@ -37,14 +17,22 @@ The **molecular representation model** is an emerging artificial intelligence te
 ## 💡 Highlight
 
 * GeminiMol exhibits the capability to **identify molecular pairs with similar 3D active conformers**, even in scenarios where their 2D structures exhibit significant differences.     
-* GeminiMol was pre-trained on only 37,336 molecular structures, yet it can **generalize** to zero-shot and QSAR tasks involving millions of molecules.    
-* GeminiMol shown the **balanced performance** across various applications, including virtual screening, target identification, and cellular phenotype-based property modeling.        
+* GeminiMol was pre-trained on only 37,336 molecular structures, yet it can **generalize** to zero-shot and few-shot tasks involving millions of molecules.    
+* GeminiMol shown the **balanced performance** across various applications, including virtual screening, target identification, and molecular property modeling.        
 
 ## 🔔 News    
 
 * 2023-12, our paper has been uploaded to BioRxiv, you can find it [here](https://www.biorxiv.org/content/10.1101/2023.12.14.571629).    
 * 2024-01, we have released `PharmProfiler.py`, which facilitates virtual screening and target identification.   
 * 2024-03, we have released `PropPredictor.py`, which facilitates the deployment and repurposing of QSAR and ADMET prediction models. 
+* 2024-08, our paper was published in [_Advanced Science_](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998).
+* 2024-09, utilizing GeminiMol, we identified a new inhibitor targeting GluN1/GluN3A (_IC<sub>50</sub>_ = 0.98 μM), and this result get rewarded the first prize in [the 2023 Shanghai International Computational Biology Innovation Competition](https://competition.huaweicloud.com/information/1000042002/introduction).
+
+## 😫 Limitations
+
+* Note that, the conformational space profile is **not a panacea** for drug discovery. For a portion of tasks, the 2D structure of a compound already contains sufficient information to establish structure-activity relationships, rendering the introduction of the conformational space profile inconsequential for these tasks.       
+* The evaluation of intermolecular similarity is not limited to pharmacophore similarity in 3D conformational space and maximum common substructure similarity in 2D structures. By incorporating **additional intermolecular similarity metrics** during pre-training, we can further enrich the knowledge that the model can learn, such as molecular fingerprints and molecular surface potentials.   
+* Due to computational resource limitations, we only included 39,290 molecules in our pre-training. It is foreseeable that incorporating **more molecular structures** during pre-training could further enhance the performance of GeminiMol, particularly when guided by drug-target relationships to obtain high-quality data.    
 
 ## 📕 Installation
 
@@ -81,7 +69,7 @@ GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomme
 
 #### Download datasets and models
 
-In this repository, we provide all the training, validation, and testing datasets used in our paper, as well as an optimal GeminiMol binary-encoder model, a series of CSS similarity decoder models, a molecular structure decoder model, and a variety of decoder models of basic ADMET properties.  
+In this repository, we provide the pre-trained GeminiMol and CrossEncoder models.  
 
 > Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link) and [HuggingFace](https://huggingface.co/AlphaMWang)
 
@@ -93,18 +81,10 @@ git clone https://huggingface.co/AlphaMWang/GeminiMol
 
 Then, we need place the models to the `${GeminiMol}/models`.   
 
-> Download all datasets via [Zenodo](https://zenodo.org/records/10450788) for training, benchmarking, and applications 
-
-If you merely want to apply GeminiMol to your own project, you don't need to download training and benchmarking datasets.   
+> Download all chemical datasets via [Zenodo](https://zenodo.org/records/10450788) for applications 
 
 ``` shell
     cd ${geminimol_data}
-    wget https://zenodo.org/records/10450788/files/css_library.zip # only for reproducing GeminiMol training
-    wget https://zenodo.org/records/10450788/files/Benchmark_DUD-E.zip # only for reproducing benchmark
-    wget https://zenodo.org/records/10450788/files/Benchmark_LIT-PCBA.zip # only for reproducing benchmark
-    wget https://zenodo.org/records/10450788/files/Benchmark_QSAR.zip # only for reproducing benchmark
-    wget https://zenodo.org/records/10450788/files/Benchmark_TIBD.zip # only for reproducing benchmark
-    wget https://zenodo.org/records/10450788/files/Chem_SmELECTRA.zip # only for reproducing cross-encoder baseline
     wget https://zenodo.org/records/10450788/files/ChemDiv.zip # compound library for virtual screening
     wget https://zenodo.org/records/10450788/files/DTIDB.zip # DTI database for target identification 
     for i in Benchmark*.zip css*.zip Chem*.zip;do
@@ -136,17 +116,18 @@ GeminiMol
 │   ├── GeminiMol_Training.py            # scripts for training the GeminiMol models.                 
 │   ├── benchmark.py                     # benchmarking presentation methods on provide datasets
 ├── data                                 # training and benchmark datasets in this work
-│   ├── Benchmark_DUD-E                  # virtual screeening, optional         
-│   ├── Benchmark_LIT-PCBA               # virtual screeening, optional               
-│   ├── Benchmark_TIBD                   # target identification, optional       
-│   ├── Benchmark_QSAR                   # QSAR and ADMET, optional           
+│   ├── Benchmark_DUD-E                  # virtual screeening benchmark, optional         
+│   ├── Benchmark_LIT-PCBA               # virtual screeening benchmark, optional               
+│   ├── Benchmark_TIBD                   # target identification benchmark, optional       
+│   ├── Benchmark_QSAR                   # QSAR and ADMET benchmarks, optional           
 │   ├── Chem_SmELECTRA                   # text backbone of chemical language, optional    
 │   ├── css_library                      # CSS training data, optional   
 │   ├── benchmark.json                   # dataset index for benchmark tasks, optional            
 │   ├── database.csv                     # molecular datasets in this work, optional         
-│   ├── DTIDB.csv                        # dataset used in target identification    
-│   ├── ChemDiv.csv                      # library of common commercial compounds     
-│   ├── Specs.csv                        # library of common commercial compounds    
+│   ├── compound_library                 # the compound librarys
+│   │   ├── DTIDB.csv                    # dataset used in target identification    
+│   │   ├── ChemDiv.csv                  # library of common commercial compounds     
+│   │   ├── Specs.csv                    # library of common commercial compounds    
 ├── models                               # CrossEncoder and GeminiMol models
 │   ├── CrossEncoder                     # CrossEncoder, optional                               
 │   ├── GeminiMol                        # GeminiMol, recommended for zero-shot tasks   
@@ -193,7 +174,7 @@ As a molecular representation model, GeminiMol finds applications in **ligand-ba
 
 We have provided Cross-Encoder and GeminiMol models that can be used directly for inference. Here, we demonstrate the utilization of GeminiMol for virtual screening, target identification, and molecular property modeling.      
 
-Please note that while molecular fingerprints are considered simple molecular representation methods, they are an indispensable baseline (see our [paper](https://www.biorxiv.org/content/10.1101/2023.12.14.571629)). When conducting your drug development project, we recommend exploring ECFP4, CombineFP, and GeminiMol that are provided simultaneously in our `PharmProfiler.py` and various molecular property modeling scripts.     
+Please note that while molecular fingerprints are considered simple molecular representation methods, they are an indispensable baseline (see our [paper](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998)). When conducting your drug development project, we recommend exploring ECFP4, CombineFP, and GeminiMol that are provided simultaneously in our `PharmProfiler.py` and various molecular property modeling scripts.     
 
 #### Virtual Screening and Target Identification
 
@@ -239,7 +220,7 @@ export smiles_column="SMILES" # Specify the column name in the compound_library
 export weight_column="Label" # weights for profiles
 export keep_top=1000
 export probe_cluster="Yes"
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}:${weight_column}" "${keep_top}"  "${probe_cluster}"
+python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}:${weight_column}" "${keep_top}"  "${probe_cluster}"
 ```
 
 To perform target identification, the compound library can be replaced with the `${geminimol_data}/compound_library/DTIDB.csv`, which contains drug-target relationships. This is a processed version of the BindingDB database, which contains 2,159,221 target-ligand paris.     
@@ -252,7 +233,7 @@ export smiles_column="SMILES" # Specify the column name in the compound_library
 export weight_column="Label" # weights for profiles
 export keep_top=2000
 export probe_cluster="No"
-CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}:${weight_column}" "${keep_top}"  "${probe_cluster}"
+python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_name}" "${smiles_column}" "${compound_library}" "${profile_set}:${weight_column}" "${keep_top}"  "${probe_cluster}"
 ```
 
 After the initial run of PharmProfiler, a extracted GeminiMol feature file will be generated in the `${geminimol_data}/compound_library/`. Subsequent screening tasks on the same compound library can benefit from PharmProfiler automatically reading the feature file, which helps to accelerate the running speed.    
@@ -282,7 +263,7 @@ export task=${dataset_name}
 
 We have presented three approaches for molecular property modeling, namely AutoQSAR (broad applicability, slow speed), PropDecoder (fast speed), and FineTuning (optimal performance, moderate speed).     
 
-In the majority of instances, the attainment of optimal performance can be accomplished through the utilization of the FineTuning script to invoke GeminiMol.     
+Given that you have enough experience with hyperparameter tuning, the attainment of optimal performance can be accomplished through the utilization of the FineTuning script to invoke GeminiMol. Also, AutoQSAR is recommended if you lack experience with hyperparameter tuning.    
 
 > 2.1 Fine-Tuning on downstream task     
 
@@ -290,29 +271,52 @@ In the majority of instances, the attainment of optimal performance can be accom
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
 export smiles_column="SMILES" # Specify the column name in datasets
 export label_column="Label" # Specify the column name in datasets
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/FineTuning.py "${task}" "${geminimol_lib}/GeminiMol" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
+python -u ${geminimol_app}/FineTuning.py "${task}" "${geminimol_lib}/GeminiMol" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
+```
+
+> 2.2 AutoQSAR (AutoGluon)   
+
+It is recommended to try using AutoQSAR to call CombineFP or GeminiMol when you lack deep learning experience, which usually produces a model with good performance.     
+
+``` shell
+export encoder_method="${geminimol_lib}/GeminiMol" # only GeminiMol
+```
+
+In our paper, we introduced a powerful joint molecular fingerprint baseline method named CombineFP.In our experiments, the performance of CombineFP in molecular property modeling is very superior and we highly recommend trying CombineFP along with GeminiMol.   
+
+``` shell
+export encoder_method="ECFP4:AtomPairs:TopologicalTorsion:FCFP6" # CombineFP
+```
+
+Having defined the encoder, you can train the model to convert the encoding of the molecule into properties using AutoQSAR. In fact, a potential advantage of this over FineTuning is that it can decode diverse molecular properties based on the fixed encoding, which will speed up the efficiency of chemical space searching.    
+
+``` shell
+export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
+export smiles_column="SMILES" # Specify the column name in datasets
+export label_column="Label" # Specify the column name in datasets
+python -u ${geminimol_app}/AutoQSAR.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "" "${task}_GeminiMol"
 ```
 
 If the integration of molecular fingerprints and a pre-trained GeminiMol model is desired for training a molecular property prediction model, either PropDecoder or AutoQSAR can be employed.   
 
-> 2.2 PropDecoder    
-
 ``` shell
+export fingerprints="ECFP4:AtomPairs:TopologicalTorsion:FCFP6:MACCS" # CombineFP+MACCS
+export encoder_method="${geminimol_lib}/GeminiMol:${fingerprints}" # CombineFP+MACCS+GeminiMol
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
-export fingerprints="ECFP4:AtomPairs:TopologicalTorsion:FCFP6:MACCS"
 export smiles_column="SMILES" # Specify the column name in datasets
 export label_column="Label" # Specify the column name in datasets
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropDecoder.py "${task}" "${geminimol_lib}/GeminiMol:${fingerprints}" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
+python -u ${geminimol_app}/AutoQSAR.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "" "${task}_GMFP"
 ```
 
-> 2.3 AutoQSAR (AutoGluon)    
+> 2.3 PropDecoder    
+
+For the most tasks, performing fine-tuning or using AutoQSAR will give pretty good performance in molecular property modeling, so you don't need to try PropDecoder unless the first two give poor performance.
 
 ``` shell
 export task="Your_Dataset" # Specify a path to your datasets (train, valid, and test)
-export fingerprints="ECFP4:AtomPairs:TopologicalTorsion:FCFP6:MACCS"
 export smiles_column="SMILES" # Specify the column name in datasets
 export label_column="Label" # Specify the column name in datasets
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/AutoQSAR.py "${task}" "${geminimol_lib}/GeminiMol:${fingerprints}" "${smiles_column}" "${label_column}" "" "${task}_GeminiMol"
+python -u ${geminimol_app}/PropDecoder.py "${task}" "${encoder_method}" "${smiles_column}" "${label_column}" "${task}_GeminiMol"
 ```
 
 > 3. Make predictions (only for AutoQSAR or fine-Tuned models)
@@ -321,15 +325,67 @@ Next, we can load the model trained based on `AutoQSAR` and `FineTuning` to pred
 
 ``` shell
 export model_path="QSAR_GeminiMol" # ${task}_GeminiMol when your build QSAR model
-export encoder_list="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
+export encoder_method="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
 export extrnal_data="dataset.csv" # must contain the ${smiles_column}
 export smiles_column="SMILES" # Specify the column name in datasets
-CUDA_VISIBLE_DEVICES=${gpu_id} python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_list}" "${extrnal_data}" "${smiles_column}"
+export model_type="FineTuning" # FineTuning, PropDecoder, ['LightGBM', 'LightGBMLarge', 'LightGBMXT', 'NeuralNetTorch'] for AutoQSAR
+python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_method}" "${extrnal_data}" "${smiles_column}" "${model_type}"
+```
+
+If you have constructed a regression model using AutoQSAR, refer to the following command.   
+
+``` shell
+export model_path="QSAR_GeminiMol" # ${task}_GeminiMol when your build QSAR model
+export encoder_method="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
+export extrnal_data="dataset.csv" # must contain the ${smiles_column}
+export smiles_column="SMILES" # Specify the column name in datasets
+export model_type="NeuralNetTorch" # ['LightGBM', 'LightGBMLarge', 'LightGBMXT', 'NeuralNetTorch'] for AutoQSAR
+export task_type="regression"
+python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_method}" "${extrnal_data}" "${smiles_column}" "${model_type}" "${task_type}"
+```
+
+#### Molecular Clustering
+
+You can use GeminiMol to cluster molecules just like molecular fingerprints!    
+
+``` shell
+export encoder_method="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
+export data_table="dataset.csv" # must contain the ${smiles_column}
+export smiles_column="SMILES" # Specify the column name in datasets
+export output_fn="Cluster"
+export cluster_num=10 # only for supervised clustering algorithm, such as K-Means
+python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_method}" "${smiles_column}" "${output_fn}" "cluster:${cluster_num}"
+```
+
+#### Extract Molecular Features (GeminiMol Encoding)
+
+You can use GeminiMol or molecular fingerprints to extract molecular features for further analysis.    
+
+``` shell
+export encoder_method="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
+export data_table="dataset.csv" # must contain the ${smiles_column}
+export smiles_column="SMILES" # Specify the column name in datasets
+export output_fn="${data_table%%.*}_Encoding"
+python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_method}" "${smiles_column}" "${output_fn}" "encode"
 ```
 
 ## 👐 Reproducing
 
 Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the CSS descriptors of 39,290 molecules described in the paper.     
+
+#### Download Training and Benchmark Datasets
+
+> Download all datasets via [Zenodo](https://zenodo.org/records/10450788) for training, test and benchmark 
+
+``` shell
+    cd ${geminimol_data}
+    wget https://zenodo.org/records/10450788/files/css_library.zip # only for reproducing GeminiMol training
+    wget https://zenodo.org/records/10450788/files/Benchmark_DUD-E.zip # only for reproducing benchmark
+    wget https://zenodo.org/records/10450788/files/Benchmark_LIT-PCBA.zip # only for reproducing benchmark
+    wget https://zenodo.org/records/10450788/files/Benchmark_QSAR.zip # only for reproducing benchmark
+    wget https://zenodo.org/records/10450788/files/Benchmark_TIBD.zip # only for reproducing benchmark
+    wget https://zenodo.org/records/10450788/files/Chem_SmELECTRA.zip # only for reproducing cross-encoder baseline
+```
 
 #### Re-training our models
 
@@ -361,13 +417,11 @@ CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/GeminiMol_Training.py "${gemin
 
 #### Benchmarking the fingerprints and our models
 
-Additionally, benchmark test scripts were provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, even incorporate additional molecular similarity data to further enhance the performance of the models.  
+Additionally, benchmark test scripts were provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, even incorporate additional molecular similarity data to further enhance the performance of the models. 
 
-It is worth noting that different decoders exhibit varying performance on different tasks and encodings. Therefore, it is essential to select the appropriate decoder for each specific molecular encoder and task. Consequently, all results should be merged using a data pivot table to analyze the optimal decoder for each encoder-task combination.    
+> Benchmarking molecular fingerprints and GeminiMol on virutual screening and target identification
 
-In our work, the hyperparameters of the PropDecoder were chosen based on empirical experience and were not subjected to any hyperparameter tuning. Performing further hyperparameter tuning for each task may potentially yield improved performance.     
-
-> Benchmarking molecular fingerprints and our models
+For each molecular fingerprint, we used all supported similarity metrics, including Tanimoto, Cosine, and Tversky. For the GeminiMol model, in addition to the projected heads used in pre-training, we introduced similarities between molecular representation vectors, including Cosine and Pearson. It is worth noting that in practice we cannot be sure which combination of molecular fingerprints and similarity metrics is optimal, and therefore each combination is considered an independent method in benchmarking.    
 
 ``` shell
 conda activate GeminiMol
@@ -382,9 +436,16 @@ mkdir -p ${model_name}
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
 done
 done
+```
+
+> Benchmarking molecular fingerprints and GeminiMol on molecular property modeling
+
+It is worth noting that different decoders exhibit varying performance on different tasks and encodings. Therefore, it is essential to select the appropriate decoder for each specific molecular encoder and task. In practice, we can determine when the model should stop-training and choose the optimal decoder architecture by dividing the training, validation and test sets. Consequently, all results should be merged using a data pivot table to analyze the optimal decoder for each encoder-task combination. In our work, the hyperparameters of the PropDecoder were chosen based on empirical experience and were not subjected to any hyperparameter tuning. Performing further hyperparameter tuning for each task may potentially yield improved performance.     
+
+``` shell
 for task in "ADMET-C" "ADMET-R" \
     "LIT-QSAR" "CELLS-QSAR" "ST-QSAR" "PW-QSAR" \
-    "PropDecoder-ADMET" "PropDecoder-QSAR" # property modeling
+    "PropDecoder-ADMET" "PropDecoder-QSAR" # fixed the molecular encoder
     do
 for model_name in "CombineFP" \
     "FCFP6" "MACCS" "RDK" "ECFP6" "FCFP4" "TopologicalTorsion" "AtomPairs" "ECFP4" \
@@ -394,8 +455,7 @@ mkdir -p ${model_name}
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
 done
 done
-# benchmarking with FineTuning GeminiMol models for PropDecoder 
-for task in "FineTuning-ADMET" "FineTuning-QSAR"; do
+for task in "FineTuning-ADMET" "FineTuning-QSAR"; do # benchmarking with FineTuning GeminiMol models
 for model_name in "${geminimol_lib}/GeminiMol"; do
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "${geminimol_data}/benchmark.json"  "${task}"
 done
@@ -404,15 +464,9 @@ done
 
 ## ⭐ Citing This Work
 
-**Conformational Space Profile Enhances Generic Molecular Representation Learning**     
+**Conformational Space Profiling Enhances Generic Molecular Representation for AI-Powered Ligand-Based Drug Discovery**     
 Lin Wang, Shihang Wang, Hao Yang, Shiwei Li, Xinyu Wang, Yongqi Zhou, Siyuan Tian, Lu Liu, Fang Bai    
-bioRxiv 2023.12.14.571629; doi: https://doi.org/10.1101/2023.12.14.571629    
-
-## 😫 Limitations
-
-* Note that, the conformational space profile is **not a panacea** for drug discovery. For a portion of tasks, the 2D structure of a compound already contains sufficient information to establish structure-activity relationships, rendering the introduction of the conformational space profile inconsequential for these tasks.       
-* The evaluation of intermolecular similarity is not limited to pharmacophore similarity in 3D conformational space and maximum common substructure similarity in 2D structures. By incorporating **additional intermolecular similarity metrics** during pre-training, we can further enrich the knowledge that the model can learn, such as molecular fingerprints and molecular surface potentials.   
-* Due to computational resource limitations, we only included 39,290 molecules in our pre-training. It is foreseeable that incorporating **more molecular structures** during pre-training could further enhance the performance of GeminiMol, particularly when guided by drug-target relationships to obtain high-quality data.    
+*Advanced Science*, 2024; doi: 10.1002/advs.202403998    
 
 ## ✅ License
 
@@ -422,13 +476,13 @@ GeminiMol prohibits unauthorised commercial use, including commercial training a
 
 ## 💌 Get in Touch
 
-We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the GeminiMol Developer Team at wangl@shanghaitech.edu.cn. We would love to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with us at wangl@shanghaitech.edu.cn or baifang@shanghaitech.edu.cn.       
+We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the [GeminiMol Developer Team](Wanglin1102@outlook.com). We would like to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with [us](Wanglin1102@outlook.com).       
 
 ## 😃 Acknowledgements
 
 We appreciate the technical support provided by the engineers of the high-performance computing cluster of ShanghaiTech University.  Lin Wang also thanks Jianxin Duan, Gaokeng Xiao, Quanwei Yu, Zheyuan Shen, Shenghao Dong, Huiqiong Li, Zongquan Li, and Fenglei Li for providing technical support, inspiration and help for this work. We express our gratitude to Dr. Zhongji Pu, Dr. Quanwei Yu for their invaluable assistance in third-party testing for model installation, reproducibility and application.       
 
-We appreciate the developers of AutoGluon and Deep Graph Library (DGL). We also thank the developers and maintainers of MarcoModel and PhaseShape modules in the Schrödinger package. Besides, GeminiMol communicates with and/or references the following separate libraries and packages, we thank all their contributors and maintainers!    
+We also thank the developers and maintainers of MarcoModel and PhaseShape modules in the Schrödinger package. Besides, GeminiMol communicates with and/or references the following separate libraries and packages, we thank all their contributors and maintainers!    
 
 *  [_RDKit_](https://www.rdkit.org/)
 *  [_PyTorch_](https://pytorch.org/)

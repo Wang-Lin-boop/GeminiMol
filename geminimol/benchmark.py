@@ -10,12 +10,52 @@ from sklearn.metrics import roc_auc_score, mean_squared_error, accuracy_score, f
 from scipy.stats import pearsonr, spearmanr
 from utils.chem import gen_standardize_smiles, check_smiles_validity, is_valid_smiles
 
+def load_molecular_representation(model_name):
+    # load model
+    if ':' in model_name:
+        custom_label_list = model_name.split(':')[1].split(',')
+        model_name = model_name.split(':')[0]
+    else:
+        custom_label_list = None
+    if os.path.exists(f'{model_name}/GeminiMol.pt'):
+        from model.GeminiMol import GeminiMol
+        predictor = GeminiMol(
+            model_name, 
+            custom_label = custom_label_list, 
+            extrnal_label_list = [
+                'RMSE', 'Cosine', 'Manhattan', 'Minkowski', 'Euclidean', 'KLDiv', 'Pearson'
+            ]
+            )
+        model_name = str(model_name.split('/')[-1])
+    elif os.path.exists(f'{model_name}/backbone'):
+        from model.CrossEncoder import CrossEncoder
+        if custom_label_list is None:
+            candidate_labels = [
+                    'LCMS2A1Q_MAX', 'LCMS2A1Q_MIN', 'MCMM1AM_MAX', 'MCMM1AM_MIN', 
+                    'ShapeScore', 'ShapeOverlap', 'ShapeAggregation', 'CrossSim', 'CrossAggregation', 'CrossOverlap', 
+                ]
+        else:
+            candidate_labels = custom_label_list
+        predictor = CrossEncoder(
+            model_name,
+            candidate_labels = candidate_labels
+        )
+        model_name = str(model_name.split('/')[-1])
+    elif model_name == "CombineFP":
+        model_name = "CombineFP"
+        method_list = ["ECFP4", "FCFP6", "AtomPairs", "TopologicalTorsion"]
+        from utils.fingerprint import Fingerprint
+        predictor = Fingerprint(method_list)
+    else:
+        from utils.fingerprint import Fingerprint
+        predictor = Fingerprint([model_name])
+    return predictor
+
 class Benchmark():
     '''
     Benchmark for virtual screening, target identification, and QSAR.
 
     Parameters:
-        > predictor (object): the predictor for virtual screening, target identification, and QSAR.
         > model_name (str): the name of the predictor.
         > record (bool): whether to record the prediction results.
         > data_record (bool): whether to record the prediction data.
@@ -37,7 +77,7 @@ class Benchmark():
         > ```reporting_benchmark(statistic_tables)```: reporting the benchmark for virtual screening, target identification, and QSAR.
 
     '''
-    def __init__(self, predictor, model_name, record = True, data_record = False):
+    def __init__(self, model_name, record = True, data_record = False):
         '''
         Parameters:
             > predictor (object): 
@@ -47,7 +87,6 @@ class Benchmark():
             > data_record (bool): whether to record the prediction data.
 
         '''
-        self.predictor = predictor
         self.model_name = model_name
         self.record = record
         self.data_record = data_record
@@ -198,6 +237,7 @@ class Benchmark():
             benchmark_task_type="ranking", 
             standardize=False
         ):
+        self.predictor = load_molecular_representation(self.model_name)
         self.standardize = standardize
         self.data_table = pd.read_csv(f"{self.data_path}/DUDE-smiles.csv")
         self.target_dict = dict(zip(self.data_table['Title'], self.data_table['SMILES']))
@@ -228,6 +268,7 @@ class Benchmark():
             benchmark_task_type="ranking", 
             standardize=False
         ):
+        self.predictor = load_molecular_representation(self.model_name)
         self.target_list = target_list
         self.standardize = standardize
         # statistic_tables { target : statistic_table (score_types/similarity_metrics, metrics)}
@@ -252,6 +293,7 @@ class Benchmark():
             benchmark_task_type="ranking", 
             standardize=False
         ):
+        self.predictor = load_molecular_representation(self.model_name)
         self.data_table = pd.read_csv(f"{self.data_path}/{index}_Benchmark_Decoys.csv", dtype={'SMILES':str, 'Title':str, 'Number_of_Target':int})
         self.standardize = standardize  ## if you wanna to use new decoys, please standardize the decoy smiles
         self.data_table = self.prepare(self.data_table, smiles_column='SMILES')
@@ -281,6 +323,7 @@ class Benchmark():
             benchmark_task_type="classification"
         ):
         from AutoQSAR import AutoQSAR
+        self.predictor = load_molecular_representation(self.model_name)
         self.target_list = target_list
         # statistic_tables { target : statistic_table (models, metrics)}
         self.statistic_tables = {key:pd.DataFrame() for key in self.target_list}
@@ -349,6 +392,7 @@ class Benchmark():
             standardize=False, 
         ):
         from PropDecoder import QSAR
+        self.predictor = load_molecular_representation(self.model_name)
         self.target_list = target_list
         # benchmark_results (targets, metrics)
         benchmark_results = pd.DataFrame(columns=['model', 'model_score', 'test_metrics'], index=self.target_list)
@@ -364,19 +408,10 @@ class Benchmark():
                     label_column = candidate_label_column
                     break
             label_set = list(set(training_data[label_column].to_list()))
-            pos_num = len(training_data[training_data[label_column]==label_set[0]]) 
-            neg_num = len(training_data[training_data[label_column]==label_set[1]])
             if len(label_set) == 2:
                 task_type = 'binary'
-                if pos_num/neg_num > 100.0 or neg_num/pos_num > 100.0:
-                    test_metrics = 'BEDROC'
-                    benchmark_task_type = 'ranking'
-                elif pos_num/neg_num > 3.0 or neg_num/pos_num > 3.0:
-                    test_metrics = 'AUPRC'
-                    benchmark_task_type = 'ranking'
-                else:
-                    test_metrics = 'AUROC'
-                    benchmark_task_type = 'classification'
+                test_metrics = 'AUROC'
+                benchmark_task_type = 'classification'
             else:
                 task_type = 'regression'
                 test_metrics = 'SPEARMANR'
@@ -400,28 +435,31 @@ class Benchmark():
                 epochs = ( 300000 // len(training_data) ) + 1
                 if len(training_data) > 30000:
                     batch_size, learning_rate, patience = 256, 1.0e-3, 50
-                    expand_ratio, hidden_dim, num_layers = 3, 2048, 5
                 elif len(training_data) > 10000:
                     batch_size, learning_rate, patience = 128, 5.0e-4, 60
-                    expand_ratio, hidden_dim, num_layers = 2, 2048, 4
                 elif len(training_data) > 5000:
                     batch_size, learning_rate, patience = 64, 1.0e-4, 80
-                    expand_ratio, hidden_dim, num_layers = 1, 1024, 3
                 elif len(training_data) > 2000:
                     batch_size, learning_rate, patience = 32, 5.0e-5, 100
-                    expand_ratio, hidden_dim, num_layers = 0, 1024, 3
                 else:
                     batch_size, learning_rate, patience = 24, 1.0e-5, 100
-                    expand_ratio, hidden_dim, num_layers = 0, 1204, 3
                 if task_type == 'binary':
-                    dropout_rate = 0.3
-                    dense_dropout = 0.1
+                    if len(training_data) > 10000:
+                        dropout_rate = 0.0 
+                        dense_dropout = 0.0 
+                    else:
+                        dropout_rate = 0.3
+                        dense_dropout = 0.1
                     dense_activation = 'Softplus' # GELU
                     projection_activation = 'Softplus' # GELU
                     projection_transform = 'Sigmoid'
                 elif task_type == 'regression':
-                    dropout_rate = 0.1
-                    dense_dropout = 0.0
+                    if len(training_data) > 10000:
+                        dropout_rate = 0.0
+                        dense_dropout = 0.0
+                    else:
+                        dropout_rate = 0.1
+                        dense_dropout = 0.0
                     dense_activation = 'ELU' # ELU
                     projection_activation = 'Identity' # ELU
                     if training_data[label_column].max() <= 1.0 and training_data[label_column].min() >= 0.0:
@@ -435,11 +473,11 @@ class Benchmark():
                     learning_rate = learning_rate,
                     params = {
                         'task_type': task_type,
-                        'hidden_dim': hidden_dim,
-                        'expand_ratio': expand_ratio,
+                        'hidden_dim': 1024,
+                        'expand_ratio': 3,
                         'dense_dropout': dense_dropout,
                         'dropout_rate': dropout_rate,
-                        'num_layers': num_layers,
+                        'num_layers': 3,
                         'rectifier_activation': 'SiLU',
                         'concentrate_activation': 'SiLU',
                         'dense_activation': dense_activation,
@@ -488,19 +526,10 @@ class Benchmark():
                     label_column = candidate_label_column
                     break
             label_set = list(set(training_data[label_column].to_list()))
-            pos_num = len(training_data[training_data[label_column]==label_set[0]]) 
-            neg_num = len(training_data[training_data[label_column]==label_set[1]])
             if len(label_set) == 2:
                 task_type = 'binary'
-                if pos_num/neg_num > 100.0 or neg_num/pos_num > 100.0:
-                    test_metrics = 'BEDROC'
-                    benchmark_task_type = 'ranking'
-                elif pos_num/neg_num > 3.0 or neg_num/pos_num > 3.0:
-                    test_metrics = 'AUPRC'
-                    benchmark_task_type = 'ranking'
-                else:
-                    test_metrics = 'AUROC'
-                    benchmark_task_type = 'classification'
+                test_metrics = 'AUROC'
+                benchmark_task_type = 'classification'
             else:
                 task_type = 'regression'
                 test_metrics = 'SPEARMANR'
@@ -516,51 +545,42 @@ class Benchmark():
             if not os.path.exists(f"{self.model_name}/{self.benchmark_name}/{target}/predictor.pt"):
                 epochs = ( 300000 // len(training_data) ) + 1
                 if len(training_data) > 30000:
-                    batch_size, learning_rate, patience = 256, 1.0e-3, 50
-                    expand_ratio, hidden_dim, num_layers = 3, 2048, 5
+                    batch_size, learning_rate, temperature, weight_decay, frozen_steps = 512, 1.0e-4, 0.6, 0.04, 0
                 elif len(training_data) > 10000:
-                    batch_size, learning_rate, patience = 128, 5.0e-4, 60
-                    expand_ratio, hidden_dim, num_layers = 2, 2048, 4
+                    batch_size, learning_rate, temperature, weight_decay, frozen_steps = 256, 8.0e-5, 0.5, 0.04, 0
                 elif len(training_data) > 5000:
-                    batch_size, learning_rate, patience = 64, 1.0e-4, 80
-                    expand_ratio, hidden_dim, num_layers = 1, 1024, 3
+                    batch_size, learning_rate, temperature, weight_decay, frozen_steps = 128, 5.0e-5, 0.4, 0.01, 0
                 elif len(training_data) > 2000:
-                    batch_size, learning_rate, patience = 32, 5.0e-5, 100
-                    expand_ratio, hidden_dim, num_layers = 0, 1024, 3
+                    batch_size, learning_rate, temperature, weight_decay, frozen_steps = 64, 3.0e-5, 0.2, 0.01, 0
                 else:
-                    batch_size, learning_rate, patience = 24, 1.0e-5, 100
-                    expand_ratio, hidden_dim, num_layers = 0, 1204, 3
+                    batch_size, learning_rate, temperature, weight_decay, frozen_steps = 24, 1.0e-5, 0.1, 0.01, 100
                 if task_type == 'binary':
-                    dropout_rate = 0.3 
-                    dense_dropout = 0.1 
-                    dense_activation = 'Softplus' # GELU
-                    projection_activation = 'Softplus' # GELU
+                    dropout_rate = 0.3
+                    projection_activation = 'Softplus'
                     projection_transform = 'Sigmoid'
                 elif task_type == 'regression':
-                    dropout_rate = 0.1
-                    dense_dropout = 0.0
-                    dense_activation = 'ELU' # ELU
-                    projection_activation = 'Identity' # ELU
+                    dropout_rate = 0.0
+                    projection_activation = 'Identity'
                     if training_data[label_column].max() <= 1.0 and training_data[label_column].min() >= 0.0:
                         projection_transform = 'Sigmoid'
                     else:
                         projection_transform = 'Identity'
                 QSAR_model = GeminiMolQSAR(  
                     model_name = f"{self.model_name}/{self.benchmark_name}/{target}", 
-                    geminimol_encoder = self.predictor, 
+                    geminimol_encoder = load_molecular_representation(self.model_name), 
                     standardize = standardize, 
                     label_column = label_column, 
                     smiles_column = smiles_column, 
                     params = {
                         'task_type': task_type,
-                        'hidden_dim': hidden_dim,
-                        'expand_ratio': expand_ratio,
-                        'dense_dropout': dense_dropout,
+                        'hidden_dim': 1024,
+                        'expand_ratio': 0,
+                        'dense_dropout': 0.0,
                         'dropout_rate': dropout_rate,
-                        'num_layers': num_layers,
+                        'num_layers': 1,
                         'rectifier_activation': 'SiLU',
                         'concentrate_activation': 'SiLU',
-                        'dense_activation': dense_activation,
+                        'dense_activation': 'SiLU',
                         'projection_activation': projection_activation,
                         'projection_transform': projection_transform,
                         'linear_projection': False,
@@ -572,12 +592,16 @@ class Benchmark():
                     val_set = val_data,
                     epochs = epochs,
                     learning_rate = learning_rate,
-                    patience = patience
+                    patience = 150,
+                    temperature = temperature,
+                    weight_decay = weight_decay,
+                    mini_epoch = 100,
+                    frozen_steps = frozen_steps
                 )
             else:
                 QSAR_model = GeminiMolQSAR(
                     model_name = f"{self.model_name}/{self.benchmark_name}/{target}",
-                    geminimol_encoder = self.predictor,
+                    geminimol_encoder = load_molecular_representation(self.model_name),
                     standardize = False, 
                     label_column = label_column, 
                     smiles_column = smiles_column, 
@@ -737,50 +761,7 @@ if __name__ == '__main__':
     with open(benchmark_index_file, 'r', encoding='utf-8') as f:
         benchmark_index_dict = json.load(f)
     benchmark_task = sys.argv[3]
-    # load model
-    if ':' in model_name:
-        custom_label_list = model_name.split(':')[1].split(',')
-        model_name = model_name.split(':')[0]
-    else:
-        custom_label_list = None
-    if os.path.exists(f'{model_name}/GeminiMol.pt'):
-        from model.GeminiMol import GeminiMol
-        if len(sys.argv) > 4:
-            depth = int(sys.argv[4])
-        else:
-            depth = 0
-        predictor = GeminiMol(
-            model_name, 
-            depth = depth, 
-            custom_label = custom_label_list, 
-            extrnal_label_list = [
-                'RMSE', 'Cosine', 'Manhattan', 'Minkowski', 'Euclidean', 'KLDiv', 'Pearson'
-            ]
-            )
-        model_name = str(model_name.split('/')[-1])
-    elif os.path.exists(f'{model_name}/backbone'):
-        from model.CrossEncoder import CrossEncoder
-        if custom_label_list is None:
-            candidate_labels = [
-                    'LCMS2A1Q_MAX', 'LCMS2A1Q_MIN', 'MCMM1AM_MAX', 'MCMM1AM_MIN', 
-                    'ShapeScore', 'ShapeOverlap', 'ShapeAggregation', 'CrossSim', 'CrossAggregation', 'CrossOverlap', 
-                ]
-        else:
-            candidate_labels = custom_label_list
-        predictor = CrossEncoder(
-            model_name,
-            candidate_labels = candidate_labels
-        )
-        model_name = str(model_name.split('/')[-1])
-    elif model_name == "CombineFP":
-        model_name = "CombineFP"
-        method_list = ["ECFP4", "FCFP6", "AtomPairs", "TopologicalTorsion"]
-        from utils.fingerprint import Fingerprint
-        predictor = Fingerprint(method_list)
-    else:
-        from utils.fingerprint import Fingerprint
-        predictor = Fingerprint([model_name])
-    Benchmark_Protocol = Benchmark(predictor=predictor, model_name=model_name, data_record=True)
+    Benchmark_Protocol = Benchmark(model_name=model_name, data_record=True)
     # benchmarking
     Benchmark_Protocol(benchmark_task, f"{benchmark_file_basepath}/{benchmark_index_dict[benchmark_task]}", standardize=True)
 

@@ -1,5 +1,4 @@
 import pandas as pd
-import torch
 import sys
 import os
 from model.GeminiMol import GeminiMol
@@ -15,6 +14,7 @@ if __name__ == "__main__":
         model_type = sys.argv[5]
     else:
         model_type = 'FineTuning'
+    
     ## read the encoder models
     fingerprint_list = []
     encoders = {}
@@ -82,6 +82,7 @@ if __name__ == "__main__":
         from AutoQSAR import AutoQSAR
         from utils.fingerprint import Fingerprint
         encoders_list = list(encoders.values())
+        task_type = sys.argv[6]
         QSAR_model = AutoQSAR(
                 model_name = model_path, 
                 encoder_list = encoders_list,
@@ -89,6 +90,7 @@ if __name__ == "__main__":
                 smiles_column = smiles_column,
                 label_column = task_name
             )
+        QSAR_model.task_type = task_type
         predicted_res = QSAR_model.predict(extrnal_data, model=model_type)
     ## output the results
     predicted_res.to_csv(f"{model_basename}_prediction.csv", index=False, header=True, sep=',')

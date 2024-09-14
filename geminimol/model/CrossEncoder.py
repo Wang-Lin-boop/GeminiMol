@@ -2,7 +2,6 @@ import os
 import math
 import shutil
 import torch
-import numpy as np
 from sklearn.metrics import mean_squared_error
 from scipy.stats import pearsonr, spearmanr
 import pandas as pd
