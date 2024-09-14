@@ -137,6 +137,12 @@ if __name__ == '__main__':
     print('CUDA available:', torch.cuda.is_available())  # Should be True
     print('CUDA capability:', torch.cuda.get_arch_list()) 
     print('GPU number:', torch.cuda.device_count())  # Should be > 0
+    # random_seed
+    training_random_seed = 123
+    np.random.seed(training_random_seed)
+    torch.manual_seed(training_random_seed)
+    torch.cuda.manual_seed(training_random_seed) 
+    torch.cuda.manual_seed_all(training_random_seed)
     ## load model
     model_name = sys.argv[1]
     encoder = GeminiMol(
