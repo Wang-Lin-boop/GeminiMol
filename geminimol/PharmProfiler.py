@@ -138,7 +138,7 @@ if __name__ == '__main__':
     print('CUDA capability:', torch.cuda.get_arch_list()) 
     print('GPU number:', torch.cuda.device_count())  # Should be > 0
     # random_seed
-    training_random_seed = 123
+    training_random_seed = 1207
     torch.manual_seed(training_random_seed)
     torch.cuda.manual_seed(training_random_seed) 
     torch.cuda.manual_seed_all(training_random_seed)
