@@ -87,10 +87,6 @@ Then, we need place the models to the `${GeminiMol}/models`.
     cd ${geminimol_data}
     wget https://zenodo.org/records/10450788/files/ChemDiv.zip # compound library for virtual screening
     wget https://zenodo.org/records/10450788/files/DTIDB.zip # DTI database for target identification 
-    for i in Benchmark*.zip css*.zip Chem*.zip;do
-        mkdir ${i%%.zip}
-        unzip -d ${i%%.zip}/ $i
-    done
     unzip -d compound_library/ ChemDiv.zip 
     unzip -d compound_library/ DTIDB.zip 
 ```
@@ -385,6 +381,10 @@ Here, we present the reproducible code for training the Cross-Encoder and Gemini
     wget https://zenodo.org/records/10450788/files/Benchmark_QSAR.zip # only for reproducing benchmark
     wget https://zenodo.org/records/10450788/files/Benchmark_TIBD.zip # only for reproducing benchmark
     wget https://zenodo.org/records/10450788/files/Chem_SmELECTRA.zip # only for reproducing cross-encoder baseline
+    for i in Benchmark*.zip css*.zip Chem*.zip;do
+        mkdir ${i%%.zip}
+        unzip -d ${i%%.zip}/ $i
+    done
 ```
 
 #### Re-training our models
