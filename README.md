@@ -73,13 +73,7 @@ In this repository, we provide the pre-trained GeminiMol and CrossEncoder models
 
 > Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link) and [HuggingFace](https://huggingface.co/AlphaMWang)
 
-Here is an example of how to download a model from huggingface. Besides wget, you can also download the model directly from Google Cloud Drive or huggingface using your browser.   
-
-``` bash
-git clone https://huggingface.co/AlphaMWang/GeminiMol    
-```
-
-Then, we need place the models to the `${GeminiMol}/models`.   
+You can also download the model directly from Google Cloud Drive or huggingface using your browser. Then, we need place the models to the `${GeminiMol}/models`.   
 
 > Download all chemical datasets via [Zenodo](https://zenodo.org/records/10450788) for applications 
 
