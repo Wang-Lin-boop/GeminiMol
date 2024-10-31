@@ -146,6 +146,7 @@ if __name__ == '__main__':
     model_name = sys.argv[1]
     encoder = GeminiMol(
             model_name,
+            batch_size = 512, 
             internal_label_list = [],
             extrnal_label_list = ['Pearson'],
         )
