@@ -12,7 +12,7 @@ To use these models, put them under the ```${GeminiMol}/models/```.
 
 **Conformational Space Profile Enhances Generic Molecular Representation Learning**     
 Lin Wang, Shihang Wang, Hao Yang, Shiwei Li, Xinyu Wang, Yongqi Zhou, Siyuan Tian, Lu Liu, Fang Bai    
-bioRxiv 2023.12.14.571629; doi: https://doi.org/10.1101/2023.12.14.571629    
+*Advanced Science*, 2024; doi: 10.1002/advs.202403998
 
 ## Get in Touch
 
