@@ -153,6 +153,8 @@ Before running GeminiMol, you need to install the basic dependency packages.
 If you intend to reproduce the benchmark results in our work, it is required to install the AutoGluon.    
 
 ``` shell
+    pip install -U pip
+    pip install -U setuptools wheel
     pip install autogluon==0.8.1  # requried for AutoQSAR
 ```
 
