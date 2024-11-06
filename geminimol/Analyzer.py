@@ -298,8 +298,8 @@ if __name__ == "__main__":
         validated_res.to_csv(f"{output_fn}_statistics.csv", index=True, header=True, sep=',')   
         dataset.to_csv(f"{output_fn}_clusters.csv", index=False, header=True, sep=',')
     elif running_mode == 'plot':
-        if sys.argv[5].split(':')[2]:
-            plot_mode = sys.argv[5].split(':')[2]
+        if len(sys.argv[5].split(':')) > 2: 
+            plot_mode = sys.argv[5].split(':')[2] # normal or concise
         else:
             plot_mode = 'normal'
         if plot_mode == 'concise':

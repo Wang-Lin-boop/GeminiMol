@@ -361,6 +361,22 @@ export output_fn="${data_table%%.*}_Encoding"
 python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_method}" "${smiles_column}" "${output_fn}" "encode"
 ```
 
+If you would like to visualize a set of molecules with GeminiMol encoding, you can try the following commands.
+
+``` shell
+export encoder_method="${geminimol_lib}/GeminiMol" # Match to the encoders selected during QSAR model training
+export data_table="dataset.csv" # must contain the ${smiles_column}
+export smiles_column="SMILES" # Specify the column name in datasets
+export label_column="Label"
+export output_fn="${data_table%%.*}_Plot"
+python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_method}" "${smiles_column}" "${output_fn}" "plot:${label_column}"
+```
+
+<p align="center">
+  <img style="float: center" src="imgs/tSNE.png" alt="alt text" width="650px" align="center"/>
+</p>
+
+
 ## 👐 Reproducing
 
 Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the CSS descriptors of 39,290 molecules described in the paper.     
