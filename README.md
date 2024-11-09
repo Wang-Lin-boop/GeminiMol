@@ -490,6 +490,8 @@ GeminiMol prohibits unauthorised commercial use, including commercial training a
 
 We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the [GeminiMol Developer Team](Wanglin1102@outlook.com). We would like to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with [us](Wanglin1102@outlook.com).       
 
+You are welcome to contact our [development team](Wanglin1102@outlook.com) in the event that you would like to use our in-house version under development for optimal performance. Our model aims to provide thoughts on the design of novel chemotypes for medicinal chemists.    
+
 ## 😃 Acknowledgements
 
 We appreciate the technical support provided by the engineers of the high-performance computing cluster of ShanghaiTech University.  Lin Wang also thanks Jianxin Duan, Gaokeng Xiao, Quanwei Yu, Zheyuan Shen, Shenghao Dong, Huiqiong Li, Zongquan Li, and Fenglei Li for providing technical support, inspiration and help for this work. We express our gratitude to Dr. Zhongji Pu, Dr. Quanwei Yu for their invaluable assistance in third-party testing for model installation, reproducibility and application.       
