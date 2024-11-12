@@ -376,10 +376,27 @@ python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_method}" "${sm
   <img style="float: center" src="imgs/tSNE.png" alt="alt text" width="650px" align="center"/>
 </p>
 
+## ⭐ Citing This Work
+
+**Conformational Space Profiling Enhances Generic Molecular Representation for AI-Powered Ligand-Based Drug Discovery**     
+Lin Wang, Shihang Wang, Hao Yang, Shiwei Li, Xinyu Wang, Yongqi Zhou, Siyuan Tian, Lu Liu, Fang Bai    
+*Advanced Science*, 2024; doi: 10.1002/advs.202403998    
+
+## ✅ License
+
+GeminiMol is released under the Academic Free Licence, which permits academic use, modification and distribution free of charge. GeminiMol can be utilized in academic publications, open-source software projects, and open-source competitions (e.g. Kaggle competitions under the MIT Open Source license). 
+
+GeminiMol prohibits unauthorised commercial use, including commercial training and as part of a paid computational platform, which intended to prevent speculators from exploiting informational asymmetry for profit. Communication and authorization with [our supervisor](baifang@shanghaitech.edu.cn) is permitted for its application in pipeline development and research activities within pharmaceutical R&D.     
+
+## 💌 Get in Touch
+
+We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the GeminiMol Developer Team via Wanglin1102@outlook.com. We would like to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with [us](Wanglin1102@outlook.com).
+
+You are welcome to contact our development team via Wanglin1102@outlook.com in the event that you would like to use our in-house version under development for optimal performance. Our model aims to provide thoughts on the design of novel chemotypes for medicinal chemists.    
 
 ## 👐 Reproducing
 
-Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the CSS descriptors of 39,290 molecules described in the paper.     
+We are glad that the community is willing to reproduce our work and expect that community reproduction and improvement will further boost the application of GeminiMol in drug discovery. Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the CSS descriptors of 39,290 molecules described in the paper.     
 
 #### Download Training and Benchmark Datasets
 
@@ -403,6 +420,8 @@ Here, we present the reproducible code for training the Cross-Encoder and Gemini
 
 > Training the Cross-Encoder
 
+Cross-Encoder can be trained with the following code, however, it is only intended to be used as a high-accuracy predictor of intermolecular similarity rather than a model for molecular representation.   
+
 ``` shell
 conda activate GeminiMol
 export model_name="CrossEncoder"
@@ -414,6 +433,8 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python ${geminimol_app}/CrossEncoder_Training.py  "
 ```
 
 > Training the GeminiMol Encoder and Decoder of CSS descriptors
+
+We provide numerous APIs to change the network structure of GeminiMol, and you can explore the possibilities of improving the performance of GeminiMol by adding more labels to the given 8 million dataset.   
 
 ``` shell
 conda activate GeminiMol
@@ -473,24 +494,6 @@ CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "
 done
 done
 ```   
-
-## ⭐ Citing This Work
-
-**Conformational Space Profiling Enhances Generic Molecular Representation for AI-Powered Ligand-Based Drug Discovery**     
-Lin Wang, Shihang Wang, Hao Yang, Shiwei Li, Xinyu Wang, Yongqi Zhou, Siyuan Tian, Lu Liu, Fang Bai    
-*Advanced Science*, 2024; doi: 10.1002/advs.202403998    
-
-## ✅ License
-
-GeminiMol is released under the Academic Free Licence, which permits academic use, modification and distribution free of charge. GeminiMol can be utilized in academic publications, open-source software projects, and open-source competitions (e.g. Kaggle competitions under the MIT Open Source license). 
-
-GeminiMol prohibits unauthorised commercial use, including commercial training and as part of a paid computational platform, which intended to prevent speculators from exploiting informational asymmetry for profit. Communication and authorization with [our supervisor](baifang@shanghaitech.edu.cn) is permitted for its application in pipeline development and research activities within pharmaceutical R&D.     
-
-## 💌 Get in Touch
-
-We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the GeminiMol Developer Team via Wanglin1102@outlook.com. We would like to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with [us](Wanglin1102@outlook.com).
-
-You are welcome to contact our development team via Wanglin1102@outlook.com in the event that you would like to use our in-house version under development for optimal performance. Our model aims to provide thoughts on the design of novel chemotypes for medicinal chemists.    
 
 ## 😃 Acknowledgements
 
