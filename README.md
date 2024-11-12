@@ -488,9 +488,9 @@ GeminiMol prohibits unauthorised commercial use, including commercial training a
 
 ## 💌 Get in Touch
 
-We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the [GeminiMol Developer Team](Wanglin1102@outlook.com). We would like to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with [us](Wanglin1102@outlook.com).       
+We welcome community contributions of extension tools based on the GeminiMol model, etc. If you have any questions not covered in this overview, please contact the GeminiMol Developer Team via Wanglin1102@outlook.com. We would like to hear your feedback and understand how GeminiMol has been useful in your research. Share your stories with [us](Wanglin1102@outlook.com).
 
-You are welcome to contact our [development team](Wanglin1102@outlook.com) in the event that you would like to use our in-house version under development for optimal performance. Our model aims to provide thoughts on the design of novel chemotypes for medicinal chemists.    
+You are welcome to contact our development team via Wanglin1102@outlook.com in the event that you would like to use our in-house version under development for optimal performance. Our model aims to provide thoughts on the design of novel chemotypes for medicinal chemists.    
 
 ## 😃 Acknowledgements
 
