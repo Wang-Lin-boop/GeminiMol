@@ -36,7 +36,11 @@ The **molecular representation model** is an emerging artificial intelligence te
 
 ## 📕 Installation
 
-GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration. If you encounter any problems with the installation, please feel free to post an issue or discussion it.    
+GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration. If you encounter any problems with the installation, please feel free to post an issue or discussion it.   
+
+<details>
+<summary>Environment Installation</summary>
+<br>
 
 > Installing MiniConda (skip if conda was installed)   
 
@@ -67,7 +71,45 @@ GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomme
     source ~/.bashrc
 ```
 
-#### Download datasets and models
+Before running GeminiMol, you need to install the basic dependency packages.   
+
+> Installing the RDkit for generating fingerprints
+
+``` shell
+    pip install rdkit
+```
+
+> Installing the statatics and plot packages
+
+``` shell
+    pip install six
+    pip install oddt scikit-learn matplotlib scipy==1.10.1
+```
+
+> Installing the dependency packages of GeminiMol    
+
+``` shell
+    pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 \
+        --extra-index-url https://download.pytorch.org/whl/cu116
+    pip install dgl==1.1.1+cu116 -f https://data.dgl.ai/wheels/cu116/repo.html
+    pip install dglgo==0.0.2 -f https://data.dgl.ai/wheels-test/repo.html
+    pip install dgllife==0.3.2
+```
+
+If you intend to reproduce the benchmark results in our work, it is required to install the AutoGluon.    
+
+``` shell
+    pip install -U pip
+    pip install -U setuptools wheel
+    pip install autogluon==0.8.1  # requried for AutoQSAR
+```
+
+<br>
+</details>   
+
+<details>
+<summary>Download datasets and models</summary>
+<br>
 
 In this repository, we provide the pre-trained GeminiMol and CrossEncoder models.  
 
@@ -123,40 +165,8 @@ GeminiMol
 │   ├── GeminiMol                        # GeminiMol, recommended for zero-shot tasks   
 ``` 
 
-#### Installing the dependency packages
-
-Before running GeminiMol, you need to install the basic dependency packages.   
-
-> Installing the RDkit for generating fingerprints
-
-``` shell
-    pip install rdkit
-```
-
-> Installing the statatics and plot packages
-
-``` shell
-    pip install six
-    pip install oddt scikit-learn matplotlib scipy==1.10.1
-```
-
-> Installing the dependency packages of GeminiMol    
-
-``` shell
-    pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 \
-        --extra-index-url https://download.pytorch.org/whl/cu116
-    pip install dgl==1.1.1+cu116 -f https://data.dgl.ai/wheels/cu116/repo.html
-    pip install dglgo==0.0.2 -f https://data.dgl.ai/wheels-test/repo.html
-    pip install dgllife==0.3.2
-```
-
-If you intend to reproduce the benchmark results in our work, it is required to install the AutoGluon.    
-
-``` shell
-    pip install -U pip
-    pip install -U setuptools wheel
-    pip install autogluon==0.8.1  # requried for AutoQSAR
-```
+<br>
+</details>   
 
 ## 📓 Application
 
@@ -168,7 +178,9 @@ We have provided Cross-Encoder and GeminiMol models that can be used directly fo
 
 Please note that while molecular fingerprints are considered simple molecular representation methods, they are an indispensable baseline (see our [paper](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998)). When conducting your drug development project, we recommend exploring ECFP4, CombineFP, and GeminiMol that are provided simultaneously in our `PharmProfiler.py` and various molecular property modeling scripts.     
 
-#### Virtual Screening and Target Identification
+<details>
+<summary>Virtual Screening and Target Identification</summary>
+<br>
 
 In concept, molecules share similar conformational space also share similar biological activities, allowing us to predict the similarity of biological activities between molecules by comparing the similarity of GeminiMol encodings.     
 
@@ -230,7 +242,12 @@ python -u ${geminimol_app}/PharmProfiler.py "${geminimol_lib}/GeminiMol" "${job_
 
 After the initial run of PharmProfiler, a extracted GeminiMol feature file will be generated in the `${geminimol_data}/compound_library/`. Subsequent screening tasks on the same compound library can benefit from PharmProfiler automatically reading the feature file, which helps to accelerate the running speed.    
 
-#### Molecular Proptery Modeling (QSAR and ADMET)
+<br>
+</details>   
+
+<details>
+<summary>Molecular Proptery Modeling (QSAR and ADMET)</summary>
+<br>
 
 > 1. Prepare your datasets
 
@@ -336,7 +353,12 @@ export task_type="regression"
 python -u ${geminimol_app}/PropPredictor.py "${model_path}" "${encoder_method}" "${extrnal_data}" "${smiles_column}" "${model_type}" "${task_type}"
 ```
 
-#### Molecular Clustering
+<br>
+</details>   
+
+<details>
+<summary>Molecular Clustering</summary>
+<br>
 
 You can use GeminiMol to cluster molecules just like molecular fingerprints!    
 
@@ -349,7 +371,12 @@ export cluster_num=10 # only for supervised clustering algorithm, such as K-Mean
 python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_method}" "${smiles_column}" "${output_fn}" "cluster:${cluster_num}"
 ```
 
-#### Extract Molecular Features (GeminiMol Encoding)
+<br>
+</details>   
+
+<details>
+<summary>Extract Molecular Features (GeminiMol Encoding)</summary>
+<br>
 
 You can use GeminiMol or molecular fingerprints to extract molecular features for further analysis.    
 
@@ -376,6 +403,9 @@ python -u ${geminimol_app}/Analyzer.py "${data_table}" "${encoder_method}" "${sm
   <img style="float: center" src="imgs/tSNE.png" alt="alt text" width="650px" align="center"/>
 </p>
 
+<br>
+</details>   
+
 ## ⭐ Citing This Work
 
 **Conformational Space Profiling Enhances Generic Molecular Representation for AI-Powered Ligand-Based Drug Discovery**     
@@ -398,7 +428,9 @@ You are welcome to contact our development team via Wanglin1102@outlook.com in t
 
 We are glad that the community is willing to reproduce our work and expect that community reproduction and improvement will further boost the application of GeminiMol in drug discovery. Here, we present the reproducible code for training the Cross-Encoder and GeminiMol models based on the CSS descriptors of 39,290 molecules described in the paper.     
 
-#### Download Training and Benchmark Datasets
+<details>
+<summary>Download Training and Benchmark Datasets</summary>
+<br>
 
 > Download all datasets via [Zenodo](https://zenodo.org/records/10450788) for training, test and benchmark 
 
@@ -416,7 +448,12 @@ We are glad that the community is willing to reproduce our work and expect that 
     done
 ```
 
-#### Re-training our models
+<br>
+</details>   
+
+<details>
+<summary>Re-training our models</summary>
+<br>
 
 > Training the Cross-Encoder
 
@@ -448,7 +485,12 @@ export label_dict="ShapeScore:0.2,ShapeAggregation:0.2,ShapeOverlap:0.05,ShapeDi
 CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/GeminiMol_Training.py "${geminimol_data}/css_library/" "${epoch}" "${batch_size}" "${GNN}" "${network}" "${label_dict}" "${model_name}" "${patience}" "${geminimol_data}/benchmark.json" 
 ```
 
-#### Benchmarking the fingerprints and our models
+<br>
+</details>   
+
+<details>
+<summary>Benchmarking the fingerprints and GeminiMol models</summary>
+<br>
 
 Additionally, benchmark test scripts were provided. With this code, the community can reproduce the results reported in the paper, explore different model architectures, even incorporate additional molecular similarity data to further enhance the performance of the models. 
 
@@ -494,6 +536,9 @@ CUDA_VISIBLE_DEVICES=0 python -u ${geminimol_app}/benchmark.py "${model_name}" "
 done
 done
 ```   
+
+<br>
+</details>   
 
 ## 😃 Acknowledgements
 
