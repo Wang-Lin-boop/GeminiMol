@@ -39,7 +39,7 @@ The **molecular representation model** is an emerging artificial intelligence te
 GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recommend using conda for Python environment configuration. If you encounter any problems with the installation, please feel free to post an issue or discussion it.   
 
 <details>
-<summary>Environment Installation</summary>
+<summary>Environment Setup</summary>
 <br>
 
 > Installing MiniConda (skip if conda was installed)   
