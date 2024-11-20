@@ -27,6 +27,7 @@ The **molecular representation model** is an emerging artificial intelligence te
 * 2024-03, we have released `PropPredictor.py`, which facilitates the deployment and repurposing of QSAR and ADMET prediction models. 
 * 2024-08, our paper was published in [_Advanced Science_](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998).
 * 2024-09, utilizing GeminiMol, we identified a new inhibitor targeting GluN1/GluN3A (_IC<sub>50</sub>_ = 0.98 μM), and this result get rewarded the first prize in [the 2023 Shanghai International Computational Biology Innovation Competition](https://competition.huaweicloud.com/information/1000042002/html13).
+* 2024-11, Shihang Wang proposed a dual-space contrastive learning framework to combine the conformational space similarity and molecular-image similarity, he developed the [PhenoScreen](https://github.com/Shihang-Wang-58/PhenoScreen) model, which demonstrates more comprehensive and high performance in virtual screening.
 
 ## 😫 Limitations
 
