@@ -53,7 +53,7 @@ GeminiMol is a pytorch-based AI model. To set up the GeminiMol model, we recomme
 > Creating GeminiMol environment   
 
 ``` shell
-    conda create -n GeminiMol python=3.8.16
+    conda create -n GeminiMol python=3.9
     conda activate GeminiMol
 ```
 
