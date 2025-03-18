@@ -37,15 +37,12 @@ if __name__ == "__main__":
             ),
         'ECFP4': Fingerprint(
                 fingerprint_type_list = ['ECFP4'],
-                similarity_metrics_list= ["Tanimoto"]
             ),
         'AtomPairs': Fingerprint(
                 fingerprint_type_list = ['AtomPairs'],
-                similarity_metrics_list= ["Tversky"]
             ),
         'MACCS': Fingerprint(
                 fingerprint_type_list = ['MACCS'],
-                similarity_metrics_list= ["Tanimoto"]
             )
     }
     # prepare the smiles
