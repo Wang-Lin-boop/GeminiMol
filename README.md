@@ -10,7 +10,7 @@
 
 This repository provides the official implementation of the GeminiMol model, training data, and utilities. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of **conformational space similarities (CSS)**. Please also refer to our [paper](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998) for a detailed description of GeminiMol.    
 
-Click [here to **Ouroboros**](https://github.com/Wang-Lin-boop/Ouroboros), the next version of unified framework that **seamlessly integrates representation learning with molecular generation**!   
+Click [here to **Ouroboros**](https://github.com/Wang-Lin-boop/Ouroboros), which is an unified framework that **seamlessly integrates representation learning with molecular generation**! It upgrades the molecular similarity learning protocol in GeminiMol and further improves the performance in virtual screening and property modeling, and more importantly, it can be used directly for molecule generation!     
 
 ## 💗 Motivation  
 
