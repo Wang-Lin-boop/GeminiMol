@@ -10,6 +10,8 @@
 
 This repository provides the official implementation of the GeminiMol model, training data, and utilities. In this work, we propose a hybrid contrastive learning framework, which conducts **inter-molecular contrastive learning** by multiple projection heads of **conformational space similarities (CSS)**. Please also refer to our [paper](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998) for a detailed description of GeminiMol.    
 
+Click [here to **Ouroboros**](https://github.com/Wang-Lin-boop/Ouroboros), the next version of unified framework that **seamlessly integrates representation learning with molecular generation**!   
+
 ## 💗 Motivation  
 
 The **molecular representation model** is an emerging artificial intelligence technology for extracting features of small molecules. Inspired by the dynamics of small molecules in solution, introducing the **conformational space profile** into molecular representation models is a promising aim. The conformational space profile covers the heterogeneity of molecule properties, such as the multi-target mechanism of drug action, recognition of different biomolecules, dynamics in cytoplasm and membrane, which may facilitate further downstream application and generalization capability of molecular representation model.   
@@ -28,6 +30,7 @@ The **molecular representation model** is an emerging artificial intelligence te
 * 2024-08, our paper was published in [_Advanced Science_](https://onlinelibrary.wiley.com/doi/10.1002/advs.202403998).
 * 2024-09, utilizing GeminiMol, we identified a new inhibitor targeting GluN1/GluN3A (_IC<sub>50</sub>_ = 0.98 μM), and this result get rewarded the first prize in [the 2023 Shanghai International Computational Biology Innovation Competition](https://competition.huaweicloud.com/information/1000042002/html13).
 * 2024-11, Shihang Wang proposed a dual-space contrastive learning framework to combine the conformational space similarity and molecular-image similarity, he developed the [PhenoScreen](https://github.com/Shihang-Wang-58/PhenoScreen) model, which demonstrates more comprehensive and high performance in virtual screening.
+* 2025-03, we unified GeminiMol and Generative AI, you can find the new version [here](https://github.com/Wang-Lin-boop/Ouroboros)! Ouroboros is an unified framework that allows efficient chemical space exploration through pre-trained molecular encodings!   
 
 ## 😫 Limitations
 
