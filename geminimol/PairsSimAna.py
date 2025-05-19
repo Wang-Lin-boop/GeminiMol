@@ -32,7 +32,8 @@ if __name__ == "__main__":
         'GeminiMol': GeminiMol(
                 geminimol_path,
                 depth = 0, 
-                custom_label = [], 
+                custom_label = ['Pearson'], 
+                internal_label_list = [],
                 extrnal_label_list = ['Pearson']
             ),
         'ECFP4': Fingerprint(

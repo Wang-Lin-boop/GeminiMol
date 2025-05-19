@@ -58,7 +58,7 @@ class Fingerprint():
 
     def similarity(self, smiles1, smiles2, fingerprint_type=None, similarity_metric=None):
         if similarity_metric == None:
-            similarity_metric = ["Tanimoto"]
+            similarity_metric = "Tanimoto"
         if fingerprint_type == None:
             fingerprint_type = self.fingerprint_type_list[0]
         fgp1 = self.fingerprint_dict['similarity'][fingerprint_type](Chem.MolFromSmiles(smiles1))
@@ -71,7 +71,7 @@ class Fingerprint():
     
     def similarity_predict(self, fingerprint_database, ref_smiles, as_pandas=True, similarity_metrics=None):
         if similarity_metrics == None:
-            similarity_metrics = ["Tanimoto"]
+            similarity_metrics = "Tanimoto"
         pred_values = {key:[] for key in similarity_metrics}
         ref_fgp = self.fingerprint_methods[self.fingerprint_type_list[0]](Chem.MolFromSmiles(ref_smiles))
         for similarity_metric in similarity_metrics:
