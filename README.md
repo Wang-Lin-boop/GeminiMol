@@ -123,7 +123,7 @@ In this repository, we provide the pre-trained GeminiMol and CrossEncoder models
     cd ${GeminiMol}/models
     pip install gdown
     gdown https://drive.google.com/uc?id=1IgpkabylSJ0aIwUjdIWOC5ID51pcucw5 # model parameters and weights for GeminiMol
-    gdown https://drive.google.com/uc?id=1QCwX_zLpd_syHiOvR_5fOvHMurfbtHkF # model parameters and weights for GeminiMol-MOD
+    # gdown https://drive.google.com/uc?id=1QCwX_zLpd_syHiOvR_5fOvHMurfbtHkF # model parameters and weights for GeminiMol-MOD
     unzip GeminiMol.zip -d ./GeminiMol
 ```
 
