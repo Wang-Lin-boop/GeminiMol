@@ -119,6 +119,14 @@ In this repository, we provide the pre-trained GeminiMol and CrossEncoder models
 
 > Download model parameters and weights via [Google Driver](https://drive.google.com/drive/folders/183WGytS-zy_POlLxEvijEtarow56zmnz?usp=drive_link) and [HuggingFace](https://huggingface.co/AlphaMWang)
 
+``` shell
+    cd ${GeminiMol}/models
+    pip install gdown
+    gdown https://drive.google.com/uc?id=1IgpkabylSJ0aIwUjdIWOC5ID51pcucw5 # model parameters and weights for GeminiMol
+    gdown https://drive.google.com/uc?id=1QCwX_zLpd_syHiOvR_5fOvHMurfbtHkF # model parameters and weights for GeminiMol-MOD
+    unzip GeminiMol.zip -d ./GeminiMol
+```
+
 You can also download the model directly from Google Cloud Drive or huggingface using your browser. Then, we need place the models to the `${GeminiMol}/models`.   
 
 > Download all chemical datasets via [Zenodo](https://zenodo.org/records/10450788) for applications 
@@ -163,7 +171,9 @@ GeminiMol
 │   ├── compound_library                 # the compound librarys
 │   │   ├── DTIDB.csv                    # dataset used in target identification    
 │   │   ├── ChemDiv.csv                  # library of common commercial compounds     
-│   │   ├── Specs.csv                    # library of common commercial compounds    
+│   │   ├── LifeChemicalAdvanced.csv     # library of common commercial compounds
+│   │   ├── MCE.csv                      # library of common commercial compounds
+│   │   ├── specs.csv                    # library of common commercial compounds
 ├── models                               # CrossEncoder and GeminiMol models
 │   ├── CrossEncoder                     # CrossEncoder, optional                               
 │   ├── GeminiMol                        # GeminiMol, recommended for zero-shot tasks   
