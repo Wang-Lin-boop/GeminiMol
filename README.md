@@ -98,6 +98,7 @@ Before running GeminiMol, you need to install the basic dependency packages.
     pip install dgl==1.1.1+cu116 -f https://data.dgl.ai/wheels/cu116/repo.html
     pip install dglgo==0.0.2 -f https://data.dgl.ai/wheels-test/repo.html
     pip install dgllife==0.3.2
+    conda install cudatoolkit=11.6 -c conda-forge # if you meet the OSError of libcusparse.so.11
 ```
 
 If you intend to reproduce the benchmark results in our work, it is required to install the AutoGluon.    
